@@ -379,16 +379,21 @@ def ZXYield(df, year, year_mc):
 def doZX(year, year_mc):
     keyZX = 'CRZLLTree/candTree'
 
-    # /eos/home-s/sellissp/HZZ/SAMPLES/ production for only Jets related variables
-    #if (year=="2022"): data = '/eos/home-s/sellissp/HZZ/SAMPLES/042025/PROD_samplesNano_2022_Data_e32a8483/Data_eraCD_preEE_SKIMMED.root'
-    #if (year=="2022EE"): data = '/eos/home-s/sellissp/HZZ/SAMPLES/042025/PROD_samplesNano_2022_Data_e32a8483/Data_eraEFG_postEE_SKIMMED.root'
-    #if (year=="2023preBPix"): data = '/eos/home-s/sellissp/HZZ/SAMPLES/032025/2023_Data/Data_eraC_preBPix_SKIMMED.root'
-    #if (year=="2023postBPix"): data = '/eos/home-s/sellissp/HZZ/SAMPLES/032025/2023_Data/Data_eraD_postBPix_SKIMMED.root'
-    # /eos/user/m/mmanoni/HZZ_prod_300425_angles/ production for only angular variables
-    if (year=="2023preBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraC_preBPix_SKIMMED.root'
-    if (year=="2023postBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraD_postBPix_SKIMMED.root'
-    if (year=="2022"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraCD_preEE_SKIMMED.root'
-    if (year=="2022EE"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraEFG_postEE_SKIMMED.root'
+    #if ( year == "2022" or year == "2022EE" ): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIII_byZ1Z2/240820/'+year_mc+'/Data/AllData_'+year_mc+'.root'
+    #else: data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIII_byZ1Z2/240820/2022/Data/AllData_2022.root' # SPENCER FIX THIS
+    
+    #if (year=="2022"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2022_Data/Data_eraCD_preEE_SKIMMED.root'
+    #if (year=="2022EE"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2022_Data/Data_eraEFG_postEE_SKIMMED.root'
+    #if (year=="2023preBPix"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2023_Data/Data_eraC_preBPix_SKIMMED.root'
+    #if (year=="2023postBPix"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2023_Data/Data_eraD_postBPix_SKIMMED.root'
+    if (year=="2022"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2022_Data/Data_eraCD_preEE_SKIMMED.root'
+    if (year=="2022EE"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2022_Data/Data_eraEFG_postEE_SKIMMED.root'
+    if (year=="2023preBPix"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2023_Data/Data_eraC_preBPix_SKIMMED.root'
+    if (year=="2023postBPix"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2023_Data/Data_eraD_postBPix_SKIMMED.root'
+    #if (year=="2023preBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraC_preBPix_SKIMMED.root'
+    #if (year=="2023postBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraD_postBPix_SKIMMED.root'
+    #if (year=="2022"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraCD_preEE_SKIMMED.root'
+    #if (year=="2022EE"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraEFG_postEE_SKIMMED.root'
     
     ttreeZX = uproot.open(data)[keyZX]
     ttreeZX = ttreeZX.arrays(branches_ZX, library="np")

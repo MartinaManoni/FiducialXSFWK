@@ -156,7 +156,9 @@ def dataframes(year, year_mc):
     elif year_mc == '2023preBPix':
         lumi = 17.794
     elif year_mc == '2023postBPix':
-        lumi = 9.451+109.08
+        lumi = 9.451
+    elif year_mc == '2024':
+        lumi = 109.08
     
     d_df_bkg = {}
     d_bkg = prepareTrees(year_mc)
@@ -229,12 +231,10 @@ def GetFakeRate(lep_Pt, lep_eta, lep_ID):
 # Open Fake Rates files
 def openFR(year):
     
-    if (year == "2022" or year == "2022EE" or year == "2023preBPix" or year == "2023postBPix"):
-        fnameFR = "/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/FAKERATES/%s/FakeRates_SS_%s.root" % (year, year)
+    if (year == "2022" or year == "2022EE" or year == "2023preBPix" or year == "2023postBPix" or year == "2024"):
+        fnameFR = "/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/LATEST_PROD/FAKERATES/%s/FakeRates_SS_%s.root" % (year, year)
     else:
         raise ValueError(f"ERROR: Unsupported year")
-    #fnameFR = "/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIII/FRfiles/FakeRates_SS_%s.root" %year
-    #else: fnameFR = "/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIII/FRfiles/FakeRates_SS_2022.root" # SPENCER FIX THIS
 
     if not os.path.exists(fnameFR):
         raise FileNotFoundError(f"Fake rate file not found: {fnameFR}")
@@ -258,7 +258,7 @@ def findFSZX(df):
 # For 2023 values are taken from https://indico.cern.ch/event/1495544/contributions/6534734/attachments/3074182/5445467/HZZFakeRates.pdf (slide 23-24)
 # Define combination coefficients
 def comb(year):
-    if year == "2016":
+    if year == "2016": # 2022 from HIG 24 13, 2023 from SPENCER
         cb_SS = np.array([
             1.175,   # 4e
             0.975,   # 4mu
@@ -302,10 +302,17 @@ def comb(year):
         ])
     elif year == "2023postBPix":
         cb_SS = np.array([
-            0.781, # 4e
+            0.795, # 4e
             1.025, # 4mu
             1.074, # 2e2mu
-            1.138, # 2mu2e
+            1.078, # 2mu2e
+        ])
+    elif year == "2024": 
+        cb_SS = np.array([
+            0.782, # 4e
+            0.838, # 4mu
+            0.845, # 2e2mu
+            0.747, # 2mu2e
         ])
     return cb_SS
 
@@ -347,20 +354,27 @@ def ratio(year):
             1.016,  # 2mu2e
             ])
     elif year == "2023preBPix":
-        fs_ROS_SS = np.array([
+        OS_SS = np.array([
             0.992,   # 4e
             1.024,  # 4mu
             1.102,   # 2e2mu
             1.024,  # 2mu2e
             ])
     elif year == "2023postBPix":
-        fs_ROS_SS = np.array([
+        OS_SS = np.array([
             1.006,   # 4e
             1.040,  # 4mu
             1.078,   # 2e2mu
             1.025,  # 2mu2e
             ])
-    return fs_ROS_SS
+    elif year == "2024": 
+        OS_SS = np.array([
+            1.001,   # 4e
+            1.047,  # 4mu
+            1.068,   # 2e2mu
+            1.025,  # 2mu2e
+            ])
+    return OS_SS
 
 # Calculate yield for Z+X (data in CRZLL control region are scaled in signal region through yields)
 def ZXYield(df, year, year_mc):
@@ -379,21 +393,13 @@ def ZXYield(df, year, year_mc):
 def doZX(year, year_mc):
     keyZX = 'CRZLLTree/candTree'
 
-    #if ( year == "2022" or year == "2022EE" ): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIII_byZ1Z2/240820/'+year_mc+'/Data/AllData_'+year_mc+'.root'
-    #else: data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIII_byZ1Z2/240820/2022/Data/AllData_2022.root' # SPENCER FIX THIS
-    
-    #if (year=="2022"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2022_Data/Data_eraCD_preEE_SKIMMED.root'
-    #if (year=="2022EE"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2022_Data/Data_eraEFG_postEE_SKIMMED.root'
-    #if (year=="2023preBPix"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2023_Data/Data_eraC_preBPix_SKIMMED.root'
-    #if (year=="2023postBPix"): data = '/eos/user/l/lurda/CMS/HZZ/XS_analysis/250303/2023_Data/Data_eraD_postBPix_SKIMMED.root'
-    if (year=="2022"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2022_Data/Data_eraCD_preEE_SKIMMED.root'
-    if (year=="2022EE"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2022_Data/Data_eraEFG_postEE_SKIMMED.root'
-    if (year=="2023preBPix"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2023_Data/Data_eraC_preBPix_SKIMMED.root'
-    if (year=="2023postBPix"): data = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/062025/2023_Data/Data_eraD_postBPix_SKIMMED.root'
-    #if (year=="2023preBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraC_preBPix_SKIMMED.root'
-    #if (year=="2023postBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraD_postBPix_SKIMMED.root'
-    #if (year=="2022"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraCD_preEE_SKIMMED.root'
-    #if (year=="2022EE"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraEFG_postEE_SKIMMED.root'
+    PATH = '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/LATEST_PROD/'
+
+    if (year=="2022"): data = PATH + '2022_Data/Data_eraCD_preEE_SKIMMED.root'
+    if (year=="2022EE"): data = PATH + '2022_Data/Data_eraEFG_postEE_SKIMMED.root'
+    if (year=="2023preBPix"): data = PATH + '2023_Data/Data_eraC_preBPix_SKIMMED.root'
+    if (year=="2023postBPix"): data = PATH + '2023_Data/Data_eraD_postBPix_SKIMMED.root'
+    if (year=="2024"): data = PATH + '2024_Data/ZZ4lAnalysis_SKIMMED.root'
     
     ttreeZX = uproot.open(data)[keyZX]
     ttreeZX = ttreeZX.arrays(branches_ZX, library="np")
@@ -629,8 +635,8 @@ if (opt.YEAR == 'Full'):
     years = [2016,2017,2018]
 
 if (opt.YEAR == 'Run3'):
-    years_MC = ['2022', '2022EE', '2023preBPix', '2023postBPix']
-    years = ["2022", "2022EE", "2023preBPix", "2023postBPix"]
+    years_MC = ['2022', '2022EE', '2023preBPix', '2023postBPix', '2024']
+    years = ["2022", "2022EE", "2023preBPix", "2023postBPix", "2024"]
 
 if (opt.YEAR == '2022'):
     years_MC = ['2022']
@@ -644,6 +650,10 @@ if (opt.YEAR == '2023preBPix'):
 if (opt.YEAR == '2023postBPix'):
     years_MC = ['2023postBPix']
     years = ["2023postBPix"]
+if (opt.YEAR == '2024'):
+    years_MC = ['2024']
+    years = ["2024"]
+
     
 if (opt.YEAR == '2022full'):
     years_MC = ['2022', '2022EE']
@@ -698,6 +708,7 @@ if (opt.YEAR == 'Run3'):
     d_bkg['2022EE'] = d_bkg_tmp['2022EE']
     d_bkg['2023preBPix'] = d_bkg_tmp['2023preBPix']
     d_bkg['2023postBPix'] = d_bkg_tmp['2023postBPix']
+    d_bkg['2024'] = d_bkg_tmp['2024']
 
 if (opt.YEAR == '2022'):
     d_bkg['2022'] = d_bkg_tmp['2022']
@@ -707,6 +718,8 @@ if (opt.YEAR == '2023preBPix'):
     d_bkg['2023preBPix'] = d_bkg_tmp['2023preBPix']
 if (opt.YEAR == '2023postBPix'):
     d_bkg['2023postBPix'] = d_bkg_tmp['2023postBPix']
+if (opt.YEAR == '2024'):
+    d_bkg['2024'] = d_bkg_tmp['2024']
 
 if (opt.YEAR == '2022full'):
     d_bkg['2022'] = d_bkg_tmp['2022']

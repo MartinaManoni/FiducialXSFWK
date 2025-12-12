@@ -105,11 +105,12 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         lumi['2018'] = '1.023'
 
         # RUN III: https://twiki.cern.ch/twiki/bin/viewauth/CMS/LumiRecommendationsRun3
+        # 2024: https://indico.cern.ch/event/1608377/contributions/6777221/attachments/3166738/5628831/2024%20pp%20plots%20and%20detector%20information%20(2).pdf 
         lumi['2022'] = '1.014'
         lumi['2022EE'] = '1.014'
         lumi['2023preBPix'] = '1.013'
         lumi['2023postBPix'] = '1.013'
-        lumi['2024'] = '1.013' # USING 2023postBPix VALUE AS PLACEHOLDER
+        lumi['2024'] = '1.0161' 
 
     # Lepton efficiency
     # Values taken from:
@@ -198,6 +199,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     
     # -------------------------------------------------------------------------------------------------
 
+    print('OPENING ../datacard/datacard_'+year+'/hzz4l_'+channel+'S_13TeV_xs_'+_obsName[obsName]+'_bin'+str(obsBin)+'_'+physicalModel+'.txt')
     file = open('../datacard/datacard_'+year+'/hzz4l_'+channel+'S_13TeV_xs_'+_obsName[obsName]+'_bin'+str(obsBin)+'_'+physicalModel+'.txt', 'w+')
 
     file.write('imax 1 \n')

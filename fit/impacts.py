@@ -368,10 +368,10 @@ def impactPlots():
             cmd = 'combineTool.py -M Impacts -d ../combine_files/SM_125_all_13TeV_xs_'+obsName+'_bin_v4_'+str(opt.YEAR)+'.root -m 125.38 --cminDefaultMinimizerStrategy 0 --setParameters MH=125.38,'+cmd_XSEC+' --redefineSignalPOIs '+cmd_sigma
             #cmd += ' -o impacts_v4_'
             if (not opt.UNBLIND):
-                cmd += ' -t -1 o impacts_v4_'
+                cmd += ' -t -1 -o impacts_'+opt.YEAR+'_v4_'+obsName+'_' # spencer
                 cmd = cmd + 'asimov.json'
             elif (opt.UNBLIND):
-                cmd += ' -o impacts_v4_'
+                cmd += ' -o impacts_'+opt.YEAR+'_v4_'+obsName+'_' # spencer
                 cmd = cmd + 'data.json'
             print('---------------------------')
             print(cmd, '\n')
@@ -380,9 +380,9 @@ def impactPlots():
             output = processCmd(cmd)
             # plot
             for obsBin in ['2e2muBin'+str(nBin),'4lBin'+str(nBin)]:
-                cmd = 'plotImpacts.py --blind -i impacts_v4_'
-                if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_v4_'+obsName+'_r'+str(obsBin)+'_asimov --POI r'+str(obsBin)
-                elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_v4_'+obsName+'_r'+str(obsBin)+'_data --POI r'+str(obsBin)
+                cmd = 'plotImpacts.py --blind -i impacts_'+opt.YEAR+'_v4_'+obsName+'_' # spencer
+                if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_'+opt.YEAR+'_v4_'+obsName+'_r'+ str(obsBin) +'_asimov --POI r'+ str(obsBin)
+                elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_'+opt.YEAR+'_v4_'+obsName+'_r'+ str(obsBin) +'_data --POI r'+ str(obsBin)
                 print('---------------------------')
                 print(cmd, '\n')
                 print('---------------------------')
@@ -390,13 +390,13 @@ def impactPlots():
                 output = processCmd(cmd)
 
                 cmd = 'plotImpacts_skimmed.py --blind -i impacts_v4_'
-                if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_skimmed_v4_'+obsName+'_r'+str(obsBin)+'_asimov --POI r'+str(obsBin)
-                elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_skimmed_v4_'+obsName+'_r'+str(obsBin)+'_data --POI r'+str(obsBin)
+                if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_skimmed_v4_'+obsName+'_r'+ str(obsBin) +'_asimov --POI r'+ str(obsBin)
+                elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_skimmed_v4_'+obsName+'_r'+ str(obsBin) +'_data --POI r'+ str(obsBin)
                 print('---------------------------')
                 print(cmd, '\n')
                 print('---------------------------')
                 cmds.append(cmd)
-                output = processCmd(cmd)
+                #output = processCmd(cmd)
 
 
 # ----------------- Main -----------------

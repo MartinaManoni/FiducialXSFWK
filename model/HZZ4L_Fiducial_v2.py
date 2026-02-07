@@ -79,10 +79,10 @@ class InclusiveFiducialV2( PhysicsModel ):
                         print('MH (not there before) will be assumed to be', self.mass)
                         self.modelBuilder.doVar("MH[%g]" % self.mass)
                 for poi in poiNames:
-                        POIs += ",%s"%poi
+                        print("POI NAMES",poiNames)
+                        POIs += "%s"%poi
+                print("POIs",POIs)
                 self.modelBuilder.doSet("POI",POIs)
-                print("set up pois")
-
                 self.setup()
 
         def setup(self):
@@ -201,7 +201,9 @@ class DifferentialFiducialV2( PhysicsModel ):
                         print('MH (not there before) will be assumed to be', self.mass)
                         self.modelBuilder.doVar("MH[%g]" % self.mass)
                 for poi in poiNames:
-                        POIs += ",%s"%poi
+                        print("POI NAMES",poiNames)
+                        POIs += "%s"%poi
+                print("POIs",POIs)
                 self.modelBuilder.doSet("POI",POIs)
                 self.setup()
 
@@ -290,7 +292,9 @@ class DifferentialFiducialV2_4mu( PhysicsModel ):
                         print('MH (not there before) will be assumed to be', self.mass)
                         self.modelBuilder.doVar("MH[%g]" % self.mass)
                 for poi in poiNames:
-                        POIs += ",%s"%poi
+                        print("POI NAMES",poiNames)
+                        POIs += "%s"%poi
+                print("POIs",POIs)
                 self.modelBuilder.doSet("POI",POIs)
                 self.setup()
 
@@ -377,7 +381,9 @@ class DifferentialFiducialV2_4e( PhysicsModel ):
                         print('MH (not there before) will be assumed to be', self.mass)
                         self.modelBuilder.doVar("MH[%g]" % self.mass)
                 for poi in poiNames:
-                        POIs += ",%s"%poi
+                        print("POI NAMES",poiNames)
+                        POIs += "%s"%poi
+                print("POIs",POIs)
                 self.modelBuilder.doSet("POI",POIs)
                 self.setup()
 
@@ -462,8 +468,9 @@ class DifferentialFiducialV2_2e2mu( PhysicsModel ):
                         print('MH (not there before) will be assumed to be', self.mass)
                         self.modelBuilder.doVar("MH[%g]" % self.mass)
                 for poi in poiNames:
-                        print("POI NAMES V2 2e2mu",poiNames)
-                        POIs += ",%s"%poi
+                        print("POI NAMES",poiNames)
+                        POIs += "%s"%poi
+                print("POIs",POIs)
                 self.modelBuilder.doSet("POI",POIs)
                 self.setup()
 
@@ -607,7 +614,7 @@ class DifferentialFiducialV4( PhysicsModel ):
 
              self.modelBuilder.factory_('expr::%s("@0", r_%s)' % (name, process))
 
-             if process in [ "trueH2e2muBin0","trueH4eBin0","trueH4muBin0","trueH2e2muBin1","trueH4eBin1","trueH4muBin1","trueH2e2muBin2","trueH4eBin2","trueH4muBin2","trueH2e2muBin3","trueH4eBin3","trueH4muBin3","trueH2e2muBin4","trueH4eBin4","trueH4muBin4","trueH2e2muBin6","trueH4eBin6","trueH4muBin6","trueH2e2muBin5","trueH4eBin5","trueH4muBin5"]:
+             if process in [ "trueH2e2muBin0","trueH4eBin0","trueH4muBin0","trueH2e2muBin1","trueH4eBin1","trueH4muBin1","trueH2e2muBin2","trueH4eBin2","trueH4muBin2","trueH2e2muBin3","trueH4eBin3","trueH4muBin3","trueH2e2muBin4","trueH4eBin4","trueH4muBin4","trueH2e2muBin6","trueH4eBin6","trueH4muBin6","trueH2e2muBin7","trueH4eBin7","trueH4muBin7","trueH2e2muBin5","trueH4eBin5","trueH4muBin5"]:
                 return name
              else : return 1
 

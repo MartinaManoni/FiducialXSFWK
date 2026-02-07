@@ -14,7 +14,7 @@ observable=$1
 year=$2
 overwrite_year=$3 
 
-path="/eos/user/m/mmanoni/www/HZZ_Fiducial/" #Run3
+path="/eos/user/m/mmanoni/www/HZZ_Fiducial_24June/" #Run3
 
 # Check if observable directory exists
 if [ -d "$path/${observable}" ]; then

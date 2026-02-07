@@ -5,7 +5,7 @@ echo "[INFO] Arguments: $1 $2 $3"
 cd /afs/cern.ch/user/m/mmanoni/FiducialXS/CMSSW_14_1_0_pre4/src/
 cmsenv
 source setup.sh
-cd FiducialXSFWK/coefficients/
+cd FiducialXSFWK/
 
 echo "[INFO] Environment set up."
 

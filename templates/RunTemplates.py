@@ -301,10 +301,10 @@ def comb(year):
         ])
     elif year == "2023postBPix":
         cb_SS = np.array([
-            0.781, # 4e
+            0.795, # 4e
             1.025, # 4mu
             1.074, # 2e2mu
-            1.138, # 2mu2e
+            1.078, # 2mu2e
         ])
     return cb_SS
 
@@ -354,10 +354,10 @@ def ratio(year):
             ])
     elif year == "2023postBPix":
         fs_ROS_SS = np.array([
-            1.006,   # 4e
+            0.795,   # 4e
             1.040,  # 4mu
-            1.078,   # 2e2mu
-            1.025,  # 2mu2e
+            1.074,   # 2e2mu
+            1.078,  # 2mu2e
             ])
     return fs_ROS_SS
 
@@ -384,10 +384,10 @@ def doZX(year, year_mc):
     #if (year=="2023preBPix"): data = '/eos/home-s/sellissp/HZZ/SAMPLES/032025/2023_Data/Data_eraC_preBPix_SKIMMED.root'
     #if (year=="2023postBPix"): data = '/eos/home-s/sellissp/HZZ/SAMPLES/032025/2023_Data/Data_eraD_postBPix_SKIMMED.root'
     # /eos/user/m/mmanoni/HZZ_prod_300425_angles/ production for only angular variables
-    if (year=="2023preBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraC_preBPix_SKIMMED.root'
-    if (year=="2023postBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2023/Data_eraD_postBPix_SKIMMED.root'
-    if (year=="2022"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraCD_preEE_SKIMMED.root'
-    if (year=="2022EE"): data = '/eos/user/m/mmanoni/HZZ_prod_300425_angles/Data/2022/Data_eraEFG_postEE_SKIMMED.root'
+    if (year=="2023preBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_170625/Data/2023/Data_eraC_preBPix_FR_ok.root'
+    if (year=="2023postBPix"): data = '/eos/user/m/mmanoni/HZZ_prod_170625/Data/2023/Data_eraD_postBPix_FR_ok.root'
+    if (year=="2022"): data = '/eos/user/m/mmanoni/HZZ_prod_170625/Data/2022/Data_eraCD_preEE_SKIMMED_FR_ok.root'
+    if (year=="2022EE"): data = '/eos/user/m/mmanoni/HZZ_prod_170625/Data/2022/Data_eraEFG_postEE_FR_ok.root'
     
     ttreeZX = uproot.open(data)[keyZX]
     ttreeZX = ttreeZX.arrays(branches_ZX, library="np")
@@ -509,7 +509,7 @@ def doTemplates(df_irr, df_red, binning, var, var_string, var_2nd='None'):
 
                     print (histo.GetName())
                     histo.FillN(len(mass4l), mass4l, w)
-                    smoothAndNormaliseTemplate(histo, 1)
+                    smoothAndNormaliseTemplate(histo, 1.) #histo.Integral() back to one
 
                     if doubleDiff and 'rapidity' in var_string:
                         outFile = ROOT.TFile.Open(str(year)+"/"+var_string+"/XSBackground_"+bkg+"_"+f+"_"+var_string+"_"+str(bin_low)+"_"+str(bin_high)+"_"+str(bin_low_2nd)+"_"+str(bin_high_2nd)+".root", "RECREATE")
@@ -581,7 +581,7 @@ def doTemplates(df_irr, df_red, binning, var, var_string, var_2nd='None'):
                     histo = ROOT.TH1D("m4l_"+var_string+"_"+str(int(bin_low))+"_"+str(int(bin_high)), "m4l_"+var_string+"_"+str(int(bin_low))+"_"+str(int(bin_high)), 20, opt.LOWER_BOUND, opt.UPPER_BOUND)
 
                 histo.FillN(len(mass4l), mass4l, w)
-                smoothAndNormaliseTemplate(histo, 1)
+                smoothAndNormaliseTemplate(histo, 1.) #histo.Integral() back to one
                 if doubleDiff and 'rapidity' in var_string:
                     outFile = ROOT.TFile.Open(str(year)+"/"+var_string+"/XSBackground_ZJetsCR_"+f+"_"+var_string+"_"+str(bin_low)+"_"+str(bin_high)+"_"+str(bin_low_2nd)+"_"+str(bin_high_2nd)+".root", "RECREATE")
                 elif doubleDiff:

@@ -70,7 +70,7 @@ def pipeline():
 
     if not fitOnly:
         safe_chdir('./coefficients')
-        processCmd(f'python3 -u RunCoefficients.py --obsName "{obsName}" --obsBins "{obsBins}" --year "{year}"')
+        #processCmd(f'python3 -u RunCoefficients.py --obsName "{obsName}" --obsBins "{obsBins}" --year "{year}"')
 
         safe_chdir('../templates')
         processCmd(f'python3 -u RunTemplates.py --obsName "{obsName}" --obsBins "{obsBins}" --year "{year}"')
@@ -80,14 +80,14 @@ def pipeline():
     else:
         safe_chdir('./fit')
 
-    #processCmd(f'python3 -u addConstrainedModel.py --obsName "{obsName}" --year "{year}"')
+    processCmd(f'python3 -u addConstrainedModel.py --obsName "{obsName}" --year "{year}"')
 
     runFidCmd = f'python3 -u RunFiducialXS.py --obsName "{obsName}" --obsBins "{obsBins}" --year "{year}"'
     if unblind:
         runFidCmd += ' --unblind'
     processCmd(runFidCmd)
 
-    processCmd(f'python3 -u impacts.py --obsName "{obsName}" --year "{year}"')
+    #processCmd(f'python3 -u impacts.py --obsName "{obsName}" --year "{year}"')
 
     print('=== PLOTTING ===')
     safe_chdir('../LHScans')
@@ -104,6 +104,8 @@ def pipeline():
 
     safe_chdir('..')
     processCmd(f'./copy_to_www.sh {obsName} {year}')
+
+    print('=== PIPELINE DONE ===')
 
 if __name__ == "__main__":
     parseOptions()

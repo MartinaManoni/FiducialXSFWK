@@ -2,8 +2,12 @@
 
 # Usage check
 # Usage: 
-# ./Run3Skimmer.sh MC 2022EE --retry
-# ./Run3Skimmer.sh MC 2023 [--retry]
+# ./Run3Skimmer.sh MC 2022EE
+#EE --retry
+# ./Run3Skimmer.sh MC 2023preBPix [--retry]
+#./Run3Skimmer.sh MC 2023postBPix_MC/PROD_samplesNano_2023postBPix_MC_a3d06bb6/
+#./Run3Skimmer.sh MC 2022_MC/PROD_samplesNano_2022_MC_a3d06bb6/
+#./Run3Skimmer.sh MC 2022EE_MC/PROD_samplesNano_2022EE_MC_a3d06bb6/
 # ./Run3Skimmer.sh Data 2022
 
 if [ $# -lt 2 ] || [ $# -gt 3 ]; then
@@ -26,7 +30,8 @@ if [[ "$data_type" != "MC" && "$data_type" != "Data" ]]; then
 fi
 
 # Define paths
-base_path="/eos/user/m/mmanoni/HZZ_prod_300425_angles/$data_type"
+#base_path="/eos/user/m/mmanoni/HZZ_prod_170625/$data_type"
+base_path="/eos/user/m/mmanoni/HZZ_prod_031125_22_23"
 full_path="$base_path/$subdir"
 
 # Check directory
@@ -56,7 +61,7 @@ if [ "$data_type" == "MC" ]; then
                     continue
                 fi
                 echo "-> Skimming $sample"
-                python3 Run3Skimmer_MC.py --input "$input_file" --output "$output_file" --mc
+                python3 Run3Skimmer.py --input "$input_file" --output "$output_file" --mc
             else
                 echo "!! Missing input file for sample: $sample"
             fi
@@ -85,7 +90,7 @@ else
 
         if [ -f "$input_file" ]; then
             echo "-> Skimming $file"
-            python3 Run3Skimmer_Data.py --input "$input_file" --output "$output_file"
+            python3 Run3Skimmer.py --input "$input_file" --output "$output_file"
         else
             echo "!! Missing file: $input_file"
         fi

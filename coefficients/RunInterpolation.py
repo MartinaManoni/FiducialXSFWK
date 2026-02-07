@@ -69,8 +69,8 @@ else:
 if doubleDiff: obsName = obs_name+'_'+obs_name_2nd
 else: obsName = obs_name
 
-if opt.NNLOPS and opt.YEAR!='Full':
-    print('NNLOPS only with full run2')
+if opt.NNLOPS and opt.YEAR not in ['2022full', '2023full', 'Run3']:
+    print('NNLOPS only supported for 2022full, 2023full or Run3')
     sys.exit()
 
 
@@ -101,7 +101,7 @@ for m in mass_points:
     inc_wrongfrac[m] = _temp.inc_wrongfrac
     binfrac_wrongfrac[m] = _temp.binfrac_wrongfrac
 #aMC
-if opt.YEAR == 'Full':
+if opt.YEAR in ['Run3', '2022full', '2023full']:
     _temp = __import__('inputs_sig_'+obsName+'_aMC', globals(), locals(), inputs+['observableBins'])
     acc_aMC = _temp.acc
 
@@ -253,7 +253,7 @@ for channel in ['2e2mu', '4e', '4mu']:#, '4l']:
 
             extrap_binfrac_wrongfrac['ttH125_'+channel+'_'+obsName+'_genbin'+str(genBin)+'_recobin'+str(recoBin)] = binfrac_wrongfrac[125]['ttH125_'+channel+'_'+obsName+'_genbin'+str(genBin)+'_recobin'+str(recoBin)]
 
-        if opt.YEAR == 'Full' and not opt.NNLOPS:
+        if opt.YEAR in ['Run3', '2022full', '2023full'] and not opt.NNLOPS:
             diff = (extrap_acc['ggH125_'+channel+'_'+obsName+'_genbin'+str(genBin)+'_recobin'+str(genBin)] - acc[125]['ggH125_'+channel+'_'+obsName+'_genbin'+str(genBin)+'_recobin'+str(genBin)]) / acc[125]['ggH125_'+channel+'_'+obsName+'_genbin'+str(genBin)+'_recobin'+str(genBin)]
             extrap_acc['ggH125_aMC_'+channel+'_'+obsName+'_genbin'+str(genBin)+'_recobin'+str(genBin)] = (1+diff) * acc_aMC['ggH125_aMC_'+channel+'_'+obsName+'_genbin'+str(genBin)+'_recobin'+str(genBin)]
 # if doubleDiff: obs_name_dic = obs_name+'_'+obs_name_2nd

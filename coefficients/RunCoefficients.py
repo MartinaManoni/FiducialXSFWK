@@ -423,11 +423,11 @@ def get_lumi(year, nSplit):
     elif year == '2022EE':
         lumi = 26.6728
     elif year == '2023preBPix':
-        lumi = 17.794
+        lumi = 18.06265
     elif year == '2023postBPix':
-        lumi = 9.451 #+109.08
+        lumi = 9.693
     elif year == '2024':
-        lumi = 109.08
+        lumi = 108.822
     else:
         print("YEAR LUMI NOT FOUND")
 

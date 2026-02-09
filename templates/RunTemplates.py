@@ -66,7 +66,7 @@ def prepareTrees(year):
 
     for bkg in bkgs:
         #fname = "/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/RunIII_byZ1Z2/240820/"+year+"/"+bkg+"/"+bkg+"_reducedTree_MC_"+year+"_skimmed.root"
-        fname = path['eos_path_sig']+"MC/"+year+"/"+bkg+"/ZZ4lAnalysis_SKIMMED.root" # Marti
+        fname = path['eos_path_sig']+year+"_MC/"+bkg+"/ZZ4lAnalysis_SKIMMED.root"  #Marti
         d_bkg[bkg] = uproot.open(fname)[key]
 
     return d_bkg
@@ -354,27 +354,27 @@ def ratio(year):
             1.016,  # 2mu2e
             ])
     elif year == "2023preBPix":
-        OS_SS = np.array([
+        fs_ROS_SS = np.array([
             0.992,   # 4e
             1.024,  # 4mu
             1.102,   # 2e2mu
             1.024,  # 2mu2e
             ])
     elif year == "2023postBPix":
-        OS_SS = np.array([
+        fs_ROS_SS = np.array([
             1.006,   # 4e
             1.040,  # 4mu
             1.078,   # 2e2mu
             1.025,  # 2mu2e
             ])
     elif year == "2024": 
-        OS_SS = np.array([
+        fs_ROS_SS = np.array([
             1.001,   # 4e
             1.047,  # 4mu
             1.068,   # 2e2mu
             1.025,  # 2mu2e
             ])
-    return OS_SS
+    return fs_ROS_SS
 
 # Calculate yield for Z+X (data in CRZLL control region are scaled in signal region through yields)
 def ZXYield(df, year, year_mc):

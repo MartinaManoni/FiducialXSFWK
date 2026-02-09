@@ -141,20 +141,20 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_mu['2017_4mu'] = '0.981/1.009'
     eff_mu['2018_2e2mu'] = '0.986/1.006'
     eff_mu['2018_4mu'] = '0.981/1.008'
-    # [PRELIMINARY] Run3 numbers
-    eff_mu['2022_2e2mu'] = '0.986/1.008'
-    eff_mu['2022_4mu'] = '0.981/1.01'
-    eff_mu['2022EE_2e2mu'] = '0.986/1.007'
-    eff_mu['2022EE_4mu'] = '0.981/1.009'
 
-    #TODO: Update 2023 eff_mu values. The values for 2023 preBPix/postBPix are copy-pasted from 2022 at the moment
-    eff_mu['2023preBPix_2e2mu'] = '0.986/1.008' #spencer
-    eff_mu['2023preBPix_4mu'] = '0.981/1.01' #spencer
-    eff_mu['2023postBPix_2e2mu'] = '0.986/1.008' # spencer
-    eff_mu['2023postBPix_4mu'] = '0.981/1.01' # spencer
+    # Latest updated values for Run3
+    eff_mu['2022_2e2mu'] = '0.983/1.012' # ok
+    eff_mu['2022_4mu'] = '0.968/1.015' # ok
+    eff_mu['2022EE_2e2mu'] = '0.986/1.008' # ok
+    eff_mu['2022EE_4mu'] = '0.973/1.009' # ok
 
-    eff_mu['2024_2e2mu'] = '0.986/1.008' # spencer
-    eff_mu['2024_4mu'] = '0.981/1.01' # spencer
+    eff_mu['2023preBPix_2e2mu'] = '0.987/1.005' # ok
+    eff_mu['2023preBPix_4mu'] = '0.975/1.006' # ok
+    eff_mu['2023postBPix_2e2mu'] = '0.987/1.006' # ok
+    eff_mu['2023postBPix_4mu'] = '0.974/1.007' # ok
+
+    eff_mu['2024_2e2mu'] = '0.947/1.054' # ok
+    eff_mu['2024_4mu'] = '0.923/1.111' # ok
     
     eff_e = {}
     eff_e['2016_2e2mu'] = '0.934/1.062'
@@ -163,21 +163,19 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e['2017_4e'] = '0.915/1.064'
     eff_e['2018_2e2mu'] = '0.95/1.052'
     eff_e['2018_4e'] = '0.905/1.077'
-    # Run3 numbers
-    # TODO: Add reference
-    eff_e['2022_4e'] = '0.884/1.103'
-    eff_e['2022_2e2mu'] = '0.927/1.069'
-    eff_e['2022EE_4e'] =  '0.897/1.088'
-    eff_e['2022EE_2e2mu'] = '0.938/1.059'
 
-    #TODO: Update 2023 eff_e values. The values for 2023 preBPix/postBPix are copy-pasted from 2022 at the moment
-    eff_e['2023preBPix_2e2mu'] = '0.927/1.069' # spencer
-    eff_e['2023preBPix_4e'] = '0.884/1.103' # spencer
-    eff_e['2023postBPix_2e2mu'] = '0.927/1.069' # spencer
-    eff_e['2023postBPix_4e'] = '0.884/1.103' # spencer
+    eff_e['2022_4e'] = '0.884/1.103' #perfect agreement w/ our measurement
+    eff_e['2022_2e2mu'] = '0.928/1.069' #perfect agreement w/ our measurement
+    eff_e['2022EE_4e'] =  '0.897/1.088' #perfect agreement w/ our measurement
+    eff_e['2022EE_2e2mu'] = '0.938/1.059' #perfect agreement w/ our measurement
 
-    eff_e['2024_2e2mu'] = '0.927/1.069' # spencer using 2023post
-    eff_e['2024_4e'] = '0.884/1.103' # spencer using 2023post
+    eff_e['2023preBPix_2e2mu'] = '0.882/1.116' # ok
+    eff_e['2023preBPix_4e'] = '0.814/1.177' # ok
+    eff_e['2023postBPix_2e2mu'] = '0.852/1.146' # ok
+    eff_e['2023postBPix_4e'] = '0.778/1.215' # ok
+
+    eff_e['2024_2e2mu'] = '0.927/1.069'# ok
+    eff_e['2024_4e'] = '0.933/1.064'# ok
     
 
     # ZX
@@ -383,7 +381,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         file.write('- ')
     file.write(ZX[year+'_'+channel]+'\n')
 
-    # Param
+    # Param , SMEARING systematic uncertainties
     if(channelNumber != 2):
         file.write('CMS_zz4l_mean_m_sig param 0.0 1.0\n')
         file.write('CMS_zz4l_sigma_m_sig param 0.0 0.03 [-1,1]\n') 
@@ -393,12 +391,12 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
     file.write('CMS_zz4l_n_sig_'+str(channelNumber)+'_'+year+' param 0.0 0.05\n')
 
-    # Theoretical
+    # Theoretical at 13.6 TeV taken from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWG136TeVxsec_extrap
     if not zzfloating:
         file.write('QCDscale_ggVV lnN ')
         for i in range(nBins+3): # Signal + out + fake + qqzz
             file.write('- ')
-        file.write('1.039/0.961 -\n')
+        file.write('1.039/0.961 -\n') #ggF (N3LO QCD + NLO EW), TH Gaussian % (+-3.9%)
         file.write('QCDscale_VV lnN ')
         for i in range(nBins+2): # Signal + out + fake
             file.write('- ')
@@ -406,7 +404,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         file.write('pdf_gg lnN ')
         for i in range(nBins+3): # Signal + out + fake + qqzz
             file.write('- ')
-        file.write('1.032/0.968 -\n')
+        file.write('1.032/0.968 -\n') #ggF (N3LO QCD + NLO EW), PDF+as% (+-3.2%)
         file.write('pdf_qqbar lnN ')
         for i in range(nBins+2): # Signal + out + fake
             file.write('- ')
@@ -556,7 +554,6 @@ def createDatacard_ggH(obsName, channel, nBins, obsBin, observableBins, physical
     eff_e['2024_2e2mu'] = '0.927/1.069' # spencer using 2023post values
     eff_e['2024_4e'] = '0.884/1.103' # spencer  using 2023post values
 
-
     
     # ZX
     # Values taken from:
@@ -574,7 +571,7 @@ def createDatacard_ggH(obsName, channel, nBins, obsBin, observableBins, physical
     ZX['2018_4e'] = '0.650486/1.35893'
     ZX['2018_4mu'] = '0.69554/1.30465'
 
-    #TODO: Update 2023 ZX values. The values for 2023 preBPix/postBPix are copy-pasted from 2022 at the moment
+    #TODO: 2024 is evaluated using 2023 DY, should be recomputed
     ZX['2023preBPix_2e2mu'] = '0.724/1.263' # spencer
     ZX['2023preBPix_4e'] = '0.575/1.398' # spencer
     ZX['2023preBPix_4mu'] = '0.677/1.321' # spencer

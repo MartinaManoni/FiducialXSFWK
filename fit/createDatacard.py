@@ -143,18 +143,18 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_mu['2018_4mu'] = '0.981/1.008'
 
     # Latest updated values for Run3
-    eff_mu['2022_2e2mu'] = '0.983/1.012' # ok
-    eff_mu['2022_4mu'] = '0.968/1.015' # ok
-    eff_mu['2022EE_2e2mu'] = '0.986/1.008' # ok
-    eff_mu['2022EE_4mu'] = '0.973/1.009' # ok
+    eff_mu['2022_2e2mu'] = '0.983/1.012' #ok
+    eff_mu['2022_4mu'] = '0.977/1.015' #ok
+    eff_mu['2022EE_2e2mu'] = '0.986/1.008' #ok
+    eff_mu['2022EE_4mu'] = '0.981/1.009'#ok
 
     eff_mu['2023preBPix_2e2mu'] = '0.987/1.005' # ok
-    eff_mu['2023preBPix_4mu'] = '0.975/1.006' # ok
+    eff_mu['2023preBPix_4mu'] = '0.982/1.006' # ok
     eff_mu['2023postBPix_2e2mu'] = '0.987/1.006' # ok
-    eff_mu['2023postBPix_4mu'] = '0.974/1.007' # ok
+    eff_mu['2023postBPix_4mu'] = '0.982/1.007' # ok
 
-    eff_mu['2024_2e2mu'] = '0.947/1.054' # ok
-    eff_mu['2024_4mu'] = '0.923/1.111' # ok
+    eff_mu['2024_2e2mu'] = '0.988/1.003' # ok
+    eff_mu['2024_4mu'] = '0.996/1.017' # ok
     
     eff_e = {}
     eff_e['2016_2e2mu'] = '0.934/1.062'
@@ -174,8 +174,8 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e['2023postBPix_2e2mu'] = '0.852/1.146' # ok
     eff_e['2023postBPix_4e'] = '0.778/1.215' # ok
 
-    eff_e['2024_2e2mu'] = '0.927/1.069'# ok
-    eff_e['2024_4e'] = '0.933/1.064'# ok
+    eff_e['2024_2e2mu'] = '0.933/1.064'# ok
+    eff_e['2024_4e'] = '0.887/1.098'# ok
     
 
     # ZX

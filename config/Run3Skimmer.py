@@ -505,18 +505,18 @@ vars = {'RunNumber',
         'costhetastar',
         'Phi1',
         #'Jet_btagPNetB_',
-        'Muon_SF', # for Leptons systematics uncertainties calculation
-        'Muon_SFUnc',
-        'Electron_SF',
-        'Electron_SFUnc',
+        #'Muon_SF', # for Leptons systematics uncertainties calculation
+        #'Muon_SFUnc',
+        #'Electron_SF',
+        #'Electron_SFUnc',
         'LepSF',
-        #'LepSF_RECO',
-        #'LepSF_ID',
+        'LepSF_RECO',
+        'LepSF_ID',
         'LepSFUnc',
-        #'LepSFUnc_RECOstat',
-        #'LepSFUnc_RECOsyst',
-        #'LepSFUnc_IDstat',
-        #'LepSFUnc_IDsyst',
+        'LepSFUnc_RECOstat',
+        'LepSFUnc_RECOsyst',
+        'LepSFUnc_IDstat',
+        'LepSFUnc_IDsyst',
         #'LepPt_ScaleUp',
         #'LepPt_ScaleDn',
         #'LepPt_SmearUp',
@@ -632,15 +632,15 @@ df_SR = ( df.Filter('bestCandIdx>=0').Define("ZZMass", "ZZCand_mass[bestCandIdx]
                                     .Define('Leptons_iso', "concatenate(Electron_pfRelIso03FsrCorr,Muon_pfRelIso03FsrCorr)")
                                     .Define('Leptons_SF', "concatenate(Electron_dataMC, Muon_dataMC)")
                                     
-                                    #.Define('Leptons_SF_RECO', "concatenate(Electron_dataMC_RECO, Muon_dataMC)")
-                                    #.Define('Leptons_SF_ID', "concatenate(Electron_dataMC_ID, Muon_dataMC)")
+                                    .Define('Leptons_SF_RECO', "concatenate(Electron_dataMC_RECO, Muon_dataMC)")
+                                    .Define('Leptons_SF_ID', "concatenate(Electron_dataMC_ID, Muon_dataMC)")
 
                                     .Define('Leptons_SFUnc', "concatenate(Electron_dataMCUnc, Muon_dataMCUnc)")
                                     
-                                    #.Define('Leptons_SFUnc_RECOstat', "concatenate(Electron_RECO_statUnc, Muon_dataMCUnc)")
-                                    #.Define('Leptons_SFUnc_RECOsyst', "concatenate(Electron_RECO_systUnc, Muon_dataMCUnc)")
-                                    #.Define('Leptons_SFUnc_IDstat', "concatenate(Electron_ID_statUnc, Muon_dataMCUnc)")
-                                    #.Define('Leptons_SFUnc_IDsyst', "concatenate(Electron_ID_systUnc, Muon_dataMCUnc)")
+                                    .Define('Leptons_SFUnc_RECOstat', "concatenate(Electron_RECO_statUnc, Muon_dataMCUnc)")
+                                    .Define('Leptons_SFUnc_RECOsyst', "concatenate(Electron_RECO_systUnc, Muon_dataMCUnc)")
+                                    .Define('Leptons_SFUnc_IDstat', "concatenate(Electron_ID_statUnc, Muon_dataMCUnc)")
+                                    .Define('Leptons_SFUnc_IDsyst', "concatenate(Electron_ID_systUnc, Muon_dataMCUnc)")
                                     
                                     ## Need to add the LepMissingHit branch for SS FR method
                                     ## First create a dummy branch for muons filled with zeroes
@@ -683,19 +683,19 @@ df_SR = ( df.Filter('bestCandIdx>=0').Define("ZZMass", "ZZCand_mass[bestCandIdx]
                                     .Define('LepSF', "std::vector<float> LepSF{Leptons_SF[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SF[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SF[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SF[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSF")
                                     .Define('LepSFUnc', "std::vector<float> LepSFUnc{Leptons_SFUnc[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc")
 
-                                    #.Define('LepSF_RECO', "std::vector<float> LepSF_RECO{Leptons_SF_RECO[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SF_RECO[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SF_RECO[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SF_RECO[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSF_RECO")
-                                    #.Define('LepSF_ID', "std::vector<float> LepSF_ID{Leptons_SF_ID[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SF_ID[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SF_ID[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SF_ID[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSF_ID")
+                                    .Define('LepSF_RECO', "std::vector<float> LepSF_RECO{Leptons_SF_RECO[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SF_RECO[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SF_RECO[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SF_RECO[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSF_RECO")
+                                    .Define('LepSF_ID', "std::vector<float> LepSF_ID{Leptons_SF_ID[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SF_ID[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SF_ID[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SF_ID[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSF_ID")
 
 
-                                    #.Define('LepSFUnc_RECOstat', "std::vector<float> LepSFUnc_RECOstat{Leptons_SFUnc_RECOstat[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_RECOstat[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_RECOstat[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_RECOstat[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_RECOstat")
-                                    #.Define('LepSFUnc_RECOsyst', "std::vector<float> LepSFUnc_RECOsyst{Leptons_SFUnc_RECOsyst[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_RECOsyst[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_RECOsyst[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_RECOsyst[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_RECOsyst")
-                                    #.Define('LepSFUnc_IDstat', "std::vector<float> LepSFUnc_IDstat{Leptons_SFUnc_IDstat[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_IDstat[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_IDstat[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_IDstat[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_IDstat")
-                                    #.Define('LepSFUnc_IDsyst', "std::vector<float> LepSFUnc_IDsyst{Leptons_SFUnc_IDsyst[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_IDsyst[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_IDsyst[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_IDsyst[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_IDsyst")
+                                    .Define('LepSFUnc_RECOstat', "std::vector<float> LepSFUnc_RECOstat{Leptons_SFUnc_RECOstat[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_RECOstat[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_RECOstat[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_RECOstat[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_RECOstat")
+                                    .Define('LepSFUnc_RECOsyst', "std::vector<float> LepSFUnc_RECOsyst{Leptons_SFUnc_RECOsyst[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_RECOsyst[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_RECOsyst[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_RECOsyst[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_RECOsyst")
+                                    .Define('LepSFUnc_IDstat', "std::vector<float> LepSFUnc_IDstat{Leptons_SFUnc_IDstat[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_IDstat[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_IDstat[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_IDstat[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_IDstat")
+                                    .Define('LepSFUnc_IDsyst', "std::vector<float> LepSFUnc_IDsyst{Leptons_SFUnc_IDsyst[ZZCand_Z1l1Idx[bestCandIdx]], Leptons_SFUnc_IDsyst[ZZCand_Z1l2Idx[bestCandIdx]], Leptons_SFUnc_IDsyst[ZZCand_Z2l1Idx[bestCandIdx]], Leptons_SFUnc_IDsyst[ZZCand_Z2l2Idx[bestCandIdx]]}; return LepSFUnc_IDsyst")
 
-                                    .Define("Electron_SF", "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==11) v.push_back(LepSF[i]); return v;")
-                                    .Define("Muon_SF",     "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==13) v.push_back(LepSF[i]); return v;")
-                                    .Define("Electron_SFUnc", "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==11) v.push_back(LepSFUnc[i]); return v;")
-                                    .Define("Muon_SFUnc",     "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==13) v.push_back(LepSFUnc[i]); return v;")
+                                    #.Define("Electron_SF", "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==11) v.push_back(LepSF[i]); return v;")
+                                    #.Define("Muon_SF",     "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==13) v.push_back(LepSF[i]); return v;")
+                                    #.Define("Electron_SFUnc", "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==11) v.push_back(LepSFUnc[i]); return v;")
+                                    #.Define("Muon_SFUnc",     "std::vector<float> v; for(unsigned int i=0;i<LepLepId.size();i++) if(abs(LepLepId[i])==13) v.push_back(LepSFUnc[i]); return v;")
 
 
                                     #.Define('TBMax', "Jet_pt.size() > 0 ? TB(ROOT::Math::PtEtaPhiMVector(ZZCand_pt[bestCandIdx], ZZCand_eta[bestCandIdx], ZZCand_phi[bestCandIdx], ZZCand_mass[bestCandIdx]) , Jet_pt, Jet_eta, Jet_phi, Jet_mass) : -99")

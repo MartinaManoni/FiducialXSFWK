@@ -417,8 +417,7 @@ def get_lumi(year, nSplit):
     elif year == '2018':
         lumi = 59.83
 
-
-    elif year == '2022':
+    if year == '2022':
         lumi = 7.9804
     elif year == '2022EE':
         lumi = 26.6728
@@ -1035,6 +1034,11 @@ if opt.MERGE:
     else:
         suffix = ''
         #orig = '_ORIG'
+
+    if opt.INT:
+        prefix = '_1'+opt.HYP
+    else:
+        prefix = ''
         
     if doubleDiff:
         obs_name = obs_name+'_'+obs_name_2nd
@@ -1058,16 +1062,16 @@ if opt.MERGE:
         #fname = f'../inputs/inputs_sig_{obs_name}_{suffix}{year}.py'
 
         if opt.SPLIT:
-            fname = path['eos_path']+"inputs/inputs_sig_"+obs_name+"_"+suffix+year+".py"
+            fname = path['eos_path']+"inputs/inputs_sig_"+prefix+"_"+obs_name+"_"+suffix+year+".py"
         else:
-            fname = "../inputs/inputs_sig_"+obs_name+"_"+suffix+year+".py"
+            fname = "../inputs/inputs_sig_"+prefix+"_"+obs_name+"_"+suffix+year+".py"
 
         print( fname )
         if os.path.exists(fname):
             if opt.SPLIT:
-                module_name = path['eos_path']+"inputs/inputs_sig_"+obs_name+"_"+suffix+year+".py"
+                module_name = path['eos_path']+"inputs/inputs_sig_"+prefix+"_"+obs_name+"_"+suffix+year+".py"
             else:
-                module_name = "../inputs/inputs_sig_"+obs_name+"_"+suffix+year+".py"
+                module_name = "../inputs/inputs_sig_"+prefix+"_"+obs_name+"_"+suffix+year+".py"
             spec = importlib.util.spec_from_file_location(module_name, fname)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
@@ -1128,7 +1132,7 @@ if opt.MERGE:
         lambdajesup  = {k:  0.0 for k in acceptance}
         lambdajesdn  = {k:  0.0 for k in acceptance}
 
-    with open('../inputs/inputs_sig_' + obs_name + '_' + suffix + str(opt.YEAR) + '.py', 'w') as f:
+    with open('../inputs/inputs_sig_' +prefix+"_"+ obs_name + '_' + suffix + str(opt.YEAR) + '.py', 'w') as f:
         if opt.NNLOPS:
             f.write('observableBins = '+str(obs_bins)+';\n')
             f.write('acc = '+str(acceptance)+' \n')

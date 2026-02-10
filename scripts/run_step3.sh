@@ -1,13 +1,13 @@
 #!/bin/bash
 
-cd /afs/cern.ch/user/s/sellissp/public/HZZ/CMSSW_14_1_0_pre4/src
+cd /afs/cern.ch/user/m/mmanoni/FiducialXS/CMSSW_14_1_0_pre4/src/
 source setup.sh
 cmsenv
 cd FiducialXSFWK/coefficients
 
 obsName="${1//_/' vs '}"
 year="$2"
-
+#this is merging all Run3 
 python3 RunCoefficients.py --obsName "$obsName" --year "$year" --merge
 python3 RunCoefficients.py --obsName "$obsName" --year "$year" --merge --nnlops
 
@@ -18,12 +18,12 @@ python3 plot_templates.py --obsName "$obsName" --year "$year"
 
 cd ../fit
 
-#python3 RunFiducialXS.py --obsName "$obsName" --year "$year"
+python3 -u addConstrainedModel.py --obsName "$obsName" --year "$year"
 python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc
-python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year"
-python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --nnlops
-python3 impacts.py --obsName "$obsName" --year "$year"
+#python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year"
+#python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --nnlops
+#python3 impacts.py --obsName "$obsName" --year "$year"
 
-cd ../LHScans
+#cd ../LHScans
 
-python3 plot_LLScan.py --obsName "$obsName" --year "$year"
+#python3 plot_LLScan.py --obsName "$obsName" --year "$year"

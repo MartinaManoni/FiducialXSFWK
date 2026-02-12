@@ -169,6 +169,25 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e['2022EE_4e'] =  '0.897/1.088' #perfect agreement w/ our measurement
     eff_e['2022EE_2e2mu'] = '0.938/1.059' #perfect agreement w/ our measurement
 
+    eff_e_reco_stat = {}
+    eff_e_reco_syst = {}
+    eff_e_id_stat = {}
+    eff_e_id_syst = {}
+    # Decorrelation RECO/ID & stat/syst--------------------
+    eff_e_reco_stat['2022_4e'] = '0.947/1.053' 
+    eff_e_reco_stat['2022_2e2mu'] = '0.964/1.036'
+
+    eff_e_reco_syst['2022_4e'] = '0.953/1.047' 
+    eff_e_reco_syst['2022_2e2mu'] = '0.967/1.033'
+
+    eff_e_id_stat['2022_4e'] = '0.957/1.043' 
+    eff_e_id_stat['2022_2e2mu'] = '0.971/1.029' 
+
+    eff_e_id_syst['2022_4e'] = '0.986/1.014' 
+    eff_e_id_syst['2022_2e2mu'] = '0.991/1.009' 
+
+    #--------------------------------------------------
+
     eff_e['2023preBPix_2e2mu'] = '0.882/1.116' # ok
     eff_e['2023preBPix_4e'] = '0.814/1.177' # ok
     eff_e['2023postBPix_2e2mu'] = '0.852/1.146' # ok
@@ -366,13 +385,33 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         # for i in range(nBins+4): # All except ZX
         for i in range(nBins+4): # All except ZX
             file.write(eff_mu[year+'_'+channel]+' ')
-        file.write('-\n') # ZX
+        file.write('-\n') 
+
+    # Electrons efficiencies are decorrelated between RECO/ID, statistical and systematic components (syst are correlated between years)
     if channel == '4e' or channel == '2e2mu':
-        file.write('CMS_eff_e lnN ')
-        # for i in range(nBins+4): # All except ZX
-        for i in range(nBins+4): # All except ZX
-            file.write(eff_e[year+'_'+channel]+' ')
-        file.write('-\n') # ZX
+        # --- ID statistical (uncorrelated per year) ---
+        file.write('CMS_eff_e_id_stat_'+year+' lnN ')
+        for i in range(nBins+4):
+            file.write(eff_e_id_stat[year+'_'+channel]+' ')
+        file.write('-\n')
+
+        # --- RECO statistical (uncorrelated per year) ---
+        file.write('CMS_eff_e_reco_stat_'+year+' lnN ')
+        for i in range(nBins+4):
+            file.write(eff_e_reco_stat[year+'_'+channel]+' ')
+        file.write('-\n')
+
+        # --- ID systematic (correlated across years) ---
+        file.write('CMS_eff_e_id_syst lnN ')
+        for i in range(nBins+4):
+            file.write(eff_e_id_syst[year+'_'+channel]+' ')
+        file.write('-\n')
+
+        # --- RECO systematic (correlated across years) ---
+        file.write('CMS_eff_e_reco_syst lnN ')
+        for i in range(nBins+4):
+            file.write(eff_e_reco_syst[year+'_'+channel]+' ')
+        file.write('-\n')
 
     # ZX
     file.write('CMS_hzz'+channel+'_Zjets_'+year+' lnN ')
@@ -381,7 +420,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         file.write('- ')
     file.write(ZX[year+'_'+channel]+'\n')
 
-    # Param , SMEARING systematic uncertainties
+    # Gaussian-constrained nuisance parameter , SMEARING systematic uncertainties
     if(channelNumber != 2):
         file.write('CMS_zz4l_mean_m_sig param 0.0 1.0\n')
         file.write('CMS_zz4l_sigma_m_sig param 0.0 0.03 [-1,1]\n') 

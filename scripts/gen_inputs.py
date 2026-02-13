@@ -12,7 +12,10 @@ DO_SPLIT = False #do split false for step 2 and 3, and Run this again
 #obsNames=["pTj1", "pTj2", "Nj", "mjj", "absdetajj", "dphijj", "pTHj", "pTHjj", "mHj", "TCjmax", "TBjmax"]
 #obsNames=["massZ1_massZ2", "rapidity4l_pT4l", "pTj1_pTj2", "Nj_pT4l", "pT4l_pTHj", "absdetajj_mjj"]
 
-obsNames=["mass4l"]
+#obsNames=["TCjmax", "TBjmax"]
+#obsNames=["mjj"]
+#obsNames=["absdetajj_mjj"]
+obsNames=["TCjmax_pT4l"]
 
 #"pT4l", "rapidity4l"
 

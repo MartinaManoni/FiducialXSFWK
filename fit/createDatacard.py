@@ -142,19 +142,21 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_mu['2018_2e2mu'] = '0.986/1.006'
     eff_mu['2018_4mu'] = '0.981/1.008'
 
-    # Latest updated values for Run3
-    eff_mu['2022_2e2mu'] = '0.983/1.012' #ok
-    eff_mu['2022_4mu'] = '0.977/1.015' #ok
-    eff_mu['2022EE_2e2mu'] = '0.986/1.008' #ok
-    eff_mu['2022EE_4mu'] = '0.981/1.009'#ok
+    # Latest updated values for Run3 (Muons efficiencies, Trigger efficiency is set to 0 here)
+    eff_mu['2022_2e2mu'] = '0.989/1.011' #ok
+    eff_mu['2022_4mu'] = '0.986/1.014' #ok
 
-    eff_mu['2023preBPix_2e2mu'] = '0.987/1.005' # ok
-    eff_mu['2023preBPix_4mu'] = '0.982/1.006' # ok
-    eff_mu['2023postBPix_2e2mu'] = '0.987/1.006' # ok
-    eff_mu['2023postBPix_4mu'] = '0.982/1.007' # ok
+    eff_mu['2022EE_2e2mu'] = '0.993/1.007' #ok
+    eff_mu['2022EE_4mu'] = '0.992/1.008'#ok
 
-    eff_mu['2024_2e2mu'] = '0.988/1.003' # ok
-    eff_mu['2024_4mu'] = '0.996/1.017' # ok
+    eff_mu['2023preBPix_2e2mu'] = '0.987/1.005' # TODO
+    eff_mu['2023preBPix_4mu'] = '0.982/1.006' # TODO
+
+    eff_mu['2023postBPix_2e2mu'] = '0.994/1.006' # ok
+    eff_mu['2023postBPix_4mu'] = '0.992/1.008' # ok
+
+    eff_mu['2024_2e2mu'] = '0.988/1.003' # TODO
+    eff_mu['2024_4mu'] = '0.996/1.017' # TODO
     
     eff_e = {}
     eff_e['2016_2e2mu'] = '0.934/1.062'
@@ -164,17 +166,28 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e['2018_2e2mu'] = '0.95/1.052'
     eff_e['2018_4e'] = '0.905/1.077'
 
+    #CORRELATED
+
     eff_e['2022_4e'] = '0.884/1.103' #perfect agreement w/ our measurement
     eff_e['2022_2e2mu'] = '0.928/1.069' #perfect agreement w/ our measurement
     eff_e['2022EE_4e'] =  '0.897/1.088' #perfect agreement w/ our measurement
     eff_e['2022EE_2e2mu'] = '0.938/1.059' #perfect agreement w/ our measurement
 
+    eff_e['2023preBPix_2e2mu'] = '0.882/1.116' # ok
+    eff_e['2023preBPix_4e'] = '0.814/1.177' # ok
+    eff_e['2023postBPix_2e2mu'] = '0.852/1.146' # ok
+    eff_e['2023postBPix_4e'] = '0.778/1.215' # ok
+
+    eff_e['2024_2e2mu'] = '0.933/1.064'# ok
+    eff_e['2024_4e'] = '0.887/1.098'# ok
+
+    #DECORRELATED
     eff_e_reco_stat = {}
     eff_e_reco_syst = {}
     eff_e_id_stat = {}
     eff_e_id_syst = {}
 
-    # Decorrelation RECO/ID & stat/syst--------------------
+    # 2022
     eff_e_reco_stat['2022_4e'] = '0.947/1.053' 
     eff_e_reco_stat['2022_2e2mu'] = '0.964/1.036'
 
@@ -185,49 +198,92 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e_id_stat['2022_2e2mu'] = '0.971/1.029' 
 
     eff_e_id_syst['2022_4e'] = '0.986/1.014' 
-    eff_e_id_syst['2022_2e2mu'] = '0.991/1.009' 
+    eff_e_id_syst['2022_2e2mu'] = '0.991/1.009'
 
-    #--------------------------------------------------
+    # 2022EE
+    eff_e_reco_stat['2022EE_4e'] = '0.946/1.054' 
+    eff_e_reco_stat['2022EE_2e2mu'] = '0.964/1.036'
 
-    eff_e['2023preBPix_2e2mu'] = '0.882/1.116' # ok
-    eff_e['2023preBPix_4e'] = '0.814/1.177' # ok
-    eff_e['2023postBPix_2e2mu'] = '0.852/1.146' # ok
-    eff_e['2023postBPix_4e'] = '0.778/1.215' # ok
+    eff_e_reco_syst['2022EE_4e'] = '0.9503/1.0497' 
+    eff_e_reco_syst['2022EE_2e2mu'] = '0.966/1.034'
 
-    eff_e['2024_2e2mu'] = '0.933/1.064'# ok
-    eff_e['2024_4e'] = '0.887/1.098'# ok
+    eff_e_id_stat['2022EE_4e'] = '0.978/1.022' 
+    eff_e_id_stat['2022EE_2e2mu'] = '0.985/1.015' 
 
-    #Trigger 
+    eff_e_id_syst['2022EE_4e'] = '0.982/1.018' 
+    eff_e_id_syst['2022EE_2e2mu'] = '0.988/1.012'
+
+    # 2023preBPix TODO
+    eff_e_reco_stat['2023preBPix_4e'] = ''
+    eff_e_reco_stat['2023preBPix_2e2mu'] = ''
+
+    eff_e_reco_syst['2023preBPix_4e'] = '' 
+    eff_e_reco_syst['2023preBPix_2e2mu'] = ''
+
+    eff_e_id_stat['2023preBPix_4e'] = '' 
+    eff_e_id_stat['2023preBPix_2e2mu'] = '' 
+
+    eff_e_id_syst['2023preBPix_4e'] = '' 
+    eff_e_id_syst['2023preBPix_2e2mu'] = ''
+
+    # 2023postBPix
+    eff_e_reco_stat['2023postBPix_4e'] = '0.924/1.076' 
+    eff_e_reco_stat['2023postBPix_2e2mu'] = '0.949/1.051'
+
+    eff_e_reco_syst['2023postBPix_4e'] = '0.838/1.162'
+    eff_e_reco_syst['2023postBPix_2e2mu'] = '0.890/1.110'
+
+    eff_e_id_stat['2023postBPix_4e'] = '0.941/1.059' 
+    eff_e_id_stat['2023postBPix_2e2mu'] = '0.958/1.042' 
+
+    eff_e_id_syst['2023postBPix_4e'] = '0.972/1.028' 
+    eff_e_id_syst['2023postBPix_2e2mu'] = '0.981/1.019'
+
+    # 2024 TODO
+    eff_e_reco_stat['2024_4e'] = '' 
+    eff_e_reco_stat['2024_2e2mu'] = ''
+
+    eff_e_reco_syst['2024_4e'] = '' 
+    eff_e_reco_syst['2024_2e2mu'] = ''
+
+    eff_e_id_stat['2024_4e'] = '' 
+    eff_e_id_stat['2024_2e2mu'] = '' 
+
+    eff_e_id_syst['2024_4e'] = '' 
+    eff_e_id_syst['2024_2e2mu'] = ''
+
+
+    #Trigger (from Run 2)
     trig_mu = {}
 
-    trig_mu['2022_4mu'] = '0.887/1.098' #all values are dummy for the moment
-    trig_mu['2022_2e2mu'] = '0.887/1.098'
+    trig_mu['2022_4mu'] = '0.983/1.001'
+    trig_mu['2022_2e2mu'] = '0.988/1.002'
 
-    trig_mu['2022EE_4mu'] =  '0.887/1.098'
-    trig_mu['2022EE_2e2mu'] = '0.887/1.098'
+    trig_mu['2022EE_4mu'] =  '0.983/1.001'
+    trig_mu['2022EE_2e2mu'] = '0.988/1.002'
 
-    trig_mu['2023preBPix_2e2mu'] = '0.887/1.098'
-    trig_mu['2023preBPix_4mu'] = '0.887/1.098'
-    trig_mu['2023postBPix_2e2mu'] = '0.887/1.098'
-    trig_mu['2023postBPix_4mu'] = '0.887/1.098'
+    trig_mu['2023preBPix_2e2mu'] = '0.988/1.002'
+    trig_mu['2023preBPix_4mu'] = '0.983/1.001'
+    trig_mu['2023postBPix_2e2mu'] = '0.988/1.002'
+    trig_mu['2023postBPix_4mu'] = '0.983/1.001'
 
-    trig_mu['2024_2e2mu'] = '0.887/1.098'
-    trig_mu['2024_4mu'] = '0.887/1.098'
+    trig_mu['2024_2e2mu'] = '0.988/1.002'
+    trig_mu['2024_4mu'] = '0.983/1.001'
 
     trig_e = {}
-    trig_e['2022_4e'] = '0.887/1.098' 
-    trig_e['2022_2e2mu'] = '0.887/1.098'
+    trig_e['2022_4e'] = '0.945/1.011' 
+    trig_e['2022_2e2mu'] = '0.979/1.002'
 
-    trig_e['2022EE_4e'] =  '0.887/1.098'
-    trig_e['2022EE_2e2mu'] = '0.887/1.098'
+    trig_e['2022EE_4e'] =  '0.945/1.011'
+    trig_e['2022EE_2e2mu'] = '0.979/1.002'
 
-    trig_e['2023preBPix_2e2mu'] = '0.887/1.098'
-    trig_e['2023preBPix_4e'] = '0.887/1.098'
-    trig_e['2023postBPix_2e2mu'] = '0.887/1.098'
-    trig_e['2023postBPix_4e'] = '0.887/1.098'
+    trig_e['2023preBPix_2e2mu'] = '0.979/1.002'
+    trig_e['2023preBPix_4e'] = '0.945/1.011'
+    trig_e['2023postBPix_2e2mu'] = '0.979/1.002'
+    trig_e['2023postBPix_4e'] = '0.945/1.011'
 
-    trig_e['2024_2e2mu'] = '0.887/1.098'
-    trig_e['2024_4e'] = '0.887/1.098'
+    trig_e['2024_2e2mu'] = '0.979/1.002'
+    trig_e['2024_4e'] = '0.945/1.011'
 
 
     # ZX

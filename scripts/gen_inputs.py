@@ -12,9 +12,11 @@ DO_SPLIT = False #do split false for step 2 and 3, and Run this again
 #obsNames=["massZ1_massZ2", "rapidity4l_pT4l", "pTj1_pTj2", "Nj_pT4l", "pT4l_pTHj", "absdetajj_mjj"]
 #obsNames=["mass4l"]
 
-obsNames=["mass4l", "pT4l", "rapidity4l"]
+obsNames=["mass4l"]
 
-YEARS = ["2022", "2022EE"]#, "2023preBPix", "2023postBPix", "2024"]
+#"pT4l", "rapidity4l"
+
+YEARS = ["2022"]#, "2023preBPix", "2023postBPix", "2024"]
 #YEARS = ["Run3"]
 
 #YEARS = ["2022", "2022EE", "2023preBPix", "2023postBPix"]

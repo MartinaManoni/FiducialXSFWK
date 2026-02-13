@@ -173,6 +173,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e_reco_syst = {}
     eff_e_id_stat = {}
     eff_e_id_syst = {}
+
     # Decorrelation RECO/ID & stat/syst--------------------
     eff_e_reco_stat['2022_4e'] = '0.947/1.053' 
     eff_e_reco_stat['2022_2e2mu'] = '0.964/1.036'
@@ -195,7 +196,39 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
     eff_e['2024_2e2mu'] = '0.933/1.064'# ok
     eff_e['2024_4e'] = '0.887/1.098'# ok
-    
+
+    #Trigger 
+    trig_mu = {}
+
+    trig_mu['2022_4mu'] = '0.887/1.098' #all values are dummy for the moment
+    trig_mu['2022_2e2mu'] = '0.887/1.098'
+
+    trig_mu['2022EE_4mu'] =  '0.887/1.098'
+    trig_mu['2022EE_2e2mu'] = '0.887/1.098'
+
+    trig_mu['2023preBPix_2e2mu'] = '0.887/1.098'
+    trig_mu['2023preBPix_4mu'] = '0.887/1.098'
+    trig_mu['2023postBPix_2e2mu'] = '0.887/1.098'
+    trig_mu['2023postBPix_4mu'] = '0.887/1.098'
+
+    trig_mu['2024_2e2mu'] = '0.887/1.098'
+    trig_mu['2024_4mu'] = '0.887/1.098'
+
+    trig_e = {}
+    trig_e['2022_4e'] = '0.887/1.098' 
+    trig_e['2022_2e2mu'] = '0.887/1.098'
+
+    trig_e['2022EE_4e'] =  '0.887/1.098'
+    trig_e['2022EE_2e2mu'] = '0.887/1.098'
+
+    trig_e['2023preBPix_2e2mu'] = '0.887/1.098'
+    trig_e['2023preBPix_4e'] = '0.887/1.098'
+    trig_e['2023postBPix_2e2mu'] = '0.887/1.098'
+    trig_e['2023postBPix_4e'] = '0.887/1.098'
+
+    trig_e['2024_2e2mu'] = '0.887/1.098'
+    trig_e['2024_4e'] = '0.887/1.098'
+
 
     # ZX
     ZX = {}
@@ -380,12 +413,17 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
             
     # Lepton efficiency
+
     if channel == '4mu' or channel == '2e2mu':
         file.write('CMS_eff_m lnN ')
-        # for i in range(nBins+4): # All except ZX
         for i in range(nBins+4): # All except ZX
             file.write(eff_mu[year+'_'+channel]+' ')
         file.write('-\n') 
+
+        file.write('CMS_trigger_m lnN ')
+        for i in range(nBins+4): # All except ZX
+            file.write(trig_mu[year+'_'+channel]+' ')
+        file.write('-\n')
 
     # Electrons efficiencies are decorrelated between RECO/ID, statistical and systematic components (syst are correlated between years)
     if channel == '4e' or channel == '2e2mu':
@@ -411,6 +449,12 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         file.write('CMS_eff_e_reco_syst lnN ')
         for i in range(nBins+4):
             file.write(eff_e_reco_syst[year+'_'+channel]+' ')
+        file.write('-\n')
+
+        #TRIGGER
+        file.write('CMS_trigger_e lnN ')
+        for i in range(nBins+4): # All except ZX
+            file.write(trig_e[year+'_'+channel]+' ')
         file.write('-\n')
 
     # ZX

@@ -669,16 +669,34 @@ def getCoeff(channel, m4l_low, m4l_high, obs_reco, obs_gen, obs_bins, recobin, g
 
 
         # --------------- acceptance ---------------
+        # --------------- acceptance ---------------
         acc_num = datafr[passedFiducialSelection & cutm4l_gen & cutobs_gen & cutchan_gen & cuth4l_gen][genweight].sum()
         acc_den = datafr[cutchan_gen_out][genweight].sum()
-        if acc_den>0:
-            acceptance[processBin] = acc_num/acc_den
+
+        if acc_den > 0:
+            acceptance[processBin] = acc_num / acc_den
             accnum[processBin] = acc_num
             accden[processBin] = acc_den
-            err_acceptance[processBin] = sqrt((acceptance[processBin]*(1-acceptance[processBin]))/acc_den)
+
+            # --- same binomial formula, protected ---
+            val = (acceptance[processBin] * (1 - acceptance[processBin])) / acc_den
+
+            # Protect against tiny negative values (floating precision)
+            if val < 0:
+                if val > -1e-12:
+                    val = 0.0
+                    print("protection acceptance")
+                else:
+                    print(f"WARNING: Negative variance for {processBin} "
+                        f"(A={acceptance[processBin]:.4f}, den={acc_den:.4f}) → setting error to 0")
+                    val = 0.0
+
+            err_acceptance[processBin] = sqrt(val)
+
         else:
             acceptance[processBin] = -1.0
             err_acceptance[processBin] = -1.0
+
 
 
         #if type=='fullNNLOPS' or type=='ACggH': continue # In case of fullNNLOPS we are interested in acceptance only

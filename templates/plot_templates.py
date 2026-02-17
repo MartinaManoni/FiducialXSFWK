@@ -46,7 +46,8 @@ decimal = {
 'pTj1 vs pTj2': False,
 'pT4l vs pTHj': False,
 'massZ1 vs massZ2': False,
-'TCjmax vs pT4l': False
+'TCjmax vs pT4l': False,
+'absdetajj vs mjj': False
 }
 
 def checkDir(folder_path):

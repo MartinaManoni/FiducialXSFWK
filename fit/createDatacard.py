@@ -158,14 +158,14 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_mu['2022EE_2e2mu'] = '0.993/1.007' #ok
     eff_mu['2022EE_4mu'] = '0.992/1.008'#ok
 
-    eff_mu['2023preBPix_2e2mu'] = '0.987/1.005' # TODO
-    eff_mu['2023preBPix_4mu'] = '0.982/1.006' # TODO
+    eff_mu['2023preBPix_2e2mu'] = '0.995/1.005' # ok
+    eff_mu['2023preBPix_4mu'] = '0.994/1.006' # ok
 
     eff_mu['2023postBPix_2e2mu'] = '0.994/1.006' # ok
     eff_mu['2023postBPix_4mu'] = '0.992/1.008' # ok
 
-    eff_mu['2024_2e2mu'] = '0.988/1.003' # TODO
-    eff_mu['2024_4mu'] = '0.996/1.017' # TODO
+    eff_mu['2024_2e2mu'] = '0.997/1.003' # ok
+    eff_mu['2024_4mu'] = '0.997/1.003' # ok
     
     eff_e = {}
     eff_e['2016_2e2mu'] = '0.934/1.062'
@@ -222,18 +222,18 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e_id_syst['2022EE_4e'] = '0.982/1.018' 
     eff_e_id_syst['2022EE_2e2mu'] = '0.988/1.012'
 
-    # 2023preBPix TODO
-    eff_e_reco_stat['2023preBPix_4e'] = ''
-    eff_e_reco_stat['2023preBPix_2e2mu'] = ''
+    # 2023preBPix
+    eff_e_reco_stat['2023preBPix_4e'] = '0.945/1.055'
+    eff_e_reco_stat['2023preBPix_2e2mu'] = '0.964/1.036'
 
-    eff_e_reco_syst['2023preBPix_4e'] = '' 
-    eff_e_reco_syst['2023preBPix_2e2mu'] = ''
+    eff_e_reco_syst['2023preBPix_4e'] = '0.841/1.159' 
+    eff_e_reco_syst['2023preBPix_2e2mu'] = '0.897/1.103'
 
-    eff_e_id_stat['2023preBPix_4e'] = '' 
-    eff_e_id_stat['2023preBPix_2e2mu'] = '' 
+    eff_e_id_stat['2023preBPix_4e'] = '0.962/1.038' 
+    eff_e_id_stat['2023preBPix_2e2mu'] = '0.976/1.024'
 
-    eff_e_id_syst['2023preBPix_4e'] = '' 
-    eff_e_id_syst['2023preBPix_2e2mu'] = ''
+    eff_e_id_syst['2023preBPix_4e'] = '0.990/1.010' 
+    eff_e_id_syst['2023preBPix_2e2mu'] = '0.994/1.006'
 
     # 2023postBPix
     eff_e_reco_stat['2023postBPix_4e'] = '0.924/1.076' 
@@ -248,18 +248,18 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     eff_e_id_syst['2023postBPix_4e'] = '0.972/1.028' 
     eff_e_id_syst['2023postBPix_2e2mu'] = '0.981/1.019'
 
-    # 2024 TODO
-    eff_e_reco_stat['2024_4e'] = '' 
-    eff_e_reco_stat['2024_2e2mu'] = ''
+    # 2024 (to cross check numbers)
+    eff_e_reco_stat['2024_4e'] = '0.944/1.056' 
+    eff_e_reco_stat['2024_2e2mu'] = '0.962/1.038'
 
-    eff_e_reco_syst['2024_4e'] = '' 
-    eff_e_reco_syst['2024_2e2mu'] = ''
+    eff_e_reco_syst['2024_4e'] = '0.949/1.051' 
+    eff_e_reco_syst['2024_2e2mu'] = '0.965/1.035'
 
-    eff_e_id_stat['2024_4e'] = '' 
-    eff_e_id_stat['2024_2e2mu'] = '' 
+    eff_e_id_stat['2024_4e'] = '0.978/1.022' 
+    eff_e_id_stat['2024_2e2mu'] = '0.983/1.017' 
 
-    eff_e_id_syst['2024_4e'] = '' 
-    eff_e_id_syst['2024_2e2mu'] = ''
+    eff_e_id_syst['2024_4e'] = '0.982/1.018' 
+    eff_e_id_syst['2024_2e2mu'] = '0.987/1.013'
 
 
     #Trigger (from Run 2)
@@ -487,7 +487,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             file.write(eff_mu[year+'_'+channel]+' ')
         file.write('-\n') 
 
-        file.write('CMS_trigger_m lnN ')
+        file.write('CMS_trigger_m_'+year+' lnN ')
         for i in range(nBins+4): # All except ZX
             file.write(trig_mu[year+'_'+channel]+' ')
         file.write('-\n')
@@ -519,7 +519,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         file.write('-\n')
 
         #TRIGGER
-        file.write('CMS_trigger_e lnN ')
+        file.write('CMS_trigger_e_'+year+' lnN ')
         for i in range(nBins+4): # All except ZX
             file.write(trig_e[year+'_'+channel]+' ')
         file.write('-\n')
@@ -547,7 +547,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         for i in range(nBins+3): # Signal + out + fake + qqzz
             file.write('- ')
         file.write('1.039/0.961 -\n') #ggF (N3LO QCD + NLO EW), TH Gaussian % (+-3.9%)
-        file.write('QCDscale_VV lnN ')
+        file.write('QCD_scale_VV lnN ')
         for i in range(nBins+2): # Signal + out + fake
             file.write('- ')
         file.write('1.0325/0.958 - -\n')
@@ -604,6 +604,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
     print(os.getcwd())
 
+#This createDatacard_ggH function is obsolete!! It's not used anymore
 def createDatacard_ggH(obsName, channel, nBins, obsBin, observableBins, physicalModel, year, nData, jes, lowerBound, upperBound, yearSetting):
     # Name of the bin (aFINALSTATE_ recobinX)
     if(channel == '4mu'): channelNumber = 1

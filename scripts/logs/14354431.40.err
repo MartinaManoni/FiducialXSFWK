@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/afs/cern.ch/user/m/mmanoni/FiducialXS/CMSSW_14_1_0_pre4/src/FiducialXSFWK/coefficients/RunCoefficients.py", line 1255, in <module>
-    doGetCoeff(obs_reco, obs_gen, obs_name, obs_bins, 'std', weight_uncs, obs_reco_2nd, obs_gen_2nd, obs_name_2nd)
-  File "/afs/cern.ch/user/m/mmanoni/FiducialXS/CMSSW_14_1_0_pre4/src/FiducialXSFWK/coefficients/RunCoefficients.py", line 803, in doGetCoeff
-    getCoeff(chan, m4l_low, m4l_high, obs_reco, obs_gen, obs_bins, recobin, genbin, obs_name, type, year, weight_uncs, obs_reco_2nd, obs_gen_2nd, obs_name_2nd)
-  File "/afs/cern.ch/user/m/mmanoni/FiducialXS/CMSSW_14_1_0_pre4/src/FiducialXSFWK/coefficients/RunCoefficients.py", line 678, in getCoeff
-    err_acceptance[processBin] = sqrt((acceptance[processBin]*(1-acceptance[processBin]))/acc_den)
-ValueError: math domain error

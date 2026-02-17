@@ -245,7 +245,8 @@ def exp_xsec():
         # sanitize: if nominal is 0 or nan/inf -> set nominal and all variations to 0
         clean = []
         for v in vals:
-            if _is_bad(v) or float(v) == 0.0:
+            v_float = float(v)
+            if math.isnan(v_float) or math.isinf(v_float):
                 clean.append(0.0)
             else:
                 clean.append(float(v))

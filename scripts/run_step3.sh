@@ -5,6 +5,7 @@ source setup.sh
 cmsenv
 cd FiducialXSFWK/coefficients
 
+obsName_raw="$1" 
 obsName="${1//_/' vs '}"
 year="$2"
 #this is merging all Run3 
@@ -30,12 +31,13 @@ python3 plot_templates.py --obsName "$obsName" --year "$year"
 
 cd ../fit
 
-python3 -u addConstrainedModel.py --obsName "$obsName" --year "$year"
+python3 -u addConstrainedModel.py --obsName "$obsName_raw" --year "$year" --interpolation
 python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation
 python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --interpolation
 python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --nnlops --interpolation
 #python3 impacts.py --obsName "$obsName" --year "$year" --interpolation
 
+#cd ../LHScans
 #python3 impacts.py --obsName "mass4l" --year "2022"
 
-python3 plot_LLScan.py --obsName "$obsName" --year "$year" --interpolation
+#python3 plot_LLScan.py --obsName "$obsName" --year "$year" --interpolation

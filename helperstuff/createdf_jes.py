@@ -230,10 +230,11 @@ def createDataframe(jesNames, year, dataFrame,isBkg,gen,xsec,signal,lumi,obs_rec
     #elif 'gg' in signal:
     #    b_sig.append('KFactor_QCD_ggZZ_Nominal')
 
-    if obs_reco == 'ZZMass':
-        b_sig.pop('ZZMass')
-    if obs_reco_2nd == 'ZZMass':
-        b_sig.pop('ZZMass')
+    if obs_reco == 'ZZMass' and 'ZZMass' in b_sig:
+        b_sig.remove('ZZMass')
+
+    if obs_reco_2nd == 'ZZMass' and 'ZZMass' in b_sig:
+        b_sig.remove('ZZMass')
 
     b_sig.append(obs_reco)
     if obs_reco_2nd != 'None': b_sig.append(obs_reco_2nd)

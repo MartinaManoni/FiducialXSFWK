@@ -324,9 +324,9 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     ZX['2023postBPix_4e'] = '0.467/1.470' # spencer
     ZX['2023postBPix_4mu'] = '0.667/1.329' # spencer 
 
-    ZX['2024_2e2mu'] = '0.761/1.237' # spencer w/ 2023post DY
-    ZX['2024_4e'] = '0.654/1.339' # spencer w/ 2023post DY
-    ZX['2024_4mu'] = '0.697/1.303' # spencer w/ 2023post DY
+    ZX['2024_2e2mu'] = '0.749/1.244' # spencer
+    ZX['2024_4e'] = '0.661/1.346' # spencer
+    ZX['2024_4mu'] = '0.696/1.304' # spencer
     
     
     # -------------------------------------------------------------------------------------------------
@@ -765,9 +765,9 @@ def createDatacard_ggH(obsName, channel, nBins, obsBin, observableBins, physical
     ZX['2023postBPix_4e'] = '0.575/1.398' # spencer
     ZX['2023postBPix_4mu'] = '0.677/1.321' # spencer
 
-    ZX['2024_2e2mu'] = '0.761/1.237' # spencer w/ 2023post DY
-    ZX['2024_4e'] = '0.654/1.339' # spencer w/ 2023post DY
-    ZX['2024_4mu'] = '0.697/1.303' # spencer w/ 2023post DY
+    ZX['2024_2e2mu'] = '0.749/1.244' # spencer
+    ZX['2024_4e'] = '0.661/1.346' # spencer
+    ZX['2024_4mu'] = '0.696/1.304' # spencerY
     
     # -------------------------------------------------------------------------------------------------
 

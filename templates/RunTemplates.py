@@ -309,10 +309,10 @@ def comb(year):
         ])
     elif year == "2024": 
         cb_SS = np.array([
-            0.782, # 4e
-            0.838, # 4mu
-            0.845, # 2e2mu
-            0.747, # 2mu2e
+            0.787, # 4e
+            0.960, # 4mu
+            0.958, # 2e2mu
+            0.749, # 2mu2e
         ])
     return cb_SS
 
@@ -369,10 +369,10 @@ def ratio(year):
             ])
     elif year == "2024": 
         fs_ROS_SS = np.array([
-            1.001,   # 4e
-            1.047,  # 4mu
-            1.068,   # 2e2mu
-            1.025,  # 2mu2e
+            0.997,   # 4e
+            1.028,  # 4mu
+            1.051,   # 2e2mu
+            1.024,  # 2mu2e
             ])
     return fs_ROS_SS
 

@@ -677,22 +677,8 @@ def getCoeff(channel, m4l_low, m4l_high, obs_reco, obs_gen, obs_bins, recobin, g
             acceptance[processBin] = acc_num / acc_den
             accnum[processBin] = acc_num
             accden[processBin] = acc_den
-
-            # --- same binomial formula, protected ---
-            val = (acceptance[processBin] * (1 - acceptance[processBin])) / acc_den
-
-            # Protect against tiny negative values (floating precision)
-            if val < 0:
-                if val > -1e-12:
-                    val = 0.0
-                    print("protection acceptance")
-                else:
-                    print(f"WARNING: Negative variance for {processBin} "
-                        f"(A={acceptance[processBin]:.4f}, den={acc_den:.4f}) → setting error to 0")
-                    val = 0.0
-
-            err_acceptance[processBin] = sqrt(val)
-
+            #err_acceptance[processBin] = sqrt((acceptance[processBin]*(1-acceptance[processBin]))/acc_den)
+            err_acceptance[processBin] = math.sqrt(val) if (acc_den!=0 and (val:=(acceptance[processBin]*(1-acceptance[processBin]))/acc_den) >= 0 and math.isfinite(val)) else 0.0
         else:
             acceptance[processBin] = -1.0
             err_acceptance[processBin] = -1.0

@@ -368,9 +368,9 @@ def ratio(year):
             1.025,  # 2mu2e
             ])
     elif year == "2024": 
-        fs_ROS_SS = np.array([
+        OS_SS = np.array([
             0.997,   # 4e
-            1.028,  # 4mu
+            1.051,  # 4mu
             1.051,   # 2e2mu
             1.024,  # 2mu2e
             ])

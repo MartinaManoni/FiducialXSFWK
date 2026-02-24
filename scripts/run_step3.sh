@@ -27,18 +27,18 @@ python3 RunInterpolation.py --obsName "$obsName" --year "$year" --nnlops
 cd ../templates
 
 python3 RunTemplates.py --obsName "$obsName" --year "$year"
-python3 plot_templates.py --obsName "$obsName" --year "$year"
+#python3 plot_templates.py --obsName "$obsName" --year "$year"
 
 cd ../fit
 
-python3 -u addConstrainedModel.py --obsName "$obsName_raw" --year "$year" --interpolation
-#python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation
-python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation
+python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation --NOK1K2
 python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --interpolation
 python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --nnlops --interpolation
+python3 impacts.py --obsName "$obsName" --year "$year" --interpolation --NOK1K2
+
+python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation --unblind --NOK1K2
+python3 impacts.py --obsName "$obsName" --year "$year" --interpolation --unblind --NOK1K2
 
 cd ../LHScans
-python3 plot_LLScan.py --obsName "$obsName" --year "$year" --interpolation
 
-#cd ..
-#bash ./copy_to_www.sh {obsName} {year}')
+python3 plot_LLScan.py --obsName "$obsName" --year "$year" --interpolation --unblind

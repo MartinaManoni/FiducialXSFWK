@@ -22,7 +22,7 @@ decimal = {
 'costhetaZ2': True,
 'phi': True,
 'phi1': True,
-'costhetastarZZ': True,
+'costhetastar': True,
 'massZ1': False,
 'massZ2': False,
 'pTj1': False,

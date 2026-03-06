@@ -35,6 +35,8 @@ def parseOptions():
     parser.add_option('',   '--year',  dest='YEAR',  type='string',default='Run3',   help='Year -> 2016 or 2017 or 2018 or Full')
     parser.add_option('',   '--m4lLower',  dest='LOWER_BOUND',  type='int',default=105.0,   help='Lower bound for m4l')
     parser.add_option('',   '--m4lUpper',  dest='UPPER_BOUND',  type='int',default=160.0,   help='Upper bound for m4l')
+    parser.add_option('',   '--interpolation', action='store_true', dest='INTER', default=False, help='Calculate acceptances at 124 and 126 GeV')
+
     parser.add_option("-l",action="callback",callback=callback_rootargs)
     parser.add_option("-q",action="callback",callback=callback_rootargs)
     parser.add_option("-b",action="callback",callback=callback_rootargs)

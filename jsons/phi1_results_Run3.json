@@ -1,0 +1,79 @@
+{
+    "phi1": {
+        "ggh_xs": "fidXS_NNLOPS_phi1_ggH_Run3",
+        "vbf_xs": "fidXS_phi1_VBFH_Run3",
+        "vh_xs": "fidXS_phi1_VH_Run3",
+        "tth_xs": "fidXS_phi1_ttH_Run3",
+        "xh_xs": "fidXS_phi1_xH_Run3",
+        "ggh_powheg_xs": "fidXS_phi1_ggH_Run3",
+        "exp_xs": [
+            0.347,
+            0.414,
+            0.415,
+            0.344,
+            0.344,
+            0.415,
+            0.415,
+            0.347
+        ],
+        "err_up": [
+            0.084,
+            0.089,
+            0.09,
+            0.084,
+            0.083,
+            0.089,
+            0.089,
+            0.085
+        ],
+        "err_down": [
+            0.075,
+            0.08,
+            0.081,
+            0.075,
+            0.074,
+            0.081,
+            0.08,
+            0.076
+        ],
+        "stat_up": [
+            0.082,
+            0.087,
+            0.088,
+            0.083,
+            0.081,
+            0.087,
+            0.087,
+            0.083
+        ],
+        "stat_down": [
+            0.074,
+            0.079,
+            0.08,
+            0.074,
+            0.073,
+            0.079,
+            0.079,
+            0.075
+        ],
+        "output_name": "phi1",
+        "is_data": 0,
+        "last_bin_center": 2.748892245095,
+        "first_bin_center": -2.748892245095,
+        "plot_log": 1,
+        "variable": "phi1",
+        "x_unit": "",
+        "y_unit": " (fb)",
+        "x_lim": [
+            -3.14159,
+            3.14159
+        ],
+        "y_lim_bottom": 0.01,
+        "y_lim_top": 1000,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

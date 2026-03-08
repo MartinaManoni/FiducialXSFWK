@@ -324,7 +324,7 @@ def impactPlots():
         output = processCmd(cmd)
         # plot
         for obsBin in range(nBins):
-            cmd = 'plotImpacts.py -i impacts_'+opt.YEAR+'_v3_'+obsName+'_' # spencer
+            cmd = 'plotImpacts.py --blind -i impacts_'+opt.YEAR+'_v3_'+obsName+'_' # spencer
             if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_'+opt.YEAR+'_v3_'+obsName+'_r_smH_' + obsName_poi + '_' + str(obsBin) +'_asimov --POI r_smH_' + obsName_poi + '_' + str(obsBin)
             elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_'+opt.YEAR+'_v3_'+obsName+'_r_smH_' + obsName_poi + '_' + str(obsBin) +'_data --POI r_smH_' + obsName_poi + '_' + str(obsBin)
             print('---------------------------')
@@ -333,7 +333,7 @@ def impactPlots():
             cmds.append(cmd)
             output = processCmd(cmd)
 
-            cmd = 'plotImpacts_skimmed.py -i impacts_v3_'+obsName+'_'
+            cmd = 'plotImpacts_skimmed.py --blind -i impacts_v3_'+obsName+'_'
             if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_skimmed_v3_'+obsName+'_r_smH_' + obsName_poi + '_' + str(obsBin) +'_asimov --POI r_smH_' + obsName_poi + '_' + str(obsBin)
             elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_skimmed_v3_'+obsName+'_r_smH_' + obsName_poi + '_' + str(obsBin) +'_data --POI r_smH_' + obsName_poi + '_' + str(obsBin)
             print('---------------------------')
@@ -359,7 +359,7 @@ def impactPlots():
         output = processCmd(cmd)
         # plot
         for obsBin in ['2e2muBin0','4eBin0','4muBin0']:
-            cmd = 'plotImpacts.py -i impacts_v2_'
+            cmd = 'plotImpacts.py --blind -i impacts_v2_'
             if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_v2_'+obsName+'_r'+str(obsBin)+'_asimov --POI r'+str(obsBin)
             elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_v2_'+obsName+'_r'+str(obsBin)+'_data --POI r'+str(obsBin)
             print('---------------------------')
@@ -398,7 +398,7 @@ def impactPlots():
             output = processCmd(cmd)
             # plot
             for obsBin in ['2e2muBin'+str(nBin),'4lBin'+str(nBin)]:
-                cmd = 'plotImpacts.py -i impacts_v4_'
+                cmd = 'plotImpacts.py --blind -i impacts_v4_'
                 if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_v4_'+obsName+'_r'+str(obsBin)+'_asimov --POI r'+str(obsBin)
                 elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_v4_'+obsName+'_r'+str(obsBin)+'_data --POI r'+str(obsBin)
                 print('---------------------------')
@@ -407,7 +407,7 @@ def impactPlots():
                 cmds.append(cmd)
                 output = processCmd(cmd)
 
-                cmd = 'plotImpacts_skimmed.py -i impacts_v4_'
+                cmd = 'plotImpacts_skimmed.py --blind -i impacts_v4_'
                 if (not opt.UNBLIND): cmd = cmd + 'asimov.json -o impacts_skimmed_v4_'+obsName+'_r'+str(obsBin)+'_asimov --POI r'+str(obsBin)
                 elif (opt.UNBLIND): cmd = cmd + 'data.json -o impacts_skimmed_v4_'+obsName+'_r'+str(obsBin)+'_data --POI r'+str(obsBin)
                 print('---------------------------')

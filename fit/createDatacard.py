@@ -474,7 +474,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             file.write('lumi_13TeV_'+year+' lnN ')
 
         # for i in range(nBins+4): # All except ZX
-        for i in range(2*nBins+4): # All except ZX
+        for i in range(nBins+4): # All except ZX
             file.write(lumi[year]+' ')
         file.write('-\n') # ZX
 

@@ -1,0 +1,74 @@
+{
+    "mHj": {
+        "ggh_xs": "fidXS_NNLOPS_mHj_ggH_Run3",
+        "vbf_xs": "fidXS_mHj_VBFH_Run3",
+        "vh_xs": "fidXS_mHj_VH_Run3",
+        "tth_xs": "fidXS_mHj_ttH_Run3",
+        "xh_xs": "fidXS_mHj_xH_Run3",
+        "ggh_powheg_xs": "fidXS_mHj_ggH_Run3",
+        "exp_xs": [
+            1.788,
+            0.298,
+            0.301,
+            0.228,
+            0.172,
+            0.139,
+            0.115
+        ],
+        "err_up": [
+            0.215,
+            0.127,
+            0.116,
+            0.097,
+            0.082,
+            0.068,
+            0.056
+        ],
+        "err_down": [
+            0.202,
+            0.114,
+            0.104,
+            0.086,
+            0.071,
+            0.057,
+            0.046
+        ],
+        "stat_up": [
+            0.194,
+            0.124,
+            0.114,
+            0.096,
+            0.081,
+            0.066,
+            0.054
+        ],
+        "stat_down": [
+            0.185,
+            0.113,
+            0.103,
+            0.085,
+            0.07,
+            0.056,
+            0.045
+        ],
+        "output_name": "mHj",
+        "is_data": 0,
+        "last_bin_center": 762.5,
+        "first_bin_center": -55.0,
+        "plot_log": 1,
+        "variable": "mHj",
+        "x_unit": " (GeV)",
+        "y_unit": " (fb/GeV)",
+        "x_lim": [
+            -110,
+            880
+        ],
+        "y_lim_bottom": 0.0001,
+        "y_lim_top": 10,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

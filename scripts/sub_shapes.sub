@@ -1,0 +1,14 @@
+universe   = vanilla
+executable = run_shapes.sh
+arguments  = $(obsName) $(year)
+output     = logs/$(ClusterId).$(Process).out
+error      = logs/$(ClusterId).$(Process).err
+log        = logs/$(ClusterId).$(Process).log
+
++JobFlavour = "nextweek"
+
+transfer_input_files = /afs/cern.ch/user/m/mmanoni/FiducialXS/CMSSW_14_1_0_pre4/src/FiducialXSFWK/plotShapes.py
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+
+queue obsName, year from inputs_args_shapes.txt

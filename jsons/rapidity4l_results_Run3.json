@@ -1,0 +1,89 @@
+{
+    "rapidity4l": {
+        "ggh_xs": "fidXS_NNLOPS_rapidity4l_ggH_Run3",
+        "vbf_xs": "fidXS_rapidity4l_VBFH_Run3",
+        "vh_xs": "fidXS_rapidity4l_VH_Run3",
+        "tth_xs": "fidXS_rapidity4l_ttH_Run3",
+        "xh_xs": "fidXS_rapidity4l_xH_Run3",
+        "ggh_powheg_xs": "fidXS_rapidity4l_ggH_Run3",
+        "exp_xs": [
+            0.259,
+            0.258,
+            0.254,
+            0.29,
+            0.202,
+            0.294,
+            0.277,
+            0.341,
+            0.292,
+            0.573
+        ],
+        "err_up": [
+            0.068,
+            0.069,
+            0.069,
+            0.074,
+            0.064,
+            0.075,
+            0.073,
+            0.083,
+            0.078,
+            0.114
+        ],
+        "err_down": [
+            0.06,
+            0.061,
+            0.061,
+            0.066,
+            0.056,
+            0.067,
+            0.065,
+            0.074,
+            0.069,
+            0.104
+        ],
+        "stat_up": [
+            0.067,
+            0.068,
+            0.068,
+            0.072,
+            0.063,
+            0.074,
+            0.072,
+            0.082,
+            0.076,
+            0.111
+        ],
+        "stat_down": [
+            0.059,
+            0.06,
+            0.06,
+            0.065,
+            0.055,
+            0.066,
+            0.064,
+            0.073,
+            0.068,
+            0.101
+        ],
+        "output_name": "rapidity4l",
+        "is_data": 0,
+        "last_bin_center": 1.9,
+        "first_bin_center": 0.06,
+        "plot_log": 0,
+        "variable": "rapidity4l",
+        "x_unit": "",
+        "y_unit": " (fb)",
+        "x_lim": [
+            0,
+            2.5
+        ],
+        "y_lim_bottom": 0,
+        "y_lim_top": 5,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

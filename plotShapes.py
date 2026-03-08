@@ -20,16 +20,17 @@ def parseOptions():
     parser = optparse.OptionParser(usage)
 
     # input options
-    parser.add_option('-d', '--dir',    dest='SOURCEDIR',  type='string',default='./combine_files/', help='run from the SOURCEDIR as working area, skip if SOURCEDIR is an empty string')
+    #./combine_files/
+    parser.add_option('-d', '--dir',    dest='SOURCEDIR',  type='string',default='/eos/user/m/mmanoni/www/HIG25015_RESULTS/UNBLINDED/combine_files/', help='run from the SOURCEDIR as working area, skip if SOURCEDIR is an empty string')
     parser.add_option('',   '--asimovModel',dest='ASIMOV',type='string',default='SM_125', help='Name of the asimov data mode')
     parser.add_option('',   '--asimovMass',dest='ASIMOVMASS',type='string',default='125.38', help='Asimov Mass')
     parser.add_option('',   '--unfoldModel',dest='UNFOLD',type='string',default='SM_125', help='Name of the unfolding model')
-    parser.add_option('',   '--obsName',dest='OBSNAME',    type='string',default='mass4l',   help='Name of the observalbe, supported: "inclusive", "pT", "eta", "Njets"')
-    parser.add_option('',   '--obsBins',dest='OBSBINS',    type='string',default='|105|160|',   help='Bin boundaries for the diff. measurement separated by "|", e.g. as "|0|50|100|", use the defalut if empty string')
+    parser.add_option('',   '--obsName',dest='OBSNAME',    type='string',default='Nj',   help='Name of the observalbe, supported: "inclusive", "pT", "eta", "Njets"')
+    parser.add_option('',   '--obsBins',dest='OBSBINS',    type='string',default='|0|1|2|3|4|20|',   help='Bin boundaries for the diff. measurement separated by "|", e.g. as "|0|50|100|", use the defalut if empty string')
     parser.add_option('',   '--fixFrac', action='store_true', dest='FIXFRAC', default=False, help='Use results from fixed fraction fit, default is False')
     parser.add_option('',   '--unblind', action='store_true', dest='UNBLIND', default=True, help='Use real data')
     parser.add_option('',   '--prefit', action='store_true', dest='PREFIT', default=False, help='Prefit plots')
-    parser.add_option('',   '--bonly', action='store_true', dest='BONLY', default=True, help='Bonly postfit plots')
+    parser.add_option('',   '--bonly', action='store_true', dest='BONLY', default=False, help='Bonly postfit plots')
     parser.add_option('',   '--theoryMass',dest='THEORYMASS',    type='string',default='125.38',   help='Mass value for theory prediction')
     parser.add_option('',   '--year',  dest='YEAR',  type='string',default='Run3',   help='Year -> 2016 or 2017 or 2018 or Full')
     parser.add_option('',   '--m4lLower',  dest='LOWER_BOUND',  type='int',default=105.0,   help='Lower bound for m4l')
@@ -78,7 +79,7 @@ def generateName(_year, _fStateNumber, _recobin, _fState, _bin, _physicalModel, 
         return binName, procName
 
     else:
-        _obsName_v3 = {'pT4l': 'PTH', 'rapidity4l': 'YH', 'pTj1': 'PTJET', 'njets_pt30_eta4p7': 'NJ'}
+        _obsName_v3 = {'pT4l': 'PTH', 'rapidity4l': 'YH', 'pTj1': 'pTj1', 'njets_pt30_eta4p7': 'NJ'}
         if _obsName not in _obsName_v3:
             _obsName_v3[_obsName] = _obsName
 
@@ -773,14 +774,14 @@ def plotAsimov_sim(modelName, physicalModel, obsName, fstate, observableBins, re
     elif (obsName=="costhetaZ1"):
         label = "|cos#theta_{1}|"
         unit = ""
-    elif (obsName=="cosTheta2"):
+    elif (obsName=="costhetaZ2"):
         label = "|cos#theta_{2}|"
         unit = ""
     elif (obsName=="phi"):
-        label = "|#Phi|"
+        label = "#Phi"
         unit = ""
-    elif (obsName=="Phi"):
-        label = "|#Phi^{#star}|"
+    elif (obsName=="phi1"):
+        label = "#Phi_{1}"
         unit = ""
     elif (obsName=="mass4l") or (obsName=='mass4l_zzfloating'):
         label = "inclusive"

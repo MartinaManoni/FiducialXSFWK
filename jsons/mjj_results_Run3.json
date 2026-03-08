@@ -1,0 +1,59 @@
+{
+    "mjj": {
+        "ggh_xs": "fidXS_NNLOPS_mjj_ggH_Run3",
+        "vbf_xs": "fidXS_mjj_VBFH_Run3",
+        "vh_xs": "fidXS_mjj_VH_Run3",
+        "tth_xs": "fidXS_mjj_ttH_Run3",
+        "xh_xs": "fidXS_mjj_xH_Run3",
+        "ggh_powheg_xs": "fidXS_mjj_ggH_Run3",
+        "exp_xs": [
+            2.593,
+            0.096,
+            0.147,
+            0.206
+        ],
+        "err_up": [
+            0.242,
+            0.073,
+            0.093,
+            0.094
+        ],
+        "err_down": [
+            0.229,
+            0.059,
+            0.079,
+            0.079
+        ],
+        "stat_up": [
+            0.214,
+            0.07,
+            0.089,
+            0.087
+        ],
+        "stat_down": [
+            0.206,
+            0.058,
+            0.078,
+            0.076
+        ],
+        "output_name": "mjj",
+        "is_data": 0,
+        "last_bin_center": 374.5,
+        "first_bin_center": -50.0,
+        "plot_log": 1,
+        "variable": "mjj",
+        "x_unit": " (GeV)",
+        "y_unit": " (fb/GeV)",
+        "x_lim": [
+            -100,
+            525
+        ],
+        "y_lim_bottom": 0.0001,
+        "y_lim_top": 10,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

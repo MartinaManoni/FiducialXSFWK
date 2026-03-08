@@ -1,0 +1,79 @@
+{
+    "costhetaZ2": {
+        "ggh_xs": "fidXS_NNLOPS_costhetaZ2_ggH_Run3",
+        "vbf_xs": "fidXS_costhetaZ2_VBFH_Run3",
+        "vh_xs": "fidXS_costhetaZ2_VH_Run3",
+        "tth_xs": "fidXS_costhetaZ2_ttH_Run3",
+        "xh_xs": "fidXS_costhetaZ2_xH_Run3",
+        "ggh_powheg_xs": "fidXS_costhetaZ2_ggH_Run3",
+        "exp_xs": [
+            0.218,
+            0.351,
+            0.452,
+            0.497,
+            0.5,
+            0.451,
+            0.352,
+            0.22
+        ],
+        "err_up": [
+            0.069,
+            0.091,
+            0.102,
+            0.107,
+            0.11,
+            0.103,
+            0.09,
+            0.068
+        ],
+        "err_down": [
+            0.06,
+            0.082,
+            0.093,
+            0.097,
+            0.1,
+            0.093,
+            0.081,
+            0.059
+        ],
+        "stat_up": [
+            0.068,
+            0.089,
+            0.1,
+            0.105,
+            0.107,
+            0.101,
+            0.088,
+            0.067
+        ],
+        "stat_down": [
+            0.06,
+            0.081,
+            0.091,
+            0.096,
+            0.098,
+            0.092,
+            0.08,
+            0.059
+        ],
+        "output_name": "costhetaZ2",
+        "is_data": 0,
+        "last_bin_center": 0.875,
+        "first_bin_center": -0.875,
+        "plot_log": 1,
+        "variable": "costhetaZ2",
+        "x_unit": "",
+        "y_unit": " (fb)",
+        "x_lim": [
+            -1,
+            1
+        ],
+        "y_lim_bottom": 0.01,
+        "y_lim_top": 1000,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

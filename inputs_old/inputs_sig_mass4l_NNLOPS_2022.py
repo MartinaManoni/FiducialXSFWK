@@ -1,5 +1,0 @@
-observableBins = [105.0, 160.0];
-acc = {'ggH125_NNLOPS_4l_mass4l_genbin0_recobin0': 0.3926805014983912, 'ggH125_NNLOPS_4e_mass4l_genbin0_recobin0': 0.3739603569044571, 'ggH125_NNLOPS_4mu_mass4l_genbin0_recobin0': 0.42496788267592916, 'ggH125_NNLOPS_2e2mu_mass4l_genbin0_recobin0': 0.38528502038849044} 
-err_acc = {'ggH125_NNLOPS_4l_mass4l_genbin0_recobin0': 0.0010369435864488554, 'ggH125_NNLOPS_4e_mass4l_genbin0_recobin0': 0.0020062217775876105, 'ggH125_NNLOPS_4mu_mass4l_genbin0_recobin0': 0.0020538017579908308, 'ggH125_NNLOPS_2e2mu_mass4l_genbin0_recobin0': 0.0014969452908888301} 
-acc_num = {'ggH125_NNLOPS_4l_mass4l_genbin0_recobin0': 87093.479, 'ggH125_NNLOPS_4e_mass4l_genbin0_recobin0': 21751.7942, 'ggH125_NNLOPS_4mu_mass4l_genbin0_recobin0': 24619.9563, 'ggH125_NNLOPS_2e2mu_mass4l_genbin0_recobin0': 40721.727} 
-acc_den = {'ggH125_NNLOPS_4l_mass4l_genbin0_recobin0': 221792.217, 'ggH125_NNLOPS_4e_mass4l_genbin0_recobin0': 58166.043000000005, 'ggH125_NNLOPS_4mu_mass4l_genbin0_recobin0': 57933.687, 'ggH125_NNLOPS_2e2mu_mass4l_genbin0_recobin0': 105692.474} 

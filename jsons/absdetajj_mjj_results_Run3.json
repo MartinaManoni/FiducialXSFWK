@@ -1,0 +1,59 @@
+{
+    "absdetajj_mjj": {
+        "ggh_xs": "fidXS_NNLOPS_absdetajj_mjj_ggH_Run3",
+        "vbf_xs": "fidXS_absdetajj_mjj_VBFH_Run3",
+        "vh_xs": "fidXS_absdetajj_mjj_VH_Run3",
+        "tth_xs": "fidXS_absdetajj_mjj_ttH_Run3",
+        "xh_xs": "fidXS_absdetajj_mjj_xH_Run3",
+        "ggh_powheg_xs": "fidXS_absdetajj_mjj_ggH_Run3",
+        "exp_xs": [
+            2.593,
+            0.31,
+            0.04,
+            0.099
+        ],
+        "err_up": [
+            0.242,
+            0.108,
+            0.066,
+            0.065
+        ],
+        "err_down": [
+            0.229,
+            0.094,
+            0.039,
+            0.05
+        ],
+        "stat_up": [
+            0.214,
+            0.099,
+            0.064,
+            0.06
+        ],
+        "stat_down": [
+            0.206,
+            0.09,
+            0.039,
+            0.049
+        ],
+        "output_name": "absdetajj_mjj",
+        "is_data": 0,
+        "last_bin_center": -99,
+        "first_bin_center": -99,
+        "plot_log": 1,
+        "variable": "absdetajj_mjj",
+        "x_unit": " (GeV)",
+        "y_unit": " (fb/GeV)",
+        "x_lim": [
+            -99,
+            -99
+        ],
+        "y_lim_bottom": 1e-05,
+        "y_lim_top": 100000.0,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

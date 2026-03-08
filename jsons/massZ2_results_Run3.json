@@ -1,0 +1,79 @@
+{
+    "massZ2": {
+        "ggh_xs": "fidXS_NNLOPS_massZ2_ggH_Run3",
+        "vbf_xs": "fidXS_massZ2_VBFH_Run3",
+        "vh_xs": "fidXS_massZ2_VH_Run3",
+        "tth_xs": "fidXS_massZ2_ttH_Run3",
+        "xh_xs": "fidXS_massZ2_xH_Run3",
+        "ggh_powheg_xs": "fidXS_massZ2_ggH_Run3",
+        "exp_xs": [
+            0.753,
+            0.498,
+            0.291,
+            0.592,
+            0.226,
+            0.297,
+            0.262,
+            0.124
+        ],
+        "err_up": [
+            0.138,
+            0.11,
+            0.092,
+            0.115,
+            0.084,
+            0.084,
+            0.072,
+            0.049
+        ],
+        "err_down": [
+            0.128,
+            0.1,
+            0.082,
+            0.106,
+            0.073,
+            0.075,
+            0.064,
+            0.041
+        ],
+        "stat_up": [
+            0.132,
+            0.108,
+            0.091,
+            0.113,
+            0.083,
+            0.083,
+            0.071,
+            0.049
+        ],
+        "stat_down": [
+            0.123,
+            0.099,
+            0.081,
+            0.104,
+            0.072,
+            0.074,
+            0.063,
+            0.041
+        ],
+        "output_name": "massZ2",
+        "is_data": 0,
+        "last_bin_center": 57.5,
+        "first_bin_center": 11.0,
+        "plot_log": 1,
+        "variable": "massZ2",
+        "x_unit": " (GeV)",
+        "y_unit": " (fb/GeV)",
+        "x_lim": [
+            0,
+            65
+        ],
+        "y_lim_bottom": 0.001,
+        "y_lim_top": 100,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

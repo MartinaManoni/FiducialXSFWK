@@ -1,0 +1,64 @@
+{
+    "Nj": {
+        "ggh_xs": "fidXS_NNLOPS_Nj_ggH_Run3",
+        "vbf_xs": "fidXS_Nj_VBFH_Run3",
+        "vh_xs": "fidXS_Nj_VH_Run3",
+        "tth_xs": "fidXS_Nj_ttH_Run3",
+        "xh_xs": "fidXS_Nj_xH_Run3",
+        "ggh_powheg_xs": "fidXS_Nj_ggH_Run3",
+        "exp_xs": [
+            1.788,
+            0.805,
+            0.328,
+            0.08,
+            0.04
+        ],
+        "err_up": [
+            0.215,
+            0.174,
+            0.14,
+            0.089,
+            0.051
+        ],
+        "err_down": [
+            0.202,
+            0.162,
+            0.124,
+            0.074,
+            0.039
+        ],
+        "stat_up": [
+            0.194,
+            0.168,
+            0.133,
+            0.087,
+            0.05
+        ],
+        "stat_down": [
+            0.186,
+            0.158,
+            0.122,
+            0.074,
+            0.039
+        ],
+        "output_name": "Nj",
+        "is_data": 0,
+        "last_bin_center": 4.5,
+        "first_bin_center": 0.5,
+        "plot_log": 1,
+        "variable": "Nj",
+        "x_unit": "",
+        "y_unit": " (fb)",
+        "x_lim": [
+            0,
+            5
+        ],
+        "y_lim_bottom": 0.001,
+        "y_lim_top": 100,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

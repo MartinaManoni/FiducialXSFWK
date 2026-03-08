@@ -1,0 +1,74 @@
+{
+    "TCjmax": {
+        "ggh_xs": "fidXS_NNLOPS_TCjmax_ggH_Run3",
+        "vbf_xs": "fidXS_TCjmax_VBFH_Run3",
+        "vh_xs": "fidXS_TCjmax_VH_Run3",
+        "tth_xs": "fidXS_TCjmax_ttH_Run3",
+        "xh_xs": "fidXS_TCjmax_xH_Run3",
+        "ggh_powheg_xs": "fidXS_TCjmax_ggH_Run3",
+        "exp_xs": [
+            1.756,
+            0.155,
+            0.158,
+            0.245,
+            0.177,
+            0.261,
+            0.235
+        ],
+        "err_up": [
+            0.21,
+            0.108,
+            0.09,
+            0.119,
+            0.141,
+            0.108,
+            0.077
+        ],
+        "err_down": [
+            0.198,
+            0.089,
+            0.077,
+            0.107,
+            0.125,
+            0.098,
+            0.068
+        ],
+        "stat_up": [
+            0.19,
+            0.1,
+            0.089,
+            0.117,
+            0.14,
+            0.106,
+            0.075
+        ],
+        "stat_down": [
+            0.182,
+            0.086,
+            0.076,
+            0.106,
+            0.125,
+            0.097,
+            0.067
+        ],
+        "output_name": "TCjmax",
+        "is_data": 0,
+        "last_bin_center": 57.5,
+        "first_bin_center": -10.0,
+        "plot_log": 1,
+        "variable": "TCjmax",
+        "x_unit": " (GeV)",
+        "y_unit": " (fb/GeV)",
+        "x_lim": [
+            -20,
+            80
+        ],
+        "y_lim_bottom": 0.0001,
+        "y_lim_top": 10,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

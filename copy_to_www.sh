@@ -14,7 +14,7 @@ observable=$1
 year=$2
 overwrite_year=$3 
 
-path="/eos/user/m/mmanoni/www/HZZ_Fiducial/" #Run3
+path="/eos/user/m/mmanoni/www/HIG25015_RESULTS/EXPECTED/"
 
 # Check if observable directory exists
 if [ -d "$path/${observable}" ]; then
@@ -81,17 +81,3 @@ mkdir $path/${observable}/combine_files_${year}
 cp $path/index.php $path/${observable}/combine_files_${year}
 cp combine_files/higgsCombine_${observable}* $path/${observable}/combine_files_${year}/.
 cp combine_files/SM_125_all_13TeV_xs_${observable}_*_${year}*  $path/${observable}/combine_files_${year}/.
-
-#cp plots/${1}/asimov/${1}_unfoldwith* $path/${1}/.
-#cp plots/${1}/asimov/corr_${1}_*.png $path/${1}/.
-#cp plots/${1}/asimov/model/* $path/${1}/.
-#if [ ${1} = "pT4l_kL" ]; then
-# cp impacts/${1}/impacts_v3_kappa_lambda* $path/${1}/.
-# cp LHScans/plots/lhscan_compare_${1}_kappa* $path/${1}/.
-#else
-# cp impacts/${1}/impacts_*_${1}_*_asimov* $path/${1}/.
-# cp LHScans/plots/lhscan_compare_${1}_r* $path/${1}/.
-#fi
-
-#cp fit/commands_${1}.py $path/${1}/.
-#cp impacts/${1}/commands_impacts_${1}_v* $path/${1}/.

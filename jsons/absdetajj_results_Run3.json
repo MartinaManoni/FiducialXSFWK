@@ -1,0 +1,64 @@
+{
+    "absdetajj": {
+        "ggh_xs": "fidXS_NNLOPS_absdetajj_ggH_Run3",
+        "vbf_xs": "fidXS_absdetajj_VBFH_Run3",
+        "vh_xs": "fidXS_absdetajj_VH_Run3",
+        "tth_xs": "fidXS_absdetajj_ttH_Run3",
+        "xh_xs": "fidXS_absdetajj_xH_Run3",
+        "ggh_powheg_xs": "fidXS_absdetajj_ggH_Run3",
+        "exp_xs": [
+            2.593,
+            0.16,
+            0.144,
+            0.077,
+            0.068
+        ],
+        "err_up": [
+            0.242,
+            0.079,
+            0.079,
+            0.056,
+            0.065
+        ],
+        "err_down": [
+            0.229,
+            0.067,
+            0.067,
+            0.044,
+            0.046
+        ],
+        "stat_up": [
+            0.214,
+            0.076,
+            0.076,
+            0.054,
+            0.058
+        ],
+        "stat_down": [
+            0.206,
+            0.066,
+            0.066,
+            0.043,
+            0.044
+        ],
+        "output_name": "absdetajj",
+        "is_data": 0,
+        "last_bin_center": 7.2,
+        "first_bin_center": -1.0,
+        "plot_log": 1,
+        "variable": "absdetajj",
+        "x_unit": "",
+        "y_unit": " (fb)",
+        "x_lim": [
+            -2,
+            10
+        ],
+        "y_lim_bottom": 0.001,
+        "y_lim_top": 10,
+        "y_lim": [
+            -1,
+            3
+        ],
+        "pvalue": -99
+    }
+}

@@ -1,6 +1,63 @@
 import os,sys
 from numpy import array, float32 # spencer
 
+PROD_MODES = ['ggH', 'VBFH', 'WH', 'ZH', 'ttH']
+
+ZZFLOATING_BIN_MERGES = {
+    # Specify zzfloating-only bin merging for variables here.
+    # Example: Nj: [0, 1, [2, 3, 4]] means original bins 0 and 1 remain separate,
+    # while original bins 2, 3, 4 share the same ZZ normalization parameter.
+    'Nj': [0, 1, [2, 3, 4]],
+    'pTj1': [0, 1, 2, [3, 4]],
+    'pTj2': [0, [1, 2, 3]],
+    'TBjmax': [0, [1, 2], [3, 4], [5, 6]],
+    'TCjmax': [0, [1, 2], [3, 4], [5, 6]],
+    'mjj': [0, [1, 2, 3]],
+    'absdetajj': [0, [1, 2], [3, 4]],
+    'dphijj': [0, [1, 2], [3, 4]],
+    'mHj': [0, 1, 2, [3, 4], [5, 6]],
+    'pTHj': [0, 1, 2, 3, [4, 5]],
+    'pTHjj': [0, [1, 2, 3]],
+}
+
+def getSignalProdModes(prodMode):
+    if prodMode in ['all', 'split']:
+        return PROD_MODES
+    return ['SM']
+
+def _get_zzfloating_bin_merge_index(obsName, obsBin):
+    obsName_base = obsName.replace('_zzfloating', '')
+    if obsName_base not in ZZFLOATING_BIN_MERGES:
+        return obsBin
+    mapping = ZZFLOATING_BIN_MERGES[obsName_base]
+    for merged_index, group in enumerate(mapping):
+        if isinstance(group, int):
+            if obsBin == group:
+                return merged_index
+        elif isinstance(group, (list, tuple)):
+            if obsBin in group:
+                return merged_index
+        else:
+            raise TypeError("Invalid zzfloating bin merge group for %s: %r" % (obsName_base, group))
+    return obsBin
+
+def get_zzfloating_merged_bin_indices(obsName, nBins):
+    indices = [_get_zzfloating_bin_merge_index(obsName, i) for i in range(nBins)]
+    return sorted(set(indices))
+
+
+def get_zzfloating_merged_bin_groups(obsName, nBins):
+    groups = {}
+    for i in range(nBins):
+        merge_index = _get_zzfloating_bin_merge_index(obsName, i)
+        groups.setdefault(merge_index, []).append(i)
+    return [groups[idx] for idx in sorted(groups)]
+
+def signalProcessName(baseProcessName, prodMode, boundaryName):
+    if prodMode == 'SM':
+        return baseProcessName + boundaryName
+    return baseProcessName.replace('trueH', 'trueH_' + prodMode).replace('smH_', 'smH_' + prodMode + '_') + boundaryName
+
 def fixJes(jesnp, jes_evts_noWeight):
     if jes_evts_noWeight <= 50:
         return '- '
@@ -35,7 +92,7 @@ def fixJes(jesnp, jes_evts_noWeight):
             '''
             return jesnp+' '
 
-def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalModel, year, nData, jes, lowerBound, upperBound, yearSetting):
+def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalModel, prodMode, year, nData, jes, lowerBound, upperBound, yearSetting):
     # Name of the bin (aFINALSTATE_ recobinX)
     if(channel == '4mu'): channelNumber = 1
     if(channel == '4e'): channelNumber = 2
@@ -45,7 +102,8 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     if 'zzfloating' in obsName: zzfloating = True
     else: zzfloating = False
 
-    if '_' in obsName and not 'floating' in obsName and not 'kL' in obsName and not obsName == 'Nj': #it means it is a double differential measurement
+    obsName_base = obsName.replace('_zzfloating', '')
+    if '_' in obsName_base and not 'kL' in obsName_base and not obsName_base == 'Nj': #it means it is a double differential measurement
         _recobin = str(observableBins[obsBin][0]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[obsBin][1]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[obsBin][2]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[obsBin][3]).replace('.', 'p').replace('-','m')
     else:
         _recobin = str(observableBins[obsBin]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[obsBin+1]).replace('.', 'p').replace('-','m')
@@ -55,10 +113,10 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     if physicalModel == 'v3':
         _obsName = {'pT4l': 'PTH', 'rapidity4l': 'YH', 'pTj1': 'pTj1', 'Nj': 'Nj'}
         if zzfloating:
-            if obsName.rsplit('_', 1)[0] not in _obsName: 
+            if obsName_base not in _obsName:
                 _obsName[obsName] = obsName
             else:
-                _obsName[obsName] = _obsName[obsName.rsplit('_', 1)[0]]+'_zzfloating'
+                _obsName[obsName] = _obsName[obsName_base] + '_zzfloating'
         else:
             if obsName not in _obsName:
                 _obsName[obsName] = obsName 
@@ -71,6 +129,8 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         _obsName[obsName] = obsName
         binName = 'a'+str(channelNumber)+'_rerfcobin'+str(obsBin)
         processName = 'trueH'+channel+'Bin'
+    signalProdModes = getSignalProdModes(prodMode)
+    nSignalColumns = nBins * len(signalProdModes)
 
     # Background expectations
     sys.path.append('../inputs')
@@ -84,12 +144,11 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
         sys.path.append('../coefficients/JES')
         #_temp = __import__('JESNP_'+obsName, globals(), locals(), ['JESNP'], -1)
-        if 'zzfloating' in obsName: _temp = __import__('JESNP_'+obsName.rsplit('_', 1)[0]+'_'+year, globals(), locals(), ['JESNP'], 0) # spencer
-        else: _temp = __import__('JESNP_'+obsName+'_'+year, globals(), locals(), ['JESNP'], 0) # spencer
+        obsName_for_jes = obsName_base
+        _temp = __import__('JESNP_'+obsName_for_jes+'_'+year, globals(), locals(), ['JESNP'], 0) # spencer
         jesnp = _temp.JESNP
         #_temp = __import__('JESNP_evts_'+obsName, globals(), locals(), ['evts_noWeight'], -1)
-        if 'zzfloating' in obsName: _temp = __import__('JESNP_evts_'+obsName.rsplit('_', 1)[0]+'_'+year, globals(), locals(), ['evts_noWeight'], 0) # spencer
-        else: _temp = __import__('JESNP_evts_'+obsName+'_'+year, globals(), locals(), ['evts_noWeight'], 0) # spencer
+        _temp = __import__('JESNP_evts_'+obsName_for_jes+'_'+year, globals(), locals(), ['evts_noWeight'], 0) # spencer
         jes_evts_noWeight = _temp.evts_noWeight
 
         if year == "2023preBPix":
@@ -362,34 +421,38 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     file.write('## mass window ['+str(lowerBound)+','+str(upperBound)+']\n')
     file.write('bin ')
     # for i in range(nBins+5): # In addition to the observableBins, there are OutsideAcceptance, fakeH, bkg_ggzz, bkg_qqzz, bkg_zjets
-    for i in range(nBins+5):
+    for i in range(nSignalColumns+5):
         file.write(binName+' ')
     file.write('\n')
     file.write('process ')
+    obsName_base = obsName.replace('_zzfloating', '')
     if physicalModel == 'v3':
-        for i in range(nBins):
-            if '_' in obsName and not 'floating' in obsName and not 'kL' in obsName and not obsName == 'Nj':
-                file.write(processName+'_'+str(observableBins[i][0]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][1]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][2]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][3]).replace('.', 'p').replace('-','m')+' ')
-            elif observableBins[i+1] > 1000:
-                file.write(processName+'_GT'+str(int(observableBins[i]))+' ')
-            else:
-                file.write(processName+'_'+str(observableBins[i]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i+1]).replace('.', 'p').replace('-','m')+' ')
+        for signalProdMode in signalProdModes:
+            for i in range(nBins):
+                if '_' in obsName_base and not 'kL' in obsName_base and not obsName_base == 'Nj':
+                    boundaryName = '_'+str(observableBins[i][0]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][1]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][2]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][3]).replace('.', 'p').replace('-','m')
+                elif observableBins[i+1] > 1000:
+                    boundaryName = '_GT'+str(int(observableBins[i]))
+                else:
+                    boundaryName = '_'+str(observableBins[i]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i+1]).replace('.', 'p').replace('-','m')
+                file.write(signalProcessName(processName, signalProdMode, boundaryName)+' ')
         file.write('OutsideAcceptance nonResH bkg_qqzz bkg_ggzz bkg_zjets')
     else:
-        for i in range(nBins):
-            file.write(processName+str(i)+' ')
+        for signalProdMode in signalProdModes:
+            for i in range(nBins):
+                file.write(signalProcessName(processName, signalProdMode, str(i))+' ')
         file.write('out_trueH fakeH bkg_qqzz bkg_ggzz bkg_zjets')
     #file.write('nonResH bkg_qqzz bkg_ggzz bkg_zjets')
     file.write('\n')
     file.write('process ')
-    for i in range(nBins):
+    for i in range(nSignalColumns):
         file.write('-'+str(i+1)+' ')
     # file.write('1 2 3 4 5')
     file.write('1 2 3 4 5')
     file.write('\n')
     file.write('rate ')
     # for i in range(nBins+2): # In addition to the observableBins, there are OutsideAcceptance, fakeH
-    for i in range(nBins+2):
+    for i in range(nSignalColumns+2):
         file.write('1.0 ')
     if zzfloating:
         file.write('1 1 '+str(expected_yield[year,'ZX',channel])+'\n')
@@ -401,51 +464,76 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
     if zzfloating:
         # rateParam qqZZ floating
+        merge_index = _get_zzfloating_bin_merge_index(obsName, obsBin)
         if physicalModel == 'v3':
-            #min_range = 0
-            #file.write('zz_norm_'+str(obsBin)+' rateParam '+binName+' bkg_*zz '+str(expected_yield['ZZ_'+str(obsBin)])+' ['+str(min_range)+','+str(expected_yield['ZZ_'+str(obsBin)]+100)+']\n')
-            file.write('zz_norm_'+str(obsBin)+' rateParam '+binName+' bkg_*zz '+str(expected_yield['ZZ_'+str(obsBin)])+' ['+str(expected_yield['ZZ_'+str(obsBin)]*0.5)+','+str(expected_yield['ZZ_'+str(obsBin)]*1.5)+']\n')
+            zz_key = 'ZZ_' + str(obsBin)
+            if zz_key in expected_yield:
+                zz_yield = expected_yield[zz_key]
+            elif 'ZZ' in expected_yield:
+                zz_val = expected_yield['ZZ']
+                if isinstance(zz_val, list):
+                    zz_yield = zz_val[obsBin] if obsBin < len(zz_val) else 1.0
+                elif isinstance(zz_val, (int, float)):
+                    zz_yield = zz_val / nBins
+                else:
+                    zz_yield = 1.0
+            else:
+                zz_yield = 1.0
+            min_range_zz = -5.0 * zz_yield
+            max_range_zz = 5.0 * zz_yield
+            file.write('zz_norm_'+str(merge_index)+' rateParam '+binName+' bkg_*zz '+str(zz_yield)+' ['+str(min_range_zz)+','+str(max_range_zz)+']\n')
 
         elif physicalModel == 'v2':
-            if channel == '2e2mu':
-                min_range = 0
+            zz_key = 'ZZ_' + channel
+            if zz_key in expected_yield:
+                zz_yield = expected_yield[zz_key]
+            elif 'ZZ' in expected_yield:
+                zz_val = expected_yield['ZZ']
+                if isinstance(zz_val, list):
+                    zz_yield = zz_val[obsBin] if obsBin < len(zz_val) else 1.0
+                elif isinstance(zz_val, (int, float)):
+                    zz_yield = zz_val / nBins
+                else:
+                    zz_yield = 1.0
             else:
-                min_range = expected_yield['ZZ_'+channel]-100
-            file.write('zz_norm_'+str(obsBin)+'_'+channel+' rateParam '+binName+' bkg_*zz '+str(expected_yield['ZZ_'+channel])+' ['+str(min_range)+','+str(expected_yield['ZZ_'+channel]+100)+']\n')
+                zz_yield = 1.0
+            min_range = -5.0 * zz_yield
+            max_range = 5.0 * zz_yield
+            file.write('zz_norm_'+str(merge_index)+'_'+channel+' rateParam '+binName+' bkg_*zz '+str(zz_yield)+' ['+str(min_range)+','+str(max_range)+']\n')
 
     if yearSetting == 'Full':
         if zzfloating:
             # lumi_uncorrelated
             file.write('lumi_13TeV_'+year+' lnN ')
-            for i in range(nBins+2): # signals + out + fake
+            for i in range(nSignalColumns+2): # signals + out + fake
                 file.write(lumi[year]+' ')
             file.write('- - -\n') # qqzz + ggzz + ZX
             # lumi_correlated_16_17_18
             file.write('lumi_13TeV_correlated lnN ')
-            for i in range(nBins+2): # signals + out + fake
+            for i in range(nSignalColumns+2): # signals + out + fake
                 file.write(lumi_corr_16_17_18[year]+' ')
             file.write('- - -\n') # qqzz + ggzz + ZX
             # lumi_correlated_17_18
             if year == '2017' or year == '2018':
                 file.write('lumi_13TeV_1718 lnN ')
-                for i in range(nBins+2): # signals + out + fake
+                for i in range(nSignalColumns+2): # signals + out + fake
                     file.write(lumi_corr_17_18[year]+' ')
                 file.write('- - -\n') # qqzz + ggzz + ZX
         else:
             # lumi_uncorrelated
             file.write('lumi_13TeV_'+year+' lnN ')
-            for i in range(nBins+4): # All except ZX
+            for i in range(nSignalColumns+4): # All except ZX
                 file.write(lumi[year]+' ')
             file.write('-\n') # ZX
             # lumi_correlated_16_17_18
             file.write('lumi_13TeV_correlated lnN ')
-            for i in range(nBins+4): # All except ZX
+            for i in range(nSignalColumns+4): # All except ZX
                 file.write(lumi_corr_16_17_18[year]+' ')
             file.write('-\n') # ZX
             # lumi_correlated_17_18
             if year == '2017' or year == '2018':
                 file.write('lumi_13TeV_1718 lnN ')
-                for i in range(nBins+4): # All except ZX
+                for i in range(nSignalColumns+4): # All except ZX
                     file.write(lumi_corr_17_18[year]+' ')
                 file.write('-\n') # ZX
 
@@ -454,7 +542,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             # correlated Run-3 lumi nuisances
             # lumi_13p6TeV_222324 (2022,2023,2024)
             file.write('lumi_13p6TeV_222324 lnN ')
-            for i in range(nBins+2): 
+            for i in range(nSignalColumns+2): 
                 # All except ZX
                 file.write(lumi[year]+' ')
             file.write('- - -\n')
@@ -462,21 +550,21 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             # lumi_13p6TeV_2324 if applicable
             if year in lumi_extra['lumi_13p6TeV_2324']:
                 file.write('lumi_13p6TeV_2324 lnN ')
-                for i in range(nBins+2):
+                for i in range(nSignalColumns+2):
                     file.write(lumi_extra['lumi_13p6TeV_2324'][year]+' ')
                 file.write('- - -\n')
 
             # lumi_13p6TeV_2024 if applicable
             if year in lumi_extra['lumi_13p6TeV_2024']:
                 file.write('lumi_13p6TeV_2024 lnN ')
-                for i in range(nBins+2):
+                for i in range(nSignalColumns+2):
                     file.write(lumi_extra['lumi_13p6TeV_2024'][year]+' ')
                 file.write('- - -\n')
         else:
             # correlated Run-3 lumi nuisances
             # lumi_13p6TeV_222324 (2022,2023,2024)
             file.write('lumi_13p6TeV_222324 lnN ')
-            for i in range(nBins+4): 
+            for i in range(nSignalColumns+4): 
                 # All except ZX
                 file.write(lumi[year]+' ')
             file.write('-\n')
@@ -484,14 +572,14 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             # lumi_13p6TeV_2324 if applicable
             if year in lumi_extra['lumi_13p6TeV_2324']:
                 file.write('lumi_13p6TeV_2324 lnN ')
-                for i in range(nBins+4):
+                for i in range(nSignalColumns+4):
                     file.write(lumi_extra['lumi_13p6TeV_2324'][year]+' ')
                 file.write('-\n')
 
             # lumi_13p6TeV_2024 if applicable
             if year in lumi_extra['lumi_13p6TeV_2024']:
                 file.write('lumi_13p6TeV_2024 lnN ')
-                for i in range(nBins+4):
+                for i in range(nSignalColumns+4):
                     file.write(lumi_extra['lumi_13p6TeV_2024'][year]+' ')
                 file.write('-\n')
 
@@ -510,11 +598,11 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             file.write('lumi_13TeV_'+year+' lnN ')
 
         if zzfloating:
-            for i in range(nBins+2): # All except ZX
+            for i in range(nSignalColumns+2): # All except ZX
                 file.write(lumi[year]+' ')
             file.write('- - -\n') # ZX
         else:
-            for i in range(nBins+4): # All except ZX
+            for i in range(nSignalColumns+4): # All except ZX
                 file.write(lumi[year]+' ')
             file.write('-\n') # ZX
 
@@ -523,7 +611,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
     if channel == '4mu' or channel == '2e2mu':
         file.write('CMS_eff_m lnN ')
-        for i in range(nBins+4): # All except ZX
+        for i in range(nSignalColumns+4): # All except ZX
             file.write(eff_mu[year+'_'+channel]+' ')
         file.write('-\n') 
 
@@ -534,7 +622,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         else:
             file.write('CMS_eff_m_trigger_'+year+' lnN ')
 
-        for i in range(nBins+4): # All except ZX
+        for i in range(nSignalColumns+4): # All except ZX
             file.write(trig_mu[year+'_'+channel]+' ')
         file.write('-\n')
 
@@ -547,7 +635,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             file.write('CMS_eff_e_id_2023BPix lnN ')
         else:
             file.write('CMS_eff_e_id_'+year+' lnN ')
-        for i in range(nBins+4):
+        for i in range(nSignalColumns+4):
             file.write(eff_e_id_stat[year+'_'+channel]+' ')
         file.write('-\n')
         
@@ -557,18 +645,18 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             file.write('CMS_eff_e_reco_2023BPix lnN ')
         else:
             file.write('CMS_eff_e_reco_'+year+' lnN ')
-        for i in range(nBins+4):
+        for i in range(nSignalColumns+4):
             file.write(eff_e_reco_stat[year+'_'+channel]+' ')
         file.write('-\n')
 
         file.write('CMS_eff_e_id lnN ')
-        for i in range(nBins+4):
+        for i in range(nSignalColumns+4):
             file.write(eff_e_id_syst[year+'_'+channel]+' ')
         file.write('-\n')
 
         # --- RECO systematic (correlated across years) ---
         file.write('CMS_eff_e_reco_13p6TeV lnN ')
-        for i in range(nBins+4):
+        for i in range(nSignalColumns+4):
             file.write(eff_e_reco_syst[year+'_'+channel]+' ')
         file.write('-\n')
 
@@ -578,14 +666,14 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             file.write('CMS_eff_e_trigger_2023BPix lnN ')
         else:
             file.write('CMS_eff_e_trigger_'+year+' lnN ')
-        for i in range(nBins+4): # All except ZX
+        for i in range(nSignalColumns+4): # All except ZX
             file.write(trig_e[year+'_'+channel]+' ')
         file.write('-\n')
 
     # ZX
     file.write('CMS_HIG25015_hzz'+channel+'_Zjets_'+year+' lnN ')
     # for i in range(nBins+4): # All except ZX
-    for i in range(nBins+4): # All except ZX
+    for i in range(nSignalColumns+4): # All except ZX
         file.write('- ')
     file.write(ZX[year+'_'+channel]+'\n')
 
@@ -602,23 +690,23 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
     # Theoretical at 13.6 TeV taken from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWG136TeVxsec_extrap
     if not zzfloating:
         file.write('QCDscale_ggVV lnN ')
-        for i in range(nBins+3): # Signal + out + fake + qqzz
+        for i in range(nSignalColumns+3): # Signal + out + fake + qqzz
             file.write('- ')
         file.write('1.039/0.961 -\n') #ggF (N3LO QCD + NLO EW), TH Gaussian % (+-3.9%)
         file.write('QCDscale_VV lnN ')
-        for i in range(nBins+2): # Signal + out + fake
+        for i in range(nSignalColumns+2): # Signal + out + fake
             file.write('- ')
         file.write('1.0325/0.958 - -\n')
         file.write('pdf_gg lnN ')
-        for i in range(nBins+3): # Signal + out + fake + qqzz
+        for i in range(nSignalColumns+3): # Signal + out + fake + qqzz
             file.write('- ')
         file.write('1.032/0.968 -\n') #ggF (N3LO QCD + NLO EW), PDF+as% (+-3.2%)
         file.write('pdf_qqbar lnN ')
-        for i in range(nBins+2): # Signal + out + fake
+        for i in range(nSignalColumns+2): # Signal + out + fake
             file.write('- ')
         file.write('1.031/0.966 - -\n')
         file.write('CMS_HIG25015_kfactor_ggzz lnN ')
-        for i in range(nBins+3): # Signal + out + fake  + bkg_qqzz
+        for i in range(nSignalColumns+3): # Signal + out + fake  + bkg_qqzz
             file.write('- ')
         file.write('1.1 -\n')
 
@@ -630,16 +718,17 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         if year == "2023postBPix":
             year = "2023BPix"
 
-        if obsName == "TCjmax": obsName_jes = "TCjMax"
-        elif obsName == "TBjmax": obsName_jes = "TBjMax"
-        elif obsName == "TCjmax_pT4l": obsName_jes = "TCjMax_ZZPt"
-        else: obsName_jes = obsName
+        # Remove zzfloating suffix first, before applying name transformations
+        obsName_for_jes = obsName.replace('_zzfloating', '') if 'zzfloating' in obsName else obsName
 
-        if 'zzfloating' in obsName_jes: obsName_jes = obsName_jes.rsplit('_', 1)[0]
+        if obsName_for_jes == "TCjmax": obsName_jes = "TCjMax"
+        elif obsName_for_jes == "TBjmax": obsName_jes = "TBjMax"
+        elif obsName_for_jes == "TCjmax_pT4l": obsName_jes = "TCjMax_ZZPt"
+        else: obsName_jes = obsName_for_jes
 
         for index,jesName in enumerate(jesNames_datacard):
             file.write('CMS_scale_j_'+jesName+' lnN ')
-            for i in range(nBins+2): # Signals + out + fake
+            for i in range(nSignalColumns+2): # Signals + out + fake
                 file.write(str(fixJes(jesnp['signal_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
                                       jes_evts_noWeight['signal_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)])))
             file.write(str(fixJes(jesnp['qqzz_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
@@ -852,8 +941,9 @@ def createDatacard_ggH(obsName, channel, nBins, obsBin, observableBins, physical
     for i in range(2*nBins+5):
         file.write(binName+' ')
     file.write('\n')
+    obsName_base = obsName.replace('_zzfloating', '')
     file.write('process ')
-    if '_' in obsName and not 'floating' in obsName and not 'kL' in obsName and not obsName == 'Nj':
+    if '_' in obsName_base and not 'kL' in obsName_base and not obsName_base == 'Nj':
         for i in range(nBins):
             file.write(processName+'_'+str(observableBins[i][0]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][1]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][2]).replace('.', 'p').replace('-','m')+'_'+str(observableBins[i][3]).replace('.', 'p').replace('-','m')+' ')
         for i in range(nBins):

@@ -5,6 +5,8 @@ from math import *
 from decimal import *
 import os
 import importlib.util
+import shutil
+import types
 
 sys.path.append('../helperstuff/')
 from binning import binning
@@ -22,6 +24,43 @@ def load_module_from_path(file_path, module_name=None):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+def get_public_module_payload(module):
+    payload = {}
+    for name, value in vars(module).items():
+        if name.startswith('__'):
+            continue
+        if isinstance(value, types.ModuleType) or callable(value):
+            continue
+        payload[name] = value
+    return payload
+
+def write_inputs_file(file_path, payload):
+    preferred_order = [
+        'observableBins',
+        'acc',
+        'err_acc',
+        'eff',
+        'err_eff',
+        'outinratio',
+        'err_outinratio',
+        'inc_wrongfrac',
+        'binfrac_wrongfrac',
+        'number_fake',
+        'lambdajesup',
+        'lambdajesdn',
+        'acc_4l',
+        'eff_4l',
+        'err_eff_4l',
+        'eff_num_var',
+        'eff_den_var',
+    ]
+    ordered_names = [name for name in preferred_order if name in payload]
+    ordered_names += sorted(name for name in payload if name not in ordered_names)
+
+    with open(file_path, 'w') as f:
+        for name in ordered_names:
+            f.write(name+' = '+repr(payload[name])+' \n')
 
 grootargs = []
 def callback_rootargs(option, opt, value, parser):
@@ -69,6 +108,7 @@ else:
     file_path = os.path.join(path['eos_path'], "inputs", f"inputs_sig_{obsName}_{opt.YEAR}.py")
 
 _temp = load_module_from_path(file_path)
+input_payload = get_public_module_payload(_temp)
 
 observableBins   = _temp.observableBins
 acc              = _temp.acc
@@ -251,9 +291,9 @@ for fState in fStates:
             outinratio['SMdn_125_'+fState+'_'+obsName+'_genbin'+str(genbin)+'_recobin'+str(recobin)] = outinDn
 
 if opt.INTER:
-    os.system('cp ' + path['eos_path']+'inputs/inputs_sig_extrap_'+opt.OBSNAME+'_'+opt.YEAR+'.py ' + path['eos_path']+'inputs/inputs_sig_extrap_'+opt.OBSNAME+'_'+opt.YEAR+'_ORIG.py')
+    shutil.copy2(path['eos_path']+'inputs/inputs_sig_extrap_'+opt.OBSNAME+'_'+opt.YEAR+'.py', path['eos_path']+'inputs/inputs_sig_extrap_'+opt.OBSNAME+'_'+opt.YEAR+'_ORIG.py')
 else:
-    os.system('cp ' + path['eos_path']+'inputs/inputs_sig_'+opt.OBSNAME+'_'+opt.YEAR+'.py ' + path['eos_path']+'inputs/inputs_sig_'+opt.OBSNAME+'_'+opt.YEAR+'_ORIG.py')
+    shutil.copy2(path['eos_path']+'inputs/inputs_sig_'+opt.OBSNAME+'_'+opt.YEAR+'.py', path['eos_path']+'inputs/inputs_sig_'+opt.OBSNAME+'_'+opt.YEAR+'_ORIG.py')
 
 if opt.INTER:
     file = path['eos_path']+'inputs/inputs_sig_extrap_'+opt.OBSNAME+'_'+opt.YEAR+'.py'
@@ -262,14 +302,16 @@ else:
 
 print('Saving new inputs to: '+file)
 
-with open(file, 'w') as f:
-    f.write('observableBins = '+str(observableBins)+' \n')
-    f.write('acc = '+str(acc)+' \n')
-    f.write('eff = '+str(eff)+' \n')
-    f.write('err_eff = '+str(err_eff)+' \n')
-    f.write('outinratio = '+str(outinratio)+' \n')
-    f.write('err_outinratio = '+str(err_outinratio)+' \n')
-    f.write('inc_wrongfrac = '+str(inc_wrongfrac)+' \n')
-    f.write('binfrac_wrongfrac = '+str(binfrac_wrongfrac))
+input_payload.update({
+    'observableBins': observableBins,
+    'acc': acc,
+    'eff': eff,
+    'err_eff': err_eff,
+    'outinratio': outinratio,
+    'err_outinratio': err_outinratio,
+    'inc_wrongfrac': inc_wrongfrac,
+    'binfrac_wrongfrac': binfrac_wrongfrac,
+})
+write_inputs_file(file, input_payload)
 
 sys.path.remove(path['eos_path']+'inputs')

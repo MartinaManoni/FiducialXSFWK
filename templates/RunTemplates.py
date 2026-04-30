@@ -510,14 +510,30 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
                     sel = sel_bin_low & sel_bin_high & sel_bin_mass_low & sel_bin_mass_high & sel_fstate
                     if doubleDiff: sel &= sel_bin_2nd_low & sel_bin_2nd_high
 
-                    if 'zzfloating' in obs_name: 
+                    if 'zzfloating' in obs_name:
+
+                        def select_zzfloating_bin(df_src, final_state=None):
+                            sel_zz = (
+                                (df_src.ZZMass >= opt.LOWER_BOUND)
+                                & (df_src.ZZMass <= opt.UPPER_BOUND)
+                                & (df_src[var] >= bin_low)
+                                & (df_src[var] < bin_high)
+                            )
+                            if doubleDiff:
+                                sel_zz &= (
+                                    (df_src[var_2nd] >= bin_low_2nd)
+                                    & (df_src[var_2nd] < bin_high_2nd)
+                                )
+                            if final_state is not None:
+                                sel_zz &= df_src["FinState"] == final_state
+                            return df_src[sel_zz].copy()
 
                         if opt.YEAR == "2022full":
 
-                            df_2022_qqzz = df_irr["2022"]["qqzz"][(df_irr["2022"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["qqzz"][var] >= bin_low) & (df_irr["2022"]["qqzz"][var] < bin_high)].copy()
-                            df_2022EE_qqzz = df_irr["2022EE"]["qqzz"][(df_irr["2022EE"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["qqzz"][var] >= bin_low) & (df_irr["2022EE"]["qqzz"][var] < bin_high)].copy()
-                            df_2022_ggzz = df_irr["2022"]["ggzz"][(df_irr["2022"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["ggzz"][var] >= bin_low) & (df_irr["2022"]["ggzz"][var] < bin_high)].copy()
-                            df_2022EE_ggzz = df_irr["2022EE"]["ggzz"][(df_irr["2022EE"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["ggzz"][var] >= bin_low) & (df_irr["2022EE"]["ggzz"][var] < bin_high)].copy()
+                            df_2022_qqzz = select_zzfloating_bin(df_irr["2022"]["qqzz"])
+                            df_2022EE_qqzz = select_zzfloating_bin(df_irr["2022EE"]["qqzz"])
+                            df_2022_ggzz = select_zzfloating_bin(df_irr["2022"]["ggzz"])
+                            df_2022EE_ggzz = select_zzfloating_bin(df_irr["2022EE"]["ggzz"])
                             df = pd.concat([df_2022_qqzz, df_2022EE_qqzz, df_2022_ggzz, df_2022EE_ggzz])
 
                             # In case of zzfloating len_tot is overwritten (previous definition at the beginning of for loops)
@@ -525,10 +541,10 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
                             yield_bkg['ZZ_'+str(i)] = len_tot
 
                             #### fs ####
-                            df_2022_qqzz = df_irr["2022"]["qqzz"][(df_irr["2022"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["qqzz"][var] >= bin_low) & (df_irr["2022"]["qqzz"][var] < bin_high) & (df_irr["2022"]["qqzz"]["FinState"] == f)].copy()
-                            df_2022EE_qqzz = df_irr["2022EE"]["qqzz"][(df_irr["2022EE"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["qqzz"][var] >= bin_low) & (df_irr["2022EE"]["qqzz"][var] < bin_high) & (df_irr["2022EE"]["qqzz"]["FinState"] == f)].copy()
-                            df_2022_ggzz = df_irr["2022"]["ggzz"][(df_irr["2022"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["ggzz"][var] >= bin_low) & (df_irr["2022"]["ggzz"][var] < bin_high) & (df_irr["2022"]["ggzz"]["FinState"] == f)].copy()
-                            df_2022EE_ggzz = df_irr["2022EE"]["ggzz"][(df_irr["2022EE"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["ggzz"][var] >= bin_low) & (df_irr["2022EE"]["ggzz"][var] < bin_high) & (df_irr["2022EE"]["ggzz"]["FinState"] == f)].copy()
+                            df_2022_qqzz = select_zzfloating_bin(df_irr["2022"]["qqzz"], f)
+                            df_2022EE_qqzz = select_zzfloating_bin(df_irr["2022EE"]["qqzz"], f)
+                            df_2022_ggzz = select_zzfloating_bin(df_irr["2022"]["ggzz"], f)
+                            df_2022EE_ggzz = select_zzfloating_bin(df_irr["2022EE"]["ggzz"], f)
 
                             df = pd.concat([df_2022_qqzz, df_2022EE_qqzz, df_2022_ggzz, df_2022EE_ggzz])
 
@@ -538,10 +554,10 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
 
                         elif opt.YEAR == "2023full":
 
-                            df_2023preBPix_qqzz = df_irr["2023preBPix"]["qqzz"][(df_irr["2023preBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023preBPix"]["qqzz"][var] < bin_high)].copy()
-                            df_2023postBPix_qqzz = df_irr["2023postBPix"]["qqzz"][(df_irr["2023postBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023postBPix"]["qqzz"][var] < bin_high)].copy()
-                            df_2023preBPix_ggzz = df_irr["2023preBPix"]["ggzz"][(df_irr["2023preBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023preBPix"]["ggzz"][var] < bin_high)].copy()
-                            df_2023postBPix_ggzz = df_irr["2023postBPix"]["ggzz"][(df_irr["2023postBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023postBPix"]["ggzz"][var] < bin_high)].copy()
+                            df_2023preBPix_qqzz = select_zzfloating_bin(df_irr["2023preBPix"]["qqzz"])
+                            df_2023postBPix_qqzz = select_zzfloating_bin(df_irr["2023postBPix"]["qqzz"])
+                            df_2023preBPix_ggzz = select_zzfloating_bin(df_irr["2023preBPix"]["ggzz"])
+                            df_2023postBPix_ggzz = select_zzfloating_bin(df_irr["2023postBPix"]["ggzz"])
                             df = pd.concat([df_2023preBPix_qqzz, df_2023postBPix_qqzz, df_2023preBPix_ggzz, df_2023postBPix_ggzz])
 
                             # In case of zzfloating len_tot is overwritten (previous definition at the beginning of for loops)
@@ -549,10 +565,10 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
                             yield_bkg['ZZ_'+str(i)] = len_tot
 
                             #### fs ####
-                            df_2023preBPix_qqzz = df_irr["2023preBPix"]["qqzz"][(df_irr["2023preBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023preBPix"]["qqzz"][var] < bin_high) & (df_irr["2023preBPix"]["qqzz"]["FinState"] == f)].copy()
-                            df_2023postBPix_qqzz = df_irr["2023postBPix"]["qqzz"][(df_irr["2023postBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023postBPix"]["qqzz"][var] < bin_high) & (df_irr["2023postBPix"]["qqzz"]["FinState"] == f)].copy()
-                            df_2023preBPix_ggzz = df_irr["2023preBPix"]["ggzz"][(df_irr["2023preBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023preBPix"]["ggzz"][var] < bin_high) & (df_irr["2023preBPix"]["ggzz"]["FinState"] == f)].copy()
-                            df_2023postBPix_ggzz = df_irr["2023postBPix"]["ggzz"][(df_irr["2023postBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023postBPix"]["ggzz"][var] < bin_high) & (df_irr["2023postBPix"]["ggzz"]["FinState"] == f)].copy()
+                            df_2023preBPix_qqzz = select_zzfloating_bin(df_irr["2023preBPix"]["qqzz"], f)
+                            df_2023postBPix_qqzz = select_zzfloating_bin(df_irr["2023postBPix"]["qqzz"], f)
+                            df_2023preBPix_ggzz = select_zzfloating_bin(df_irr["2023preBPix"]["ggzz"], f)
+                            df_2023postBPix_ggzz = select_zzfloating_bin(df_irr["2023postBPix"]["ggzz"], f)
 
                             df = pd.concat([df_2023preBPix_qqzz, df_2023postBPix_qqzz, df_2023preBPix_ggzz, df_2023postBPix_ggzz])
 
@@ -562,17 +578,17 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
 
                         elif opt.YEAR == "Run3":
 
-                            df_2022_qqzz = df_irr["2022"]["qqzz"][(df_irr["2022"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["qqzz"][var] >= bin_low) & (df_irr["2022"]["qqzz"][var] < bin_high)].copy()
-                            df_2022EE_qqzz = df_irr["2022EE"]["qqzz"][(df_irr["2022EE"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["qqzz"][var] >= bin_low) & (df_irr["2022EE"]["qqzz"][var] < bin_high)].copy()
-                            df_2023preBPix_qqzz = df_irr["2023preBPix"]["qqzz"][(df_irr["2023preBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023preBPix"]["qqzz"][var] < bin_high)].copy()
-                            df_2023postBPix_qqzz = df_irr["2023postBPix"]["qqzz"][(df_irr["2023postBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023postBPix"]["qqzz"][var] < bin_high)].copy()
-                            df_2024_qqzz = df_irr["2024"]["qqzz"][(df_irr["2024"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2024"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2024"]["qqzz"][var] >= bin_low) & (df_irr["2024"]["qqzz"][var] < bin_high)].copy()
+                            df_2022_qqzz = select_zzfloating_bin(df_irr["2022"]["qqzz"])
+                            df_2022EE_qqzz = select_zzfloating_bin(df_irr["2022EE"]["qqzz"])
+                            df_2023preBPix_qqzz = select_zzfloating_bin(df_irr["2023preBPix"]["qqzz"])
+                            df_2023postBPix_qqzz = select_zzfloating_bin(df_irr["2023postBPix"]["qqzz"])
+                            df_2024_qqzz = select_zzfloating_bin(df_irr["2024"]["qqzz"])
 
-                            df_2022_ggzz = df_irr["2022"]["ggzz"][(df_irr["2022"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["ggzz"][var] >= bin_low) & (df_irr["2022"]["ggzz"][var] < bin_high)].copy()
-                            df_2022EE_ggzz = df_irr["2022EE"]["ggzz"][(df_irr["2022EE"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["ggzz"][var] >= bin_low) & (df_irr["2022EE"]["ggzz"][var] < bin_high)].copy()
-                            df_2023preBPix_ggzz = df_irr["2023preBPix"]["ggzz"][(df_irr["2023preBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023preBPix"]["ggzz"][var] < bin_high)].copy()
-                            df_2023postBPix_ggzz = df_irr["2023postBPix"]["ggzz"][(df_irr["2023postBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023postBPix"]["ggzz"][var] < bin_high)].copy()
-                            df_2024_ggzz = df_irr["2024"]["ggzz"][(df_irr["2024"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2024"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2024"]["ggzz"][var] >= bin_low) & (df_irr["2024"]["ggzz"][var] < bin_high)].copy()
+                            df_2022_ggzz = select_zzfloating_bin(df_irr["2022"]["ggzz"])
+                            df_2022EE_ggzz = select_zzfloating_bin(df_irr["2022EE"]["ggzz"])
+                            df_2023preBPix_ggzz = select_zzfloating_bin(df_irr["2023preBPix"]["ggzz"])
+                            df_2023postBPix_ggzz = select_zzfloating_bin(df_irr["2023postBPix"]["ggzz"])
+                            df_2024_ggzz = select_zzfloating_bin(df_irr["2024"]["ggzz"])
                             
                             df = pd.concat([df_2022_qqzz, df_2022EE_qqzz, df_2022_ggzz, df_2022EE_ggzz, df_2023preBPix_qqzz, df_2023postBPix_qqzz, df_2023preBPix_ggzz, df_2023postBPix_ggzz, df_2024_qqzz, df_2024_ggzz])
 
@@ -581,17 +597,17 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
                             yield_bkg['ZZ_'+str(i)] = len_tot
 
                             #### fs ####
-                            df_2022_qqzz = df_irr["2022"]["qqzz"][(df_irr["2022"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["qqzz"][var] >= bin_low) & (df_irr["2022"]["qqzz"][var] < bin_high) & (df_irr["2022"]["qqzz"]["FinState"] == f)].copy()
-                            df_2022EE_qqzz = df_irr["2022EE"]["qqzz"][(df_irr["2022EE"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["qqzz"][var] >= bin_low) & (df_irr["2022EE"]["qqzz"][var] < bin_high) & (df_irr["2022EE"]["qqzz"]["FinState"] == f)].copy()
-                            df_2023preBPix_qqzz = df_irr["2023preBPix"]["qqzz"][(df_irr["2023preBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023preBPix"]["qqzz"][var] < bin_high) & (df_irr["2023preBPix"]["qqzz"]["FinState"] == f)].copy()
-                            df_2023postBPix_qqzz = df_irr["2023postBPix"]["qqzz"][(df_irr["2023postBPix"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["qqzz"][var] >= bin_low) & (df_irr["2023postBPix"]["qqzz"][var] < bin_high) & (df_irr["2023postBPix"]["qqzz"]["FinState"] == f)].copy()
-                            df_2024_qqzz = df_irr["2024"]["qqzz"][(df_irr["2024"]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2024"]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2024"]["qqzz"][var] >= bin_low) & (df_irr["2024"]["qqzz"][var] < bin_high) & (df_irr["2024"]["qqzz"]["FinState"] == f)].copy()
+                            df_2022_qqzz = select_zzfloating_bin(df_irr["2022"]["qqzz"], f)
+                            df_2022EE_qqzz = select_zzfloating_bin(df_irr["2022EE"]["qqzz"], f)
+                            df_2023preBPix_qqzz = select_zzfloating_bin(df_irr["2023preBPix"]["qqzz"], f)
+                            df_2023postBPix_qqzz = select_zzfloating_bin(df_irr["2023postBPix"]["qqzz"], f)
+                            df_2024_qqzz = select_zzfloating_bin(df_irr["2024"]["qqzz"], f)
                             
-                            df_2022_ggzz = df_irr["2022"]["ggzz"][(df_irr["2022"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022"]["ggzz"][var] >= bin_low) & (df_irr["2022"]["ggzz"][var] < bin_high) & (df_irr["2022"]["ggzz"]["FinState"] == f)].copy()
-                            df_2022EE_ggzz = df_irr["2022EE"]["ggzz"][(df_irr["2022EE"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2022EE"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2022EE"]["ggzz"][var] >= bin_low) & (df_irr["2022EE"]["ggzz"][var] < bin_high) & (df_irr["2022EE"]["ggzz"]["FinState"] == f)].copy()
-                            df_2023preBPix_ggzz = df_irr["2023preBPix"]["ggzz"][(df_irr["2023preBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023preBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023preBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023preBPix"]["ggzz"][var] < bin_high) & (df_irr["2023preBPix"]["ggzz"]["FinState"] == f)].copy()
-                            df_2023postBPix_ggzz = df_irr["2023postBPix"]["ggzz"][(df_irr["2023postBPix"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2023postBPix"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2023postBPix"]["ggzz"][var] >= bin_low) & (df_irr["2023postBPix"]["ggzz"][var] < bin_high) & (df_irr["2023postBPix"]["ggzz"]["FinState"] == f)].copy()
-                            df_2024_ggzz = df_irr["2024"]["ggzz"][(df_irr["2024"]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr["2024"]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr["2024"]["ggzz"][var] >= bin_low) & (df_irr["2024"]["ggzz"][var] < bin_high) & (df_irr["2024"]["ggzz"]["FinState"] == f)].copy()
+                            df_2022_ggzz = select_zzfloating_bin(df_irr["2022"]["ggzz"], f)
+                            df_2022EE_ggzz = select_zzfloating_bin(df_irr["2022EE"]["ggzz"], f)
+                            df_2023preBPix_ggzz = select_zzfloating_bin(df_irr["2023preBPix"]["ggzz"], f)
+                            df_2023postBPix_ggzz = select_zzfloating_bin(df_irr["2023postBPix"]["ggzz"], f)
+                            df_2024_ggzz = select_zzfloating_bin(df_irr["2024"]["ggzz"], f)
 
                             df = pd.concat([df_2022_qqzz, df_2022EE_qqzz, df_2022_ggzz, df_2022EE_ggzz, df_2023preBPix_qqzz, df_2023postBPix_qqzz, df_2023preBPix_ggzz, df_2023postBPix_ggzz, df_2024_qqzz, df_2024_ggzz])
 
@@ -601,8 +617,8 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
                         
                         else:
 
-                            df_qqzz = df_irr[year]["qqzz"][(df_irr[year]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr[year]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr[year]["qqzz"][var] >= bin_low) & (df_irr[year]["qqzz"][var] < bin_high)].copy()
-                            df_ggzz = df_irr[year]["ggzz"][(df_irr[year]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr[year]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr[year]["ggzz"][var] >= bin_low) & (df_irr[year]["ggzz"][var] < bin_high)].copy()
+                            df_qqzz = select_zzfloating_bin(df_irr[year]["qqzz"])
+                            df_ggzz = select_zzfloating_bin(df_irr[year]["ggzz"])
                             df = pd.concat([df_qqzz, df_ggzz])
 
                             # In case of zzfloating len_tot is overwritten (previous definition at the beginning of for loops)
@@ -610,8 +626,8 @@ def doTemplates(df_irr, df_inc, df_2j, binning, var, var_string, var_2nd='None')
                             yield_bkg['ZZ_'+str(i)] = len_tot
 
                             #### 2e2mu ####
-                            df_qqzz = df_irr[year]["qqzz"][(df_irr[year]["qqzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr[year]["qqzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr[year]["qqzz"][var] >= bin_low) & (df_irr[year]["qqzz"][var] < bin_high) & (df_irr[year]["qqzz"]["FinState"] == f)].copy()
-                            df_ggzz = df_irr[year]["ggzz"][(df_irr[year]["ggzz"].ZZMass >= opt.LOWER_BOUND) & (df_irr[year]["ggzz"].ZZMass <= opt.UPPER_BOUND) & (df_irr[year]["ggzz"][var] >= bin_low) & (df_irr[year]["ggzz"][var] < bin_high) & (df_irr[year]["ggzz"]["FinState"] == f)].copy()
+                            df_qqzz = select_zzfloating_bin(df_irr[year]["qqzz"], f)
+                            df_ggzz = select_zzfloating_bin(df_irr[year]["ggzz"], f)
 
                             df = pd.concat([df_qqzz, df_ggzz])
 

@@ -28,12 +28,12 @@ python3 plot_templates.py --obsName "$obsName" --year "$year"
 
 cd ../fit
 
-python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation --NOK1K2 #--ZZfloating
+python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation --NOK1K2 --split_prod_mode #--ZZfloating
 python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --interpolation #--ZZfloating
 python3 expected_xsec_allPmodes.py --obsName "$obsName" --year "$year" --nnlops --interpolation #--ZZfloating 
 python3 impacts.py --obsName "$obsName" --year "$year" --interpolation #--ZZfloating
 
-python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation --unblind --NOK1K2 #--ZZfloating
+python3 RunFiducialXS.py --obsName "$obsName" --year "$year" --eff_unc --interpolation --unblind --NOK1K2 --split_prod_mode #--ZZfloating
 python3 impacts.py --obsName "$obsName" --year "$year" --interpolation --unblind #--ZZfloating
 
 cd ../coefficients

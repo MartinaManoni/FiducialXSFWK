@@ -10,6 +10,19 @@ sys.path.append('../helperstuff')
 
 from paths import path
 
+PROD_MODES = ['ggH', 'VBFH', 'WH', 'ZH', 'ttH']
+PROD_XS_NAMES = {'ggH': 'ggH', 'VBFH': 'VBF', 'WH': 'WH', 'ZH': 'ZH', 'ttH': 'ttH'}
+
+def getSignalProdModes(prodMode):
+    if prodMode in ['all', 'split']:
+        return PROD_MODES
+    return ['SM']
+
+def signalProcessName(baseProcessName, prodMode):
+    if prodMode == 'SM':
+        return baseProcessName
+    return baseProcessName.replace('trueH', 'trueH_' + prodMode).replace('smH_', 'smH_' + prodMode + '_')
+
 # Considering or not decimals in bin boundaries
 decimal = {
 'mass4l': False,
@@ -73,7 +86,7 @@ PARAM_PATH = os.path.join(PARAM_PATH, "param")
 sys.path.append('../../inputs/')
 sys.path.append('../../templates/')
 
-def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH, modelName, physicalModel, year, JES, INTER, NOK1K2, ZZ, doubleDiff, lowerBound, upperBound, rawObsName):
+def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH, modelName, physicalModel, prodMode, year, JES, INTER, NOK1K2, ZZ, doubleDiff, lowerBound, upperBound, rawObsName):
     print('\n')
     print('Creating WorkSpace', year)
 
@@ -185,6 +198,7 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
     else:
         comb_name = 'fakeH'
         sig_name = 'trueH'
+    signalProdModes = getSignalProdModes(prodMode)
 
     print(os.getcwd())
 
@@ -670,7 +684,9 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
 
     # signal shape in different recobin
     trueH_shape = {}; ggH_shape = {}; xH_shape = {}
+    prodH_shape = {}; prodH_norm = {}
     fideff = {}
+    fideff_prod = {}; fideff_prod_var = {}; fidxs_prod_var = {}
     fideff_ggH = {}; fideff_xH = {}
     fideff_var = {}; fideff_ggH_var = {}; fideff_xH_var = {}
     trueH_norm = {}; GGH_norm = {}; XH_norm = {}
@@ -716,6 +732,18 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
         _effName = _effName + '_hzz_' + _obsName[obsName] + '_' + _recobin + '_cat' + channel + '_' + year
 
         fideff_var[genbin] = ROOT.RooRealVar(_effName, _effName, fideff[genbin]);
+
+        for signalProdMode in signalProdModes:
+            if signalProdMode == 'SM':
+                continue
+            prodProcessName = signalProcessName(processName, signalProdMode)
+            prodH_shape[(signalProdMode, genbin)] = trueH.Clone()
+            prodH_shape[(signalProdMode, genbin)].SetName(prodProcessName)
+
+            prodEffKey = signalProdMode+"125_"+channel+"_"+rawObsName+"_genbin"+str(genbin)+"_"+recobin
+            fideff_prod[(signalProdMode, genbin)] = eff[prodEffKey]
+            prodEffName = _effName.replace(sig_name, signalProdMode)
+            fideff_prod_var[(signalProdMode, genbin)] = ROOT.RooRealVar(prodEffName, prodEffName, fideff_prod[(signalProdMode, genbin)])
 
     for genbin in range(nBins):
 
@@ -988,6 +1016,16 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
             GGH_norm[genbin] = ROOT.RooFormulaVar(ggHName+"_norm","@0*@1*@2", ROOT.RooArgList(SigmaHBin_ggH[channel+str(genbin)],fideff_ggH_var[genbin], lumi) );
             XH_norm[genbin] = ROOT.RooFormulaVar(xHName+"_norm","@0*@1*@2", ROOT.RooArgList(SigmaHBin_xH[channel+str(genbin)],fideff_xH_var[genbin], lumi) );
 
+        for signalProdMode in signalProdModes:
+            if signalProdMode == 'SM':
+                continue
+            prodProcessName = signalProcessName(processName, signalProdMode)
+            fidxsProdName = "fidxs_"+signalProdMode+"_"+channel+"_"+str(genbin)
+            fidxsProd = higgs_xs[PROD_XS_NAMES[signalProdMode]+'_125.38']*higgs4l_br['125.38_'+channel]*acc[signalProdMode+'125_'+channel+'_'+rawObsName+'_genbin'+str(genbin)+'_recobin'+str(genbin)]
+            fidxs_prod_var[(signalProdMode, genbin)] = ROOT.RooRealVar(fidxsProdName, fidxsProdName, fidxsProd)
+            fidxs_prod_var[(signalProdMode, genbin)].setConstant(True)
+            prodH_norm[(signalProdMode, genbin)] = ROOT.RooFormulaVar(prodProcessName+"_norm", "@0*@1*@2", ROOT.RooArgList(fidxs_prod_var[(signalProdMode, genbin)], fideff_prod_var[(signalProdMode, genbin)], lumi))
+
     outin = outinratio[modelName+"_"+channel+"_"+rawObsName+"_genbin"+str(obsBin)+"_"+recobin]
     # print "outin",obsBin,outin
     outin_var = ROOT.RooRealVar("outfracBin_"+recobin+"_"+channel+year,"outfracBin_"+recobin+"_"+channel+year, outin);
@@ -1119,6 +1157,7 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
     # --- make a temporary tree with Nj_d as a real branch (double) ---
     df = ROOT.RDataFrame("ZZTree/candTree", data_obs_file)
     df = df.Define("Nj_d", "double(Nj)")   # <-- replace Nj with your actual branch name
+    df = df.Define("Nj_zzfloating_d", "double(Nj)")
 
     tmpname = f"tmp_cast_{year}_{obsName}.root"
     df.Snapshot("candTree", tmpname)
@@ -1131,6 +1170,10 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
     if obsName == "Nj" or obsName == "Nj_pT4l":                 # or your nJets condition
         obsName_help = "Nj_d"
         observable = ROOT.RooRealVar("Nj_d", "Nj_d", 0, 20)  # adjust range
+
+    if obsName == "Nj_zzfloating" or obsName == "Nj_pT4l_zzfloating":                 # or your nJets condition
+        obsName_help = "Nj_zzfloating_d"
+        observable = ROOT.RooRealVar("Nj_zzfloating_d", "Nj_zzfloating_d", 0, 20)  # adjust range
 
     #chan = ROOT.RooRealVar("chan", "chan", 0, 3)
     # if (obsName == "nJets"): obsName = "njets_reco_pt30_eta4p7"
@@ -1403,8 +1446,13 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
             getattr(wout,'import')(CMS_HIG25015_zz4l_mean_m_err,ROOT.RooFit.RecycleConflictNodes())
 
     for genbin in range(nBins):
-        getattr(wout,'import')(trueH_shape[genbin],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())
-        getattr(wout,'import')(trueH_norm[genbin],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())
+        if signalProdModes == ['SM']:
+            getattr(wout,'import')(trueH_shape[genbin],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())
+            getattr(wout,'import')(trueH_norm[genbin],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())
+        else:
+            for signalProdMode in signalProdModes:
+                getattr(wout,'import')(prodH_shape[(signalProdMode, genbin)],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())
+                getattr(wout,'import')(prodH_norm[(signalProdMode, genbin)],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())
         if(physicalModel!='v3'): continue
         getattr(wout,'import')(ggH_shape[genbin],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())
         getattr(wout,'import')(xH_shape[genbin],ROOT.RooFit.RecycleConflictNodes(),ROOT.RooFit.Silence())

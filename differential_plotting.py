@@ -10,6 +10,8 @@ import numpy as np
 from matplotlib.ticker import MultipleLocator
 
 sys.path.append("helperstuff/")
+sys.path.append(os.path.join(os.path.dirname(__file__), "."))
+from fit.createDatacard import get_zzfloating_merged_bin_groups
 from paths import path
 
 plt.style.use(hep.style.CMS)
@@ -63,6 +65,19 @@ VAR_LABELS = {
     "phi": r"\Phi",
     "phi1": r"\Phi_1",
 }
+
+
+def get_var_label(variable):
+    label = VAR_LABELS.get(variable)
+    if label is not None:
+        return label
+
+    if variable.endswith("_zzfloating"):
+        base_variable = variable[:-len("_zzfloating")]
+        base_label = VAR_LABELS.get(base_variable, base_variable)
+        return r"{" + base_label + r"}^{\text{ZZ floating}}"
+
+    return variable
 
 LUMI_BY_ERA = {
     "2022": 7.9804,
@@ -243,7 +258,61 @@ def get_options():
         default="",
         help="Data-taking era",
     )
+    parser.add_argument(
+        "--ZZfloating",
+        dest="ZZ",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Use the zzfloating version of each requested observable when available",
+    )
     return parser.parse_args()
+
+
+def canonicalize_variable_name(variable):
+    variable = variable.strip()
+    if " vs " in variable:
+        return variable.replace(" vs ", "_")
+    return variable
+
+
+def resolve_plot_variable(variable, config, use_zzfloating, era):
+    variable = canonicalize_variable_name(variable)
+    if not use_zzfloating or "zzfloating" in variable:
+        return variable
+
+    zz_variable = f"{variable}_zzfloating"
+    if zz_variable in config:
+        return zz_variable
+    if os.path.exists(_default_result_json_path(zz_variable, era)):
+        return zz_variable
+
+    return variable
+
+
+def resolve_plot_variable_list(raw_variables, config, use_zzfloating, era):
+    variable_list = [canonicalize_variable_name(v) for v in raw_variables.split(",") if v.strip()]
+    if "all" in variable_list:
+        variable_list = list(config.keys())
+        if use_zzfloating:
+            base_only = []
+            zz_vars = []
+            for variable in variable_list:
+                if variable.endswith("_zzfloating"):
+                    zz_vars.append(variable)
+                elif not os.path.exists(_default_result_json_path(f"{variable}_zzfloating", era)) and f"{variable}_zzfloating" not in config:
+                    base_only.append(variable)
+            return zz_vars + base_only
+        return variable_list
+
+    resolved = []
+    seen = set()
+    for variable in variable_list:
+        current = resolve_plot_variable(variable, config, use_zzfloating, era)
+        if current not in seen:
+            resolved.append(current)
+            seen.add(current)
+    return resolved
 
 
 def load_json(json_path):
@@ -333,6 +402,17 @@ def _specialobs_json_paths(variable, era):
         f"jsons/{variable}_results_2e2mu_{era}.json",
         f"jsons/{variable}_results_4e4mu_{era}.json",
     ]
+
+
+def _default_result_json_path(variable, era):
+    return os.path.join(os.path.dirname(__file__), "jsons", f"{variable}_results_{era}.json")
+
+
+def _normalize_plot_cfg(cfg, variable):
+    cfg = dict(cfg)
+    cfg["variable"] = variable
+    cfg["output_name"] = variable
+    return cfg
 
 
 def import_xs_module(module_name):
@@ -527,11 +607,34 @@ def build_theory_standard(variable, cfg, bin_w):
 
 
 def build_measurement(variable, cfg, bin_w):
-    exp_xs = np.array(cfg["exp_xs"], dtype=float) / bin_w
-    err_up = np.array(cfg["err_up"], dtype=float) / bin_w
-    err_down = np.array(cfg["err_down"], dtype=float) / bin_w
-    stat_up = np.array(cfg["stat_up"], dtype=float) / bin_w
-    stat_down = np.array(cfg["stat_down"], dtype=float) / bin_w
+    exp_xs_raw = np.array(cfg["exp_xs"], dtype=float)
+    err_up_raw = np.array(cfg["err_up"], dtype=float)
+    err_down_raw = np.array(cfg["err_down"], dtype=float)
+    stat_up_raw = np.array(cfg["stat_up"], dtype=float)
+    stat_down_raw = np.array(cfg["stat_down"], dtype=float)
+
+    if len(exp_xs_raw) != len(bin_w):
+        if "zzfloating" in variable and len(exp_xs_raw) > len(bin_w):
+            print(
+                f"Info: trimming duplicated ZZ POIs from measurement arrays for {variable}: "
+                f"{len(exp_xs_raw)} -> {len(bin_w)}"
+            )
+            exp_xs_raw = exp_xs_raw[:len(bin_w)]
+            err_up_raw = err_up_raw[:len(bin_w)]
+            err_down_raw = err_down_raw[:len(bin_w)]
+            stat_up_raw = stat_up_raw[:len(bin_w)]
+            stat_down_raw = stat_down_raw[:len(bin_w)]
+        else:
+            raise ValueError(
+                f"Measurement array length mismatch for {variable}: "
+                f"{len(exp_xs_raw)} values for {len(bin_w)} bins."
+            )
+
+    exp_xs = exp_xs_raw / bin_w
+    err_up = err_up_raw / bin_w
+    err_down = err_down_raw / bin_w
+    stat_up = stat_up_raw / bin_w
+    stat_down = stat_down_raw / bin_w
 
     sys_up = np.sqrt(np.maximum(0.0, err_up**2 - stat_up**2))
     sys_down = np.sqrt(np.maximum(0.0, err_down**2 - stat_down**2))
@@ -553,17 +656,23 @@ def build_measurement(variable, cfg, bin_w):
 def create_plot_jobs(variable, config, args):
     if variable in {"mass4l", "mass4l_zzfloating"}:
         current_config, bins_plot, bins_c, bin_w = load_mass4l_final_states(variable, args.config_json, args.YEAR)
+        current_config = _normalize_plot_cfg(current_config, variable)
         return [("mass4l", current_config, "", bins_plot, bins_c, bin_w)]
 
     if variable in SPECIAL_OBS:
         jobs = []
         for p, lab in zip(_specialobs_json_paths(variable, args.YEAR), ["4l", "2e2mu", "4e4mu"]):
-            cfg = load_var_config(p, variable)
+            cfg = _normalize_plot_cfg(load_var_config(p, variable), variable)
             bins_plot, bins_c, bin_w, _ = get_bins(variable, cfg)
             jobs.append((lab, cfg, f"_{lab}", bins_plot, bins_c, bin_w))
         return jobs
 
-    cfg = config[variable]
+    result_json_path = _default_result_json_path(variable, args.YEAR)
+    if os.path.exists(result_json_path):
+        cfg = load_var_config(result_json_path, variable)
+    else:
+        cfg = config[variable]
+    cfg = _normalize_plot_cfg(cfg, variable)
     bins_plot, bins_c, bin_w, _ = get_bins(variable, cfg)
     return [("4l", cfg, "", bins_plot, bins_c, bin_w)]
 
@@ -671,7 +780,7 @@ def plot_data_main(ax, bins_c, measurement):
 
 
 def get_ylabel(variable, cfg, double_diff):
-    var_label = VAR_LABELS.get(cfg["variable"], cfg["variable"])
+    var_label = get_var_label(cfg["variable"])
     if variable in {"mass4l", "mass4l_zzfloating"}:
         return r"$\sigma_{\text{fid}}$ (fb)"
     if double_diff:
@@ -860,6 +969,26 @@ def apply_double_diff_xticks(axis, bin_number, bins_c):
     axis.xaxis.set_minor_locator(plt.NullLocator())
 
 
+def get_zzfloating_panel_positions(variable, bins_c, bin_w):
+    groups = get_zzfloating_merged_bin_groups(variable, len(bins_c))
+    if len(groups) == len(bins_c):
+        return np.array(bins_c, dtype=float), np.array(bin_w, dtype=float)
+
+    centers = []
+    widths = []
+    for group in groups:
+        group_centers = [bins_c[i] for i in group]
+        group_widths = [bin_w[i] for i in group]
+        total_width = sum(group_widths)
+        if total_width > 0:
+            weighted_center = sum(c * w for c, w in zip(group_centers, group_widths)) / total_width
+        else:
+            weighted_center = np.mean(group_centers)
+        centers.append(weighted_center)
+        widths.append(total_width)
+    return np.array(centers, dtype=float), np.array(widths, dtype=float)
+
+
 def plot_zzfloating_panel(ax, bins_plot, bins_c, bin_w, cfg, var_label):
     plt.sca(ax)
 
@@ -875,6 +1004,62 @@ def plot_zzfloating_panel(ax, bins_plot, bins_c, bin_w, cfg, var_label):
     zz_obs_stat_up = np.array(cfg["zznorm_stat_up_obs"], dtype=float)
     zz_obs_stat_dn = np.array(cfg["zznorm_stat_down_obs"], dtype=float)
 
+    panel_centers, panel_widths = get_zzfloating_panel_positions(cfg["variable"], bins_c, bin_w)
+
+    if len(zz_exp) != len(panel_centers):
+        if len(zz_exp) == len(bins_c):
+            panel_centers = np.array(bins_c, dtype=float)
+            panel_widths = np.array(bin_w, dtype=float)
+        else:
+            raise ValueError(
+                f"ZZ floating panel shape mismatch for {cfg['variable']}: "
+                f"{len(zz_exp)} ZZ points for {len(panel_centers)} merged positions "
+                f"and {len(bins_c)} raw bins."
+            )
+
+    common_len = min(
+        len(panel_centers),
+        len(panel_widths),
+        len(zz_exp),
+        len(zz_exp_up),
+        len(zz_exp_dn),
+        len(zz_exp_stat_up),
+        len(zz_exp_stat_dn),
+        len(zz_obs),
+        len(zz_obs_up),
+        len(zz_obs_dn),
+        len(zz_obs_stat_up),
+        len(zz_obs_stat_dn),
+    )
+    if common_len == 0:
+        print(f"Warning: no ZZ floating ratio points available for {cfg['variable']}")
+        plt.hlines(1.0, bins_plot[0], bins_plot[-1], color="gray", linewidth=1.5)
+        ax.set_xlim(bins_plot[0], bins_plot[-1])
+        ax.set_ylim(0, 2)
+        ax.set_ylabel(r"$ZZ/ZZ_{MC}$", fontsize=12, rotation=90, va="center", ha="center", multialignment="center", labelpad=18)
+        plt.xlabel(r"$" + var_label + r"$" + cfg["x_unit"], fontsize=20)
+        plt.xticks(fontsize=16)
+        return
+
+    if common_len < len(panel_centers):
+        print(
+            f"Warning: plotting {common_len} ZZ floating ratio points for {cfg['variable']} "
+            f"out of {len(panel_centers)} panel bins."
+        )
+
+    panel_centers = panel_centers[:common_len]
+    panel_widths = panel_widths[:common_len]
+    zz_exp = zz_exp[:common_len]
+    zz_exp_up = zz_exp_up[:common_len]
+    zz_exp_dn = zz_exp_dn[:common_len]
+    zz_exp_stat_up = zz_exp_stat_up[:common_len]
+    zz_exp_stat_dn = zz_exp_stat_dn[:common_len]
+    zz_obs = zz_obs[:common_len]
+    zz_obs_up = zz_obs_up[:common_len]
+    zz_obs_dn = zz_obs_dn[:common_len]
+    zz_obs_stat_up = zz_obs_stat_up[:common_len]
+    zz_obs_stat_dn = zz_obs_stat_dn[:common_len]
+
     ratio_zz = zz_obs / zz_exp
     ratio_zz_up = ratio_zz * np.sqrt((zz_obs_up / zz_obs) ** 2 + (zz_exp_up / zz_exp) ** 2)
     ratio_zz_dn = ratio_zz * np.sqrt((zz_obs_dn / zz_obs) ** 2 + (zz_exp_dn / zz_exp) ** 2)
@@ -884,7 +1069,7 @@ def plot_zzfloating_panel(ax, bins_plot, bins_c, bin_w, cfg, var_label):
     ratio_zz_sys_dn = np.sqrt(np.maximum(0, ratio_zz_dn**2 - ratio_zz_stat_dn**2))
 
     for i, (center, value, err_low, err_high, width) in enumerate(
-        zip(bins_c, ratio_zz, ratio_zz_sys_dn, ratio_zz_sys_up, bin_w)
+        zip(panel_centers, ratio_zz, ratio_zz_sys_dn, ratio_zz_sys_up, panel_widths)
     ):
         plt.hlines(
             value,
@@ -927,7 +1112,7 @@ def plot_zzfloating_panel(ax, bins_plot, bins_c, bin_w, cfg, var_label):
 
 
 def finalize_bottom_axis(axis, variable, cfg):
-    var_label = VAR_LABELS.get(cfg["variable"], cfg["variable"])
+    var_label = get_var_label(cfg["variable"])
     fs_label = ""
     plt.xlabel(r"$" + var_label + r"$" + cfg["x_unit"] + fs_label, fontsize=20)
 
@@ -951,9 +1136,7 @@ def main():
     args = get_options()
     config = load_json(args.config_json)
 
-    variable_list = args.variables.split(",")
-    if "all" in variable_list:
-        variable_list = list(config.keys())
+    variable_list = resolve_plot_variable_list(args.variables, config, args.ZZ, args.YEAR)
 
     for variable in variable_list:
         plot_jobs = create_plot_jobs(variable, config, args)
@@ -1007,7 +1190,7 @@ def main():
                 apply_custom_xticks(axis_for_xticks, variable, bins_c, bins_plot)
 
             if "zzfloating" in variable:
-                var_label = VAR_LABELS.get(current_config["variable"], current_config["variable"])
+                var_label = get_var_label(current_config["variable"])
                 plot_zzfloating_panel(frame3, bins_plot, bins_c, bin_w, current_config, var_label)
 
                 handles1, labels1 = frame1.get_legend_handles_labels()
@@ -1038,7 +1221,7 @@ def main():
             legend._legend_box.align = "left"
 
             plt.sca(axis_for_xticks)
-            var_label = VAR_LABELS.get(current_config["variable"], current_config["variable"])
+            var_label = get_var_label(current_config["variable"])
             if "zzfloating" not in variable:
                 plt.xlabel(r"$" + var_label + r"$" + current_config["x_unit"], fontsize=20)
                 plt.xticks(fontsize=16 if variable in ["Nj_pT4l", "rapidity4l_pT4l"] else 20)

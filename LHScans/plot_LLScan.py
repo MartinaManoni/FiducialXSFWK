@@ -9,10 +9,36 @@ import os.path, sys
 import os
 
 sys.path.append('../helperstuff/')
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from fit.createDatacard import get_zzfloating_merged_bin_indices, ZZFLOATING_BIN_MERGES
 from paths import path
 
 from ROOT import *
 gROOT.SetBatch(True)
+
+def get_merged_bins_for_zz(obsName_base, zz_bin_index):
+    """Get list of original bins merged into a given ZZ normalization bin.
+    
+    Args:
+        obsName_base: Observable name without '_zzfloating' suffix
+        zz_bin_index: Index of ZZ normalization bin (0, 1, 2, ...)
+    
+    Returns:
+        List of original bin indices that map to this ZZ bin, or None if not merged
+    """
+    if obsName_base not in ZZFLOATING_BIN_MERGES:
+        return None
+    
+    mapping = ZZFLOATING_BIN_MERGES[obsName_base]
+    if zz_bin_index >= len(mapping):
+        return None
+    
+    group = mapping[zz_bin_index]
+    if isinstance(group, int):
+        return [group]
+    elif isinstance(group, (list, tuple)):
+        return list(group)
+    return None
 
 NAMECOUNTER = 0
 
@@ -277,14 +303,17 @@ elif(obsName == 'pT4l vs pTj1'):
     
 
 sys.path.append(path['eos_path']+'inputs')
+# When using zzfloating, load inputs for the base observable
+obsName_for_inputs = obsName.replace('_zzfloating', '') if opt.ZZ else obsName
+
 if opt.INTER:
-    _temp = __import__('inputs_sig_extrap_'+obsName+'_'+opt.YEAR, globals(), locals(), ['observableBins']) #, -1)
+    _temp = __import__('inputs_sig_extrap_'+obsName_for_inputs+'_'+opt.YEAR, globals(), locals(), ['observableBins']) #, -1)
 else:
-    _temp = __import__('inputs_sig_'+obsName+'_'+opt.YEAR, globals(), locals(), ['observableBins']) #, -1)
+    _temp = __import__('inputs_sig_'+obsName_for_inputs+'_'+opt.YEAR, globals(), locals(), ['observableBins']) #, -1)
 
 obs_bins = _temp.observableBins
 print(obs_bins)
-_temp = __import__('xsec_'+obsName+'_'+opt.YEAR, globals(), locals(), ['xsec']) # , -1)
+_temp = __import__('xsec_'+obsName_for_inputs+'_'+opt.YEAR, globals(), locals(), ['xsec']) # , -1)
 xsec = _temp.xsec
 sys.path.remove(path['eos_path']+'inputs')
 
@@ -298,11 +327,17 @@ if opt.ZZ:
     obsName += '_zzfloating'
     _obsName[obsName] = _obsName[old_obsName] + '_zzfloating'
 
-nBins = len(obs_bins)
-if not doubleDiff: nBins = nBins-1 #in case of 1D measurement the number of bins is -1 the length of the list of bin boundaries
-if obsName.startswith("mass4l"): nBins = nBins + 3 #in case of mass4l len(obs_bins)=1, we need to add +3 for cross section in the three different final states
-#if obsName == 'mass4l_zzfloating': nBins += 4 #Add a bin for floating bkg
-if 'zzfloating' in obsName: nBins*=2 #Add bins for floating bkg
+raw_nBins = len(obs_bins)
+if not doubleDiff: raw_nBins = raw_nBins-1 #in case of 1D measurement the number of bins is -1 the length of the list of bin boundaries
+if obsName.startswith("mass4l"): raw_nBins = raw_nBins + 3 #in case of mass4l len(obs_bins)=1, we need to add +3 for cross section in the three different final states
+
+zznorm_indices = None
+if opt.ZZ and 'zzfloating' in obsName:
+    zznorm_indices = get_zzfloating_merged_bin_indices(obsName, raw_nBins)
+    nBins = raw_nBins + len(zznorm_indices)
+else:
+    nBins = raw_nBins
+
 if v4_flag: nBins = (len(obs_bins)-1)*2
 if v4_flag and doubleDiff: nBins = len(obs_bins)*2
 if 'kL' in obsName: nBins = 1
@@ -312,11 +347,12 @@ for i in range(nBins):
     print("BIN: ", i)
     _bin = i
 
-    if opt.ZZ:
-        if _bin < nBins//2:
+    if opt.ZZ and zznorm_indices is not None:
+        if _bin < raw_nBins:
             _obs_bin = _poi+str(i)
         else:
-            _obs_bin = 'zz_norm_'+str(i-nBins//2)
+            zz_bin = zznorm_indices[_bin - raw_nBins]
+            _obs_bin = 'zz_norm_'+str(zz_bin)
     else:
         _obs_bin = _poi+str(i)
 
@@ -370,7 +406,7 @@ for i in range(nBins):
                 yval = 2.0 * entry.deltaNLL
                 field = None
 
-                base_nbins = nBins // 2 if opt.ZZ else nBins
+                base_nbins = raw_nBins if opt.ZZ else nBins
 
                 if obsName.startswith("mass4l"):
                     mass4l_fields = {
@@ -394,8 +430,8 @@ for i in range(nBins):
                     field = "kappa_lambda"
 
                 else:
-                    if opt.ZZ and _bin >= base_nbins:
-                        zz_bin = _bin - base_nbins
+                    if opt.ZZ and _bin >= base_nbins and zznorm_indices is not None:
+                        zz_bin = zznorm_indices[_bin - base_nbins]
                         field = f"zz_norm_{zz_bin}"
                     else:
                         field = f"r_smH_{_bin}"
@@ -471,10 +507,11 @@ for i in range(nBins):
         elif _bin == 6: xtitle = "ZZ_{norm}^{4mu}"
         elif _bin == 7: xtitle = "ZZ_{norm}^{2e2mu}"
     elif 'zzfloating' in obsName:
-        if _bin < nBins//2:
+        if _bin < raw_nBins:
             xtitle = "r_{" + str(_bin) + "}"
         else:
-            xtitle = "ZZ_{norm}^{" + str(_bin-nBins//2) + "}"
+            zz_bin = _bin - raw_nBins
+            xtitle = "ZZ_{norm}^{" + str(zz_bin) + "}"
     else:
         xtitle = "r_{" + str(_bin) + "}"
     graphs[0].GetXaxis().SetTitle(xtitle)
@@ -683,7 +720,7 @@ for i in range(nBins):
     plot_bin = _bin
     is_zz = False
     if opt.ZZ:
-        base_nbins = nBins // 2
+        base_nbins = raw_nBins
         if _bin >= base_nbins:
             plot_bin = _bin - base_nbins
             is_zz = True
@@ -734,8 +771,10 @@ for i in range(nBins):
             if _bin == 5: obs_fit = 'Obs. ZZ_{norm}^{4e} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
             if _bin == 6: obs_fit = 'Obs. ZZ_{norm}^{4mu} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
             if _bin == 7: obs_fit = 'Obs. ZZ_{norm}^{2e2mu} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
+        elif is_zz:
+            obs_fit = 'Obs. ZZ_{norm, %d} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (plot_bin, obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
         else:
-            obs_fit = 'Obs. #sigma_{bin, %d} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (_bin, obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
+            obs_fit = 'Obs. #sigma_{%d} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (plot_bin, obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
         Text4.SetTextAlign(12);
         Text4.SetTextSize(0.038)
         Text4.AddText(obs_fit)
@@ -782,10 +821,12 @@ for i in range(nBins):
 
     # Map plotted bin back to the physical observable bin
     plot_bin = _bin
+    is_zz = False
 
     if opt.ZZ:
-        base_nbins = nBins // 2
+        base_nbins = raw_nBins
         if plot_bin >= base_nbins:
+            is_zz = True
             plot_bin -= base_nbins
 
     if 'jet' in obsName and not doubleDiff:
@@ -796,36 +837,58 @@ for i in range(nBins):
         line2 = None
 
         if ('pTj1' in obsName) and not doubleDiff:
-            line1 = f"{obs_bins[plot_bin]} < {label} < {obs_bins[plot_bin+1]}"
-            x = 0.55
+            if is_zz:
+                # For merged ZZ bins, show all original bins that were merged
+                obsName_base = obsName.replace('_zzfloating', '')
+                merged_bins = get_merged_bins_for_zz(obsName_base, plot_bin)
+                if merged_bins:
+                    first_bin = min(merged_bins)
+                    last_bin = max(merged_bins)
+                    line1 = f"{obs_bins[first_bin]} < {label} < {obs_bins[last_bin+1]}"
+                else:
+                    line1 = f"{obs_bins[plot_bin]} < {label} < {obs_bins[plot_bin+1]}"
+            else:
+                line1 = f"{obs_bins[plot_bin]} < {label} < {obs_bins[plot_bin+1]}"
+            x = 0.5
 
         elif obsName.startswith("mass4l"):
             line1 = ""
-            x = 0.55
+            x = 0.5
 
         elif doubleDiff and not v4_flag:
             line1 = f"{obs_bins[plot_bin][0]} < {label} < {obs_bins[plot_bin][1]}"
             line2 = f"{obs_bins[plot_bin][2]} < {label_2nd} < {obs_bins[plot_bin][3]}"
-            x = 0.55
+            x = 0.5
 
         elif doubleDiff and v4_flag:
             phys_bin = plot_bin // 2
             line1 = f"{obs_bins[phys_bin][0]} < {label} < {obs_bins[phys_bin][1]}"
             line2 = f"{obs_bins[phys_bin][2]} < {label_2nd} < {obs_bins[phys_bin][3]}"
-            x = 0.55
+            x = 0.5
 
         elif 'kL' in obsName:
             line1 = ""
-            x = 0.55
+            x = 0.5
 
         elif v4_flag:
             phys_bin = plot_bin // 2
             line1 = f"{obs_bins[phys_bin]} < {label} < {obs_bins[phys_bin+1]}"
-            x = 0.55
+            x = 0.5
 
         else:
-            line1 = f"{obs_bins[plot_bin]} < {label} < {obs_bins[plot_bin+1]}"
-            x = 0.45
+            if is_zz:
+                # For merged ZZ bins, show all original bins that were merged
+                obsName_base = obsName.replace('_zzfloating', '')
+                merged_bins = get_merged_bins_for_zz(obsName_base, plot_bin)
+                if merged_bins:
+                    first_bin = min(merged_bins)
+                    last_bin = max(merged_bins)
+                    line1 = f"{obs_bins[first_bin]} < {label} < {obs_bins[last_bin+1]}"
+                else:
+                    line1 = f"{obs_bins[plot_bin]} < {label} < {obs_bins[plot_bin+1]}"
+            else:
+                line1 = f"{obs_bins[plot_bin]} < {label} < {obs_bins[plot_bin+1]}"
+            x = 0.5
 
         if line1 is not None:
             latex2.DrawLatex(x, 0.65, line1)
@@ -908,9 +971,9 @@ for i in range(nBins):
         elif not obsName.startswith("mass4l"):
             resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
             resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
-            if 'zzfloating' in obsName:
-                resultsXS_data['SM_125_'+obsName+'_zznorm_genbin0'] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
-                resultsXS_data['SM_125_'+obsName+'_zznorm_genbin0_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
+            if 'zzfloating' in obsName and i >= raw_nBins:
+                resultsXS_data['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
+                resultsXS_data['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
         elif obsName == "mass4l_zzfloating":
             if _bin==0:
                 resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
@@ -1041,9 +1104,9 @@ for i in range(nBins):
     else:
         resultsXS_asimov['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
         resultsXS_asimov['SM_125_'+obsName+'_genbin'+str(i)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
-        if 'zzfloating' in obsName:
-            resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(i)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
-            resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(i)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
+        if 'zzfloating' in obsName and i >= raw_nBins:
+            resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
+            resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
 
     c.Update()
     #c.SaveAs("plots/lhscan_compare_"+obsName+"_"+poi+".pdf")

@@ -15,6 +15,34 @@ def load_module_from_file(filepath):
     spec.loader.exec_module(module)
     return module
 
+def load_eff_variation_module(input_file):
+    candidates = [input_file]
+    if '_ORIG.py' in input_file:
+        candidates.append(input_file.replace('_ORIG.py', '.py'))
+
+    seen = set()
+    missing = []
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        if not os.path.exists(candidate):
+            missing.append(f"{candidate}: file does not exist")
+            continue
+        module = load_module_from_file(candidate)
+        if hasattr(module, 'eff_num_var') and hasattr(module, 'eff_den_var'):
+            if candidate != input_file:
+                print(f"WARNING: {input_file} is missing eff_num_var/eff_den_var; using {candidate} instead")
+            return module, candidate
+        missing.append(f"{candidate}: missing eff_num_var/eff_den_var")
+
+    details = "\n".join("  - "+item for item in missing)
+    raise AttributeError(
+        "Cannot compute CMS_HIG25015_*_effMatrix uncertainties because no input file "
+        "contains eff_num_var and eff_den_var. Rerun RunCoefficients to regenerate the "
+        "inputs with theory-variation payloads.\n"+details
+    )
+
 def build_all_matrices(eff_num_var, eff_den_var, NNLOPS):
     import numpy as np
 
@@ -344,6 +372,8 @@ import importlib.util
 import numpy as np
 from pathlib import Path
 
+PROD_MODES = ['ggH125', 'VBFH125', 'WH125', 'ZH125', 'ttH125']
+
 def safe_get(x, j):
     """Return x[j] unless missing/NaN/None, else return 0."""
     try:
@@ -366,7 +396,42 @@ def safe_get(x, j):
     
     return val
 
-def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs_all):
+def format_uncertainty_columns(values, recobin):
+    pdf_rms = values["pdf"]["rms"][recobin]
+    qcd_max, qcd_min = values["qcd"]["max"][recobin], values["qcd"]["min"][recobin]
+    as_max, as_min = values["as"]["max"][recobin], values["as"]["min"][recobin]
+
+    pdf_, qcd_, as_ = [], [], []
+
+    for genbin in range(len(pdf_rms)):
+        pdf_rms_scalar = safe_get(pdf_rms, genbin)
+        qcd_max_scalar = safe_get(qcd_max, genbin)
+        qcd_min_scalar = safe_get(qcd_min, genbin)
+        as_max_scalar  = safe_get(as_max, genbin)
+        as_min_scalar  = safe_get(as_min, genbin)
+
+        if pdf_rms_scalar == 100:
+            pdf_rms_scalar = 0
+        if qcd_max_scalar == 100:
+            qcd_max_scalar = 0
+        if qcd_min_scalar == 100:
+            qcd_min_scalar = 0
+        if as_max_scalar == 100:
+            as_max_scalar = 0
+        if as_min_scalar == 100:
+            as_min_scalar = 0
+
+        pdf_.append(f"{1+(pdf_rms_scalar/100):.7f}/{1-(pdf_rms_scalar/100):.7f}")
+        qcd_.append(f"{1+(qcd_max_scalar/100):.7f}/{1-(qcd_min_scalar/100):.7f}")
+        as_.append(f"{1+(as_max_scalar/100):.7f}/{1-(as_min_scalar/100):.7f}")
+
+        pdf_.append(" ")
+        qcd_.append(" ")
+        as_.append(" ")
+
+    return pdf_, qcd_, as_
+
+def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs_all, split_prod_mode=False):
  
     variable = obsName
 
@@ -381,13 +446,15 @@ def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs
 
     out_dir = Path(f"../datacard/datacard_{year}")
 
-    for fs, values in percent_diffs_all.items():
+    fs_names = sorted(next(iter(percent_diffs_all.values())).keys()) if split_prod_mode else sorted(percent_diffs_all.keys())
+
+    for fs in fs_names:
 
         if fs == "4l":
             continue
 
+        values = percent_diffs_all[PROD_MODES[0]][fs] if split_prod_mode else percent_diffs_all[fs]
         recobins = len(values["pdf"]["rms"])
-        genbins = len(values["pdf"]["rms"][0])
 
         for i in range(recobins):
 
@@ -395,39 +462,19 @@ def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs
             datacard_path = out_dir / f"hzz4l_{fs}S_13TeV_xs_{variable}_bin{i}_{physicalModel}.txt"
             print(f"Processing datacard: {datacard_path}")
 
-            # Build the lines
-            pdf_rms = values["pdf"]["rms"][i]
-            qcd_max, qcd_min = values["qcd"]["max"][i], values["qcd"]["min"][i]
-            as_max, as_min = values["as"]["max"][i], values["as"]["min"][i]
-
             pdf_, qcd_, as_ = [], [], []
-
-            for j in range(genbins):
-
-                pdf_rms_scalar = safe_get(pdf_rms, j)
-                qcd_max_scalar = safe_get(qcd_max, j)
-                qcd_min_scalar = safe_get(qcd_min, j)
-                as_max_scalar  = safe_get(as_max, j)
-                as_min_scalar  = safe_get(as_min, j)
-
-                if pdf_rms_scalar == 100: 
-                    pdf_rms_scalar = 0
-                if qcd_max_scalar == 100: 
-                    qcd_max_scalar = 0
-                if qcd_min_scalar == 100:
-                    qcd_min_scalar = 0
-                if as_max_scalar == 100: 
-                    as_max_scalar = 0
-                if as_min_scalar == 100: 
-                    as_min_scalar = 0
-                    
-                pdf_.append(f"{1+(pdf_rms_scalar/100):.7f}/{1-(pdf_rms_scalar/100):.7f}")
-                qcd_.append(f"{1+(qcd_max_scalar/100):.7f}/{1-(qcd_min_scalar/100):.7f}")
-                as_.append(f"{1+(as_max_scalar/100):.7f}/{1-(as_min_scalar/100):.7f}")
-
-                pdf_.append(" ")
-                qcd_.append(" ")
-                as_.append(" ")
+            if split_prod_mode:
+                for prod_mode in PROD_MODES:
+                    if prod_mode not in percent_diffs_all:
+                        raise KeyError(f"Missing {prod_mode} in efficiency uncertainty matrices for split production mode")
+                    if fs not in percent_diffs_all[prod_mode]:
+                        raise KeyError(f"Missing final state {fs} for {prod_mode} in efficiency uncertainty matrices")
+                    prod_pdf, prod_qcd, prod_as = format_uncertainty_columns(percent_diffs_all[prod_mode][fs], i)
+                    pdf_.extend(prod_pdf)
+                    qcd_.extend(prod_qcd)
+                    as_.extend(prod_as)
+            else:
+                pdf_, qcd_, as_ = format_uncertainty_columns(values, i)
 
             # Join into strings
             pdf_str = "CMS_HIG25015_pdf_effMatrix lnN " + "".join(pdf_) + "- - - - -\n"
@@ -455,7 +502,7 @@ def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs
             print(f"Appended uncertainties to {datacard_path}")
 
 
-def run_pdf_unc_matrices(input_file, obsName, year, physicalModel):
+def run_pdf_unc_matrices(input_file, obsName, year, physicalModel, split_prod_mode=False):
     if "NNLOPS" in input_file:
         NNLOPS = True
     else:
@@ -464,14 +511,18 @@ def run_pdf_unc_matrices(input_file, obsName, year, physicalModel):
     if 'zzfloating' in input_file:
         input_file = input_file.replace('_zzfloating', '')
 
-    module = load_module_from_file(input_file)
+    module, input_file = load_eff_variation_module(input_file)
     eff_num_var = module.eff_num_var
     eff_den_var = module.eff_den_var
 
     matrices_all, genbins, recobins, keys = build_all_matrices(eff_num_var, eff_den_var, NNLOPS)
     matrices = build_matrices(matrices_all, genbins, recobins)
     percent_diffs = compute_percent_variations(matrices, matrices_all)
-    append_uncertainties(input_file, obsName, year, physicalModel, transpose_all(percent_diffs)['allH125'])
+    percent_diffs = transpose_all(percent_diffs)
+    if split_prod_mode:
+        append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs, split_prod_mode=True)
+    else:
+        append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs['allH125'])
 
     #plot_and_save_matrices(matrices_all, obsName, year, genbins, recobins, input_file, "all")
     #plot_and_save_matrices(matrices, obsName, year, genbins, recobins, input_file, "variations")

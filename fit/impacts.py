@@ -35,6 +35,7 @@ def parseOptions():
     parser.add_option('',   '--interpolation', action='store_true', dest='INTER', default=False, help='Calculate acceptances at 124 and 126 GeV')
     #parser.add_option('',   '--NOK1K2',action='store_true', dest='NOK1K2',default=False, help='remove K1 K2 parameters')
     parser.add_option('',   '--ZZfloating',action='store_true', dest='ZZ',default=False, help='Let ZZ normalisation to float')
+    parser.add_option('',   '--doVBF', action='store_true', dest='DO_VBF', default=False, help='Run VBF and total-minus-VBF impacts for absdetajj vs mjj')
 
     # Unblind option
     parser.add_option('',   '--unblind', action='store_true', dest='UNBLIND', default=False, help='Use real data')
@@ -42,6 +43,9 @@ def parseOptions():
     # store options and arguments as global variables
     global opt, args
     (opt, args) = parser.parse_args()
+
+    if opt.DO_VBF and opt.OBSNAME.strip() != 'absdetajj vs mjj':
+        parser.error('--doVBF may only be used with --obsName "absdetajj vs mjj"')
 
     # if (opt.OBSBINS=='' and opt.OBSNAME!='inclusive'):
     #     parser.error('Bin boundaries not specified for differential measurement. Exiting...')
@@ -82,6 +86,51 @@ def processCmd(cmd, quiet=0):
     if p.wait() != 0:
         raise RuntimeError(f"Command '{cmd}' failed with exit status: {p.returncode}")
     return output
+
+def run_special_impact(obsName, workspace_tag, poi, output_tag, set_params, unblind):
+    workspace = path['eos_path']+'combine_files/SM_125_all_13TeV_xs_'+obsName+'_bin_v3_'+workspace_tag+'_'+str(opt.YEAR)+'.root'
+    output_base = 'impacts_'+opt.YEAR+'_v3_'+obsName+'_'+output_tag+'_'
+    json_name = output_base + ('data.json' if unblind else 'asimov.json')
+    poi_range = 'MH=125.38,125.38:%s=0,10' %(poi)
+    common = ' -d '+workspace+' -m 125.38 --cminDefaultMinimizerStrategy 0 --robustFit 1'
+    common += ' --redefineSignalPOIs '+poi
+    common += ' --setParameterRanges '+poi_range
+    common += ' --setParameters '+set_params
+
+    cmd = 'combineTool.py -M Impacts'+common+' --doInitialFit'
+    if not unblind:
+        cmd += ' -t -1'
+    print('---------------------------')
+    print(cmd, '\n')
+    print('---------------------------')
+    cmds.append(cmd)
+    processCmd(cmd)
+
+    cmd = 'combineTool.py -M Impacts'+common+' --doFits --parallel 10'
+    if not unblind:
+        cmd += ' -t -1'
+    print('---------------------------')
+    print(cmd, '\n')
+    print('---------------------------')
+    cmds.append(cmd)
+    processCmd(cmd)
+
+    cmd = 'combineTool.py -M Impacts'+common+' -o '+json_name
+    if not unblind:
+        cmd += ' -t -1'
+    print('---------------------------')
+    print(cmd, '\n')
+    print('---------------------------')
+    cmds.append(cmd)
+    processCmd(cmd)
+
+    suffix = 'data' if unblind else 'asimov'
+    cmd = 'plotImpacts.py --blind -i '+json_name+' -o impacts_'+opt.YEAR+'_v3_'+obsName+'_'+output_tag+'_'+suffix+' --POI '+poi
+    print('---------------------------')
+    print(cmd, '\n')
+    print('---------------------------')
+    cmds.append(cmd)
+    processCmd(cmd)
 
 def impactPlots(obsName):
 
@@ -148,6 +197,11 @@ def impactPlots(obsName):
             # cmd_XSEC += 'SigmaBin'+str(obsBin)+'='+str(tmp_xs['2e2mu_genbin'+str(obsBin)]+tmp_xs['4e_genbin'+str(obsBin)]+tmp_xs['4mu_genbin'+str(obsBin)])+','
             cmd_XSEC += 'r_smH_'+obsName_poi+'_'+str(obsBin)+'=1,'
         cmd_XSEC = cmd_XSEC[:-1]
+        cmd_XSEC_without_vbf_bin = ','.join([
+            'r_smH_'+obsName_poi+'_'+str(obsBin)+'=1'
+            for obsBin in range(nBins)
+            if obsBin != 3
+        ])
 
         cmd_BR = ''
         for obsBin in range(nBins):
@@ -224,7 +278,9 @@ def impactPlots(obsName):
     # else: max_sigma = '2.5'
     else: max_sigma = '5'
 
-    if opt.ZZ: obsName = obsName + '_zzfloating'
+    obsName_base = obsName
+    if opt.ZZ:
+        obsName = obsName + '_zzfloating'
 
     ### First step (Files from asimov and data have the same name)
     cmd = 'combineTool.py -M Impacts -d ' + path['eos_path']+'combine_files/SM_125_all_13TeV_xs_'+obsName+'_bin_'+opt.PHYSICSMODEL+'_'+str(opt.YEAR)+'.root -m 125.38 --cminDefaultMinimizerStrategy 0 --doInitialFit --robustFit 1'
@@ -339,6 +395,31 @@ def impactPlots(obsName):
             print('---------------------------')
             cmds.append(cmd)
             # output = processCmd(cmd) # spencer
+
+        if opt.DO_VBF:
+            if obsName_base != 'absdetajj_mjj' or nBins != 4:
+                raise RuntimeError('--doVBF expects "absdetajj vs mjj" to have bins 0-3, but found '+str(nBins)+' bins')
+            vbf_poi = 'r_VBFH_'+obsName_poi+'_3'
+            total_minus_vbf_poi = 'r_totalMinusVBF_'+obsName_poi+'_3'
+            vbf_set_params = 'MH=125.38,'+vbf_poi+'=1'
+            total_minus_vbf_set_params = 'MH=125.38,'+total_minus_vbf_poi+'=1'
+
+            run_special_impact(
+                obsName,
+                'doVBF',
+                vbf_poi,
+                'r_VBFH_'+obsName_poi+'_3',
+                vbf_set_params,
+                opt.UNBLIND
+            )
+            run_special_impact(
+                obsName,
+                'totalMinusVBF',
+                total_minus_vbf_poi,
+                'r_totalMinusVBF_'+obsName_poi+'_3',
+                total_minus_vbf_set_params,
+                opt.UNBLIND
+            )
 
     elif opt.PHYSICSMODEL=='v2':
         # for obsBin in ['2e2muBin0','4eBin0','4muBin0']:

@@ -1022,6 +1022,11 @@ def createXSworkspace(obsName, channel, nBins, obsBin, observableBins, addfakeH,
             prodProcessName = signalProcessName(processName, signalProdMode)
             fidxsProdName = "fidxs_"+signalProdMode+"_"+channel+"_"+str(genbin)
             fidxsProd = higgs_xs[PROD_XS_NAMES[signalProdMode]+'_125.38']*higgs4l_br['125.38_'+channel]*acc[signalProdMode+'125_'+channel+'_'+rawObsName+'_genbin'+str(genbin)+'_recobin'+str(genbin)]
+            if physicalModel == 'v2':
+                fidxsTotal = 0.0
+                for prodModeForTotal in PROD_MODES:
+                    fidxsTotal += higgs_xs[PROD_XS_NAMES[prodModeForTotal]+'_125.38']*higgs4l_br['125.38_'+channel]*acc[prodModeForTotal+'125_'+channel+'_'+rawObsName+'_genbin'+str(genbin)+'_recobin'+str(genbin)]
+                fidxsProd = fidxsProd/fidxsTotal if fidxsTotal > 0.0 else 0.0
             fidxs_prod_var[(signalProdMode, genbin)] = ROOT.RooRealVar(fidxsProdName, fidxsProdName, fidxsProd)
             fidxs_prod_var[(signalProdMode, genbin)].setConstant(True)
             prodH_norm[(signalProdMode, genbin)] = ROOT.RooFormulaVar(prodProcessName+"_norm", "@0*@1*@2", ROOT.RooArgList(fidxs_prod_var[(signalProdMode, genbin)], fideff_prod_var[(signalProdMode, genbin)], lumi))

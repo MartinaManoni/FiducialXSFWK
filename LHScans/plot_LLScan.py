@@ -40,6 +40,9 @@ def get_merged_bins_for_zz(obsName_base, zz_bin_index):
         return list(group)
     return None
 
+def format_double_diff_bin_line(obs_bin, label, label_2nd):
+    return f"{obs_bin[0]} < {label} < {obs_bin[1]}, {obs_bin[2]} < {label_2nd} < {obs_bin[3]}"
+
 NAMECOUNTER = 0
 
 grootargs = []
@@ -63,10 +66,14 @@ def parseOptions():
     parser.add_option('',   '--v4', action='store_true', dest='V4', default= False, help='Print NLL scans for v4 physics model')
     parser.add_option('',   '--interpolation', action='store_true', dest='INTER', default=False, help='Calculate acceptances at 124 and 126 GeV')
     parser.add_option('',   '--ZZfloating',action='store_true', dest='ZZ',default=False, help='Let ZZ normalisation to float')
+    parser.add_option('',   '--doVBF', action='store_true', dest='DO_VBF', default=False, help='Also plot the floating VBF POI for absdetajj vs mjj')
 
     # store options and arguments as global variables
     global opt, args
     (opt, args) = parser.parse_args()
+
+    if opt.DO_VBF and opt.OBSNAME.strip() != 'absdetajj vs mjj':
+        parser.error('--doVBF may only be used with --obsName "absdetajj vs mjj"')
 
 # parse the arguments and options
 global opt, args, runAllSteps
@@ -141,6 +148,13 @@ def BuildScan(scan, param, files, color, yvals, ycut):
         "other_1sig" : other_1sig,
         "other_2sig" : other_2sig
     }
+
+def quadrature_subtract(total_unc, stat_unc):
+    diff = total_unc**2 - stat_unc**2
+    if diff < 0:
+        print('Warning: stat-only uncertainty is larger than stat+sys; setting syst component to 0.')
+        return 0.0
+    return math.sqrt(diff)
 
 yvals = [1., 3.84]
 
@@ -337,6 +351,15 @@ if opt.ZZ and 'zzfloating' in obsName:
     nBins = raw_nBins + len(zznorm_indices)
 else:
     nBins = raw_nBins
+vbf_scan_index = None
+total_minus_vbf_scan_index = None
+if opt.DO_VBF:
+    if obsName.replace('_zzfloating', '') != 'absdetajj_mjj' or raw_nBins != 4:
+        raise RuntimeError('--doVBF expects "absdetajj vs mjj" to have bins 0-3, but found '+str(raw_nBins)+' bins')
+    vbf_scan_index = nBins
+    nBins += 1
+    total_minus_vbf_scan_index = nBins
+    nBins += 1
 
 if v4_flag: nBins = (len(obs_bins)-1)*2
 if v4_flag and doubleDiff: nBins = len(obs_bins)*2
@@ -346,8 +369,15 @@ for i in range(nBins):
 
     print("BIN: ", i)
     _bin = i
+    is_vbf = opt.DO_VBF and _bin == vbf_scan_index
+    is_total_minus_vbf = opt.DO_VBF and _bin == total_minus_vbf_scan_index
+    vbf_physical_bin = raw_nBins - 1
 
-    if opt.ZZ and zznorm_indices is not None:
+    if is_vbf:
+        _obs_bin = 'r_VBFH_'+str(vbf_physical_bin)
+    elif is_total_minus_vbf:
+        _obs_bin = 'r_totalMinusVBF_'+str(vbf_physical_bin)
+    elif opt.ZZ and zznorm_indices is not None:
         if _bin < raw_nBins:
             _obs_bin = _poi+str(i)
         else:
@@ -387,8 +417,34 @@ for i in range(nBins):
     grapherrs = []
     grapherrslow = []
 
-    for ifile in range(len(fileList)):
-        rfile = fileList[ifile].replace('OBS', _obs_bin)
+    scan_fileList = fileList
+    scan_titles = titles
+    scan_colors = colors
+    scan_idx_max = idx_max
+    has_observed_scan = opt.UNBLIND
+
+    if is_vbf or is_total_minus_vbf:
+        scan_fileList = []
+        scan_titles = []
+        scan_colors = []
+        for ifile, file_template in enumerate(fileList):
+            rfile = file_template.replace('OBS', _obs_bin)
+            rfile = rfile.replace('BIN', obsName)
+            fname = inputPath+rfile
+            if plot.TFileIsGood(fname):
+                scan_fileList.append(file_template)
+                scan_titles.append(titles[ifile])
+                scan_colors.append(colors[ifile])
+            else:
+                print('Skipping missing optional scan file:', fname)
+        if len(scan_fileList) == 0:
+            print('No optional scan files found for bin '+str(vbf_physical_bin)+'. Skipping plot.')
+            continue
+        scan_idx_max = min(idx_max, len(scan_fileList)-1)
+        has_observed_scan = any(('.123456.root' not in f) for f in scan_fileList)
+
+    for ifile in range(len(scan_fileList)):
+        rfile = scan_fileList[ifile].replace('OBS', _obs_bin)
         rfile = rfile.replace('BIN', obsName)
         graphs.append(TGraph())
         fname = inputPath+rfile
@@ -429,6 +485,12 @@ for i in range(nBins):
                 elif "kL" in obsName and _bin == 0:
                     field = "kappa_lambda"
 
+                elif is_vbf:
+                    field = f"r_VBFH_{_obsName[obsName]}_{vbf_physical_bin}"
+
+                elif is_total_minus_vbf:
+                    field = f"r_totalMinusVBF_{_obsName[obsName]}_{vbf_physical_bin}"
+
                 else:
                     if opt.ZZ and _bin >= base_nbins and zznorm_indices is not None:
                         zz_bin = zznorm_indices[_bin - base_nbins]
@@ -452,15 +514,15 @@ for i in range(nBins):
         for entry in range(graphs[0].GetN()):
             graphs[0].SetPoint(entry, x[entry], y[entry])
 
-    graphs[0].SetLineColor(colors[0])
+    graphs[0].SetLineColor(scan_colors[0])
     graphs[0].SetLineWidth(3)
     graphs[0].Sort()
-    graphs[0].SetTitle(titles[0])
-    graphs[0].SetFillColor(colors[0])
+    graphs[0].SetTitle(scan_titles[0])
+    graphs[0].SetFillColor(scan_colors[0])
     graphs[0].SetFillStyle(3000)
 
-    mini = graphs[idx_max].GetXaxis().GetXmin()
-    maxi = graphs[idx_max].GetXaxis().GetXmax()
+    mini = graphs[scan_idx_max].GetXaxis().GetXmin()
+    maxi = graphs[scan_idx_max].GetXaxis().GetXmax()
     if mini > graphs[0].GetXaxis().GetXmin():
         mini = graphs[0].GetXaxis().GetXmin()
     if maxi < graphs[0].GetXaxis().GetXmax():
@@ -495,6 +557,10 @@ for i in range(nBins):
         elif _bin == 19: xtitle = "#sigma_{bin 4l 9}"
         elif _bin == 20: xtitle = "#sigma_{bin 2e2mu 10}"
         elif _bin == 21: xtitle = "#sigma_{bin 4l 10}"
+    elif is_vbf:
+        xtitle = "r_{VBF}"
+    elif is_total_minus_vbf:
+        xtitle = "r_{total-VBF}"
     elif 'kL' in obsName:
         xtitle = "#kappa_{#lambda}"
     elif obsName == 'mass4l' or obsName == 'mass4l_zzfloating':
@@ -531,14 +597,14 @@ for i in range(nBins):
     c.Update()
 
     for ig in range(1,len(graphs)) :
-        graphs[ig].SetLineColor(colors[ig])
-        graphs[ig].SetFillColor(colors[ig])
+        graphs[ig].SetLineColor(scan_colors[ig])
+        graphs[ig].SetFillColor(scan_colors[ig])
         graphs[ig].SetFillStyle(3000)
         graphs[ig].SetLineWidth(3)
-        if 'stat-only' in titles[ig]:
+        if 'stat-only' in scan_titles[ig]:
             graphs[ig].SetLineWidth(2)
             graphs[ig].SetLineStyle(2)
-        graphs[ig].SetTitle(titles[ig])
+        graphs[ig].SetTitle(scan_titles[ig])
         graphs[ig].Sort()
 
         if obsName == 'mass4l':
@@ -565,11 +631,17 @@ for i in range(nBins):
     leg.SetTextSize(0.034)
     leg.SetTextFont(42)
     for ip in range(0, len(graphs)):
-        leg.AddEntry(graphs[ip], titles[ip], "l")
+        leg.AddEntry(graphs[ip], scan_titles[ip], "l")
 
     leg.Draw("SAME")
 
-    if 'smH' in _obs_bin:
+    if is_vbf:
+        poi = 'r_VBFH_'+_obsName[obsName]+'_'+str(vbf_physical_bin)
+        poi_fn = 'r_VBFH_'+str(vbf_physical_bin)
+    elif is_total_minus_vbf:
+        poi = 'r_totalMinusVBF_'+_obsName[obsName]+'_'+str(vbf_physical_bin)
+        poi_fn = 'r_totalMinusVBF_'+str(vbf_physical_bin)
+    elif 'smH' in _obs_bin:
         poi = 'r_smH_'+_obsName[obsName]+'_'+str(i)
         poi_fn = 'r_smH_'+str(i)
     else:
@@ -627,10 +699,10 @@ for i in range(nBins):
         exp_nom_stat = exp_scan_stat['val']
         # exp_2sig_stat = exp_scan_stat['val_2sig']
 
-    exp_up_sys = np.sqrt(exp_nom[1]**2 - exp_nom_stat[1]**2)
-    exp_do_sys = np.sqrt(exp_nom[2]**2 - exp_nom_stat[2]**2)
+    exp_up_sys = quadrature_subtract(exp_nom[1], exp_nom_stat[1])
+    exp_do_sys = quadrature_subtract(exp_nom[2], exp_nom_stat[2])
 
-    if (opt.UNBLIND):
+    if (opt.UNBLIND and has_observed_scan):
         if 'kL' in obsName:
             fname = inputPath + "higgsCombine_"+obsName+".MultiDimFit.mH125.38.root"
             if plot.TFileIsGood(fname):
@@ -686,8 +758,8 @@ for i in range(nBins):
             obs_nom_stat = obs_scan_stat['val']
             obs_2sig_stat = obs_scan_stat['val_2sig']
 
-        obs_up_sys = np.sqrt(obs_nom[1]**2 - obs_nom_stat[1]**2)
-        obs_do_sys = np.sqrt(obs_nom[2]**2 - obs_nom_stat[2]**2)
+        obs_up_sys = quadrature_subtract(obs_nom[1], obs_nom_stat[1])
+        obs_do_sys = quadrature_subtract(obs_nom[2], obs_nom_stat[2])
 
     #For v3 model we multiply by the expected th xs
     if 'smH' in _obs_bin:
@@ -701,7 +773,7 @@ for i in range(nBins):
         exp_up_sys *= xsec['SigmaBin'+str(i)]
         exp_do_sys *= xsec['SigmaBin'+str(i)]
 
-        if opt.UNBLIND:
+        if opt.UNBLIND and has_observed_scan:
             obs_nom = list(obs_nom)
             obs_nom_stat = list(obs_nom_stat)
             obs_nom[0] *= xsec['SigmaBin'+str(i)]
@@ -712,14 +784,16 @@ for i in range(nBins):
             obs_up_sys *= xsec['SigmaBin'+str(i)]
             obs_do_sys *= xsec['SigmaBin'+str(i)]
 
-    if(opt.UNBLIND):
+    if(opt.UNBLIND and has_observed_scan):
         Text3 = TPaveText(0.15, 0.81,0.4,0.9,'brNDC')
     else:
     	Text3 = TPaveText(0.15, 0.76,0.4,0.84,'bfNDC')
 
     plot_bin = _bin
     is_zz = False
-    if opt.ZZ:
+    if is_vbf or is_total_minus_vbf:
+        plot_bin = vbf_physical_bin
+    if opt.ZZ and not (is_vbf or is_total_minus_vbf):
         base_nbins = raw_nBins
         if _bin >= base_nbins:
             plot_bin = _bin - base_nbins
@@ -747,6 +821,10 @@ for i in range(nBins):
     else:
         if is_zz:
             exp_fit = 'Exp. ZZ_{norm, %d} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (plot_bin, exp_nom[0], exp_nom_stat[1], abs(exp_nom_stat[2]), exp_up_sys, exp_do_sys)
+        elif is_vbf:
+            exp_fit = 'Exp. r_{VBF} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (exp_nom[0], exp_nom_stat[1], abs(exp_nom_stat[2]), exp_up_sys, exp_do_sys)
+        elif is_total_minus_vbf:
+            exp_fit = 'Exp. r_{total-VBF} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (exp_nom[0], exp_nom_stat[1], abs(exp_nom_stat[2]), exp_up_sys, exp_do_sys)
         else:
             exp_fit = 'Exp. #sigma_{%d} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (plot_bin, exp_nom[0], exp_nom_stat[1], abs(exp_nom_stat[2]), exp_up_sys, exp_do_sys)
             
@@ -758,7 +836,7 @@ for i in range(nBins):
     Text3.SetBorderSize(0)
     Text3.Draw()
 
-    if(opt.UNBLIND):
+    if(opt.UNBLIND and has_observed_scan):
         Text4 = TPaveText(0.15, 0.71,0.4,0.8,'brNDC')
         if 'kL' in obsName:
             obs_fit = 'Obs. #kappa_{#lambda} = %.1f^{#plus %.1f}_{#minus %.1f} (stat)^{#plus %.1f}_{#minus %.1f} (syst)' % (obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
@@ -773,6 +851,10 @@ for i in range(nBins):
             if _bin == 7: obs_fit = 'Obs. ZZ_{norm}^{2e2mu} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
         elif is_zz:
             obs_fit = 'Obs. ZZ_{norm, %d} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (plot_bin, obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
+        elif is_vbf:
+            obs_fit = 'Obs. r_{VBF} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
+        elif is_total_minus_vbf:
+            obs_fit = 'Obs. r_{total-VBF} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
         else:
             obs_fit = 'Obs. #sigma_{%d} = %.2f^{#plus %.2f}_{#minus %.2f} (stat)^{#plus %.2f}_{#minus %.2f} (syst)' % (plot_bin, obs_nom[0], obs_nom_stat[1], abs(obs_nom_stat[2]), obs_up_sys, obs_do_sys)
         Text4.SetTextAlign(12);
@@ -822,8 +904,10 @@ for i in range(nBins):
     # Map plotted bin back to the physical observable bin
     plot_bin = _bin
     is_zz = False
+    if is_vbf or is_total_minus_vbf:
+        plot_bin = vbf_physical_bin
 
-    if opt.ZZ:
+    if opt.ZZ and not (is_vbf or is_total_minus_vbf):
         base_nbins = raw_nBins
         if plot_bin >= base_nbins:
             is_zz = True
@@ -835,6 +919,7 @@ for i in range(nBins):
     else:
         line1 = None
         line2 = None
+        plot_lines = []
 
         if ('pTj1' in obsName) and not doubleDiff:
             if is_zz:
@@ -856,14 +941,20 @@ for i in range(nBins):
             x = 0.5
 
         elif doubleDiff and not v4_flag:
-            line1 = f"{obs_bins[plot_bin][0]} < {label} < {obs_bins[plot_bin][1]}"
-            line2 = f"{obs_bins[plot_bin][2]} < {label_2nd} < {obs_bins[plot_bin][3]}"
+            if is_zz:
+                obsName_base = obsName.replace('_zzfloating', '')
+                merged_bins = get_merged_bins_for_zz(obsName_base, plot_bin)
+                if merged_bins:
+                    plot_lines = [format_double_diff_bin_line(obs_bins[merged_bin], label, label_2nd) for merged_bin in merged_bins]
+                else:
+                    plot_lines = [format_double_diff_bin_line(obs_bins[plot_bin], label, label_2nd)]
+            else:
+                plot_lines = [format_double_diff_bin_line(obs_bins[plot_bin], label, label_2nd)]
             x = 0.5
 
         elif doubleDiff and v4_flag:
             phys_bin = plot_bin // 2
-            line1 = f"{obs_bins[phys_bin][0]} < {label} < {obs_bins[phys_bin][1]}"
-            line2 = f"{obs_bins[phys_bin][2]} < {label_2nd} < {obs_bins[phys_bin][3]}"
+            plot_lines = [format_double_diff_bin_line(obs_bins[phys_bin], label, label_2nd)]
             x = 0.5
 
         elif 'kL' in obsName:
@@ -890,10 +981,14 @@ for i in range(nBins):
                 line1 = f"{obs_bins[plot_bin]} < {label} < {obs_bins[plot_bin+1]}"
             x = 0.5
 
-        if line1 is not None:
-            latex2.DrawLatex(x, 0.65, line1)
-        if line2 is not None:
-            latex2.DrawLatex(x, 0.60, line2)
+        if plot_lines:
+            for iline, line in enumerate(plot_lines):
+                latex2.DrawLatex(x, 0.65 - 0.05 * iline, line)
+        else:
+            if line1 is not None:
+                latex2.DrawLatex(x, 0.65, line1)
+            if line2 is not None:
+                latex2.DrawLatex(x, 0.60, line2)
 
     latex2.DrawLatex(0.995,0.21, "#scale[0.7]{#color[12]{68% CL}}")
     latex2.DrawLatex(0.995,0.49, "#scale[0.7]{#color[12]{95% CL}}")
@@ -906,7 +1001,7 @@ for i in range(nBins):
     c.Modified()
     c.Update()
 
-    if(opt.UNBLIND):
+    if(opt.UNBLIND and has_observed_scan):
         if v4_flag:
             if _bin==0:
                 resultsXS_data_v4['SM_125_'+obsName+'_2e2mu_genbin0'] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
@@ -969,11 +1064,18 @@ for i in range(nBins):
                 resultsXS_data_v4['SM_125_'+obsName+'_4l_genbin9'] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
                 resultsXS_data_v4['SM_125_'+obsName+'_4l_genbin5_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
         elif not obsName.startswith("mass4l"):
-            resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
-            resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
-            if 'zzfloating' in obsName and i >= raw_nBins:
-                resultsXS_data['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
-                resultsXS_data['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
+            if is_vbf:
+                resultsXS_data['SM_125_'+obsName+'_VBFH_genbin'+str(vbf_physical_bin)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
+                resultsXS_data['SM_125_'+obsName+'_VBFH_genbin'+str(vbf_physical_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
+            elif is_total_minus_vbf:
+                resultsXS_data['SM_125_'+obsName+'_totalMinusVBF_genbin'+str(vbf_physical_bin)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
+                resultsXS_data['SM_125_'+obsName+'_totalMinusVBF_genbin'+str(vbf_physical_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
+            else:
+                resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
+                resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
+                if 'zzfloating' in obsName and i >= raw_nBins:
+                    resultsXS_data['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
+                    resultsXS_data['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(obs_nom_stat[2]), "uncerUp": obs_nom_stat[1], "central": obs_nom[0]}
         elif obsName == "mass4l_zzfloating":
             if _bin==0:
                 resultsXS_data['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(obs_nom[2]), "uncerUp": obs_nom[1], "central": obs_nom[0]}
@@ -1102,11 +1204,18 @@ for i in range(nBins):
             resultsXS_asimov_v4['SM_125_'+obsName+'_4l_genbin9'] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
             resultsXS_asimov_v4['SM_125_'+obsName+'_4l_genbin5_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
     else:
-        resultsXS_asimov['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
-        resultsXS_asimov['SM_125_'+obsName+'_genbin'+str(i)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
-        if 'zzfloating' in obsName and i >= raw_nBins:
-            resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
-            resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
+        if is_vbf:
+            resultsXS_asimov['SM_125_'+obsName+'_VBFH_genbin'+str(vbf_physical_bin)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
+            resultsXS_asimov['SM_125_'+obsName+'_VBFH_genbin'+str(vbf_physical_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
+        elif is_total_minus_vbf:
+            resultsXS_asimov['SM_125_'+obsName+'_totalMinusVBF_genbin'+str(vbf_physical_bin)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
+            resultsXS_asimov['SM_125_'+obsName+'_totalMinusVBF_genbin'+str(vbf_physical_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
+        else:
+            resultsXS_asimov['SM_125_'+obsName+'_genbin'+str(i)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
+            resultsXS_asimov['SM_125_'+obsName+'_genbin'+str(i)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
+            if 'zzfloating' in obsName and i >= raw_nBins:
+                resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)] = {"uncerDn": -1.0*abs(exp_nom[2]), "uncerUp": exp_nom[1], "central": exp_nom[0]}
+                resultsXS_asimov['SM_125_'+obsName+'_zznorm_genbin'+str(zz_bin)+'_statOnly'] = {"uncerDn": -1.0*abs(exp_nom_stat[2]), "uncerUp": exp_nom_stat[1], "central": exp_nom[0]}
 
     c.Update()
     #c.SaveAs("plots/lhscan_compare_"+obsName+"_"+poi+".pdf")

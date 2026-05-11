@@ -703,8 +703,10 @@ def getCoeff(channel, m4l_low, m4l_high, obs_reco, obs_gen, obs_bins, recobin, g
             err_effrecotofid[processBin] = -1.0
 
 
-        ### THEORY UNCERTAINTY ON EFFICIENCY ###
+        ### THEORY UNCERTAINTY ON ACCEPTANCE AND EFFICIENCY ###
         
+        acc_num_var[processBin] = {}
+        acc_den_var[processBin] = {}
         eff_num_var[processBin] = {}
         eff_den_var[processBin] = {}
 
@@ -712,6 +714,8 @@ def getCoeff(channel, m4l_low, m4l_high, obs_reco, obs_gen, obs_bins, recobin, g
 
             for scale in ["pdf", "qcd", "as"]:
 
+                acc_num_var[processBin][scale] = {}
+                acc_den_var[processBin][scale] = {}
                 eff_num_var[processBin][scale] = {}
                 eff_den_var[processBin][scale] = {}
 
@@ -724,6 +728,8 @@ def getCoeff(channel, m4l_low, m4l_high, obs_reco, obs_gen, obs_bins, recobin, g
                     datafr['recoweight_var'] = datafr[recoweight] * var_values
                     datafr['weight_var'] = datafr[genweight] * var_values
 
+                    acc_num_var[processBin][scale][w] = datafr[passedFiducialSelection & cutm4l_gen & cutobs_gen & cutchan_gen & cuth4l_gen]['weight_var'].sum()
+                    acc_den_var[processBin][scale][w] = datafr[cutchan_gen_out]['weight_var'].sum()
                     eff_num_var[processBin][scale][w] = datafr[cutm4l_reco & cutobs_reco & passedFullSelection & cuth4l_reco & passedFiducialSelection & cuth4l_gen & cutm4l_gen & cutchan_gen & cutobs_gen]['recoweight_var'].sum()
                     eff_den_var[processBin][scale][w] = datafr[passedFiducialSelection & cutm4l_gen & cutobs_gen & cutchan_gen & cuth4l_gen]['weight_var'].sum()
 
@@ -819,6 +825,8 @@ def doGetCoeff(obs_reco, obs_gen, obs_name, obs_bins, type, weight_uncs, obs_rec
             merge_w_dicts(accden)
             merge_w_dicts(effnum)
             merge_w_dicts(effden)
+            merge_w_dicts(acc_num_var)
+            merge_w_dicts(acc_den_var)
             merge_w_dicts(eff_num_var)
             merge_w_dicts(eff_den_var)
             merge_w_dicts(oirnum)
@@ -855,6 +863,8 @@ def doGetCoeff(obs_reco, obs_gen, obs_name, obs_bins, type, weight_uncs, obs_rec
                 f.write('acc_den = '+str(accden)+' \n')
                 f.write('eff_num = '+str(effnum)+' \n')
                 f.write('eff_den = '+str(effden)+' \n')
+                f.write('acc_num_var = '+str(acc_num_var)+' \n')
+                f.write('acc_den_var = '+str(acc_den_var)+' \n')
                 f.write('eff_num_var = '+str(eff_num_var)+' \n')
                 f.write('eff_den_var = '+str(eff_den_var)+' \n')
                 f.write('oir_num = '+str(oirnum)+' \n')
@@ -900,6 +910,8 @@ def doGetCoeff(obs_reco, obs_gen, obs_name, obs_bins, type, weight_uncs, obs_rec
                     f.write('acc_den = '+str(accden)+' \n')
                     f.write('eff_num = '+str(effnum)+' \n')
                     f.write('eff_den = '+str(effden)+' \n')
+                    f.write('acc_num_var = '+str(acc_num_var)+' \n')
+                    f.write('acc_den_var = '+str(acc_den_var)+' \n')
                     f.write('eff_num_var = '+str(eff_num_var)+' \n')
                     f.write('eff_den_var = '+str(eff_den_var)+' \n')
                     f.write('oir_num = '+str(oirnum)+' \n')
@@ -920,6 +932,8 @@ def doGetCoeff(obs_reco, obs_gen, obs_name, obs_bins, type, weight_uncs, obs_rec
                     f.write('err_eff = '+str(err_effrecotofid)+' \n')
                     f.write('eff_num = '+str(effnum)+' \n')
                     f.write('eff_den = '+str(effden)+' \n')
+                    f.write('acc_num_var = '+str(acc_num_var)+' \n')
+                    f.write('acc_den_var = '+str(acc_den_var)+' \n')
                     f.write('eff_num_var = '+str(eff_num_var)+' \n')
                     f.write('eff_den_var = '+str(eff_den_var)+' \n')
             else:
@@ -933,6 +947,8 @@ def doGetCoeff(obs_reco, obs_gen, obs_name, obs_bins, type, weight_uncs, obs_rec
                     f.write('err_eff = '+str(err_effrecotofid)+' \n')
                     f.write('eff_num = '+str(effnum)+' \n')
                     f.write('eff_den = '+str(effden)+' \n')
+                    f.write('acc_num_var = '+str(acc_num_var)+' \n')
+                    f.write('acc_den_var = '+str(acc_den_var)+' \n')
                     f.write('eff_num_var = '+str(eff_num_var)+' \n')
                     f.write('eff_den_var = '+str(eff_den_var)+' \n')
 
@@ -1052,6 +1068,7 @@ if opt.MERGE:
     wrongfracnum_totals, wrongfracden_totals = {}, {}
     binwrongfracnum_totals, binwrongfracden_totals = {}, {}
 
+    acc_num_var_totals, acc_den_var_totals = {}, {}
     eff_num_var_totals, eff_den_var_totals = {}, {}
 
 
@@ -1086,6 +1103,24 @@ if opt.MERGE:
             for key in module.acc.keys():
                 if module.acc_num.get(key, 0.0) >= 0: accnum_totals[key] = accnum_totals.get(key, 0.0) + module.acc_num.get(key, 0.0)
                 if module.acc_den.get(key, 0.0) >= 0: accden_totals[key] = accden_totals.get(key, 0.0) + module.acc_den.get(key, 0.0)
+                if not opt.INTER:
+                    for subkey, subdict in getattr(module, 'acc_num_var', {}).get(key, {}).items():
+                        for subsubkey, value in subdict.items():
+                            if value >= 0:
+                                acc_num_var_totals.setdefault(key, {})
+                                acc_num_var_totals[key].setdefault(subkey, {})
+                                acc_num_var_totals[key][subkey][subsubkey] = (
+                                    acc_num_var_totals[key][subkey].get(subsubkey, 0.0) + value
+                                )
+
+                    for subkey, subdict in getattr(module, 'acc_den_var', {}).get(key, {}).items():
+                        for subsubkey, value in subdict.items():
+                            if value >= 0:
+                                acc_den_var_totals.setdefault(key, {})
+                                acc_den_var_totals[key].setdefault(subkey, {})
+                                acc_den_var_totals[key][subkey][subsubkey] = (
+                                    acc_den_var_totals[key][subkey].get(subsubkey, 0.0) + value
+                                )
         else:
             for key in module.acc.keys():
                 if module.acc_num.get(key, 0.0) >= 0: accnum_totals[key] = accnum_totals.get(key, 0.0) + module.acc_num.get(key, 0.0)
@@ -1100,6 +1135,24 @@ if opt.MERGE:
                 if module.binwf_den.get(key, 0.0) >= 0: binwrongfracden_totals[key] = binwrongfracden_totals.get(key, 0.0) + module.binwf_den.get(key, 0.0)
 
                 if not opt.INTER:
+                    for subkey, subdict in getattr(module, 'acc_num_var', {}).get(key, {}).items():
+                        for subsubkey, value in subdict.items():
+                            if value >= 0:
+                                acc_num_var_totals.setdefault(key, {})
+                                acc_num_var_totals[key].setdefault(subkey, {})
+                                acc_num_var_totals[key][subkey][subsubkey] = (
+                                    acc_num_var_totals[key][subkey].get(subsubkey, 0.0) + value
+                                )
+
+                    for subkey, subdict in getattr(module, 'acc_den_var', {}).get(key, {}).items():
+                        for subsubkey, value in subdict.items():
+                            if value >= 0:
+                                acc_den_var_totals.setdefault(key, {})
+                                acc_den_var_totals[key].setdefault(subkey, {})
+                                acc_den_var_totals[key][subkey][subsubkey] = (
+                                    acc_den_var_totals[key][subkey].get(subsubkey, 0.0) + value
+                                )
+
                     for subkey, subdict in module.eff_num_var.get(key, {}).items():
                         for subsubkey, value in subdict.items():
                             if value >= 0:
@@ -1148,6 +1201,9 @@ if opt.MERGE:
             f.write('err_acc = '+str(err_acceptance)+' \n')
             f.write('acc_num = '+str(accnum_totals)+' \n')
             f.write('acc_den = '+str(accden_totals)+' \n')
+            if not opt.INTER:
+                f.write('acc_num_var = '+str(acc_num_var_totals)+' \n')
+                f.write('acc_den_var = '+str(acc_den_var_totals)+' \n')
         else: 
             f.write('observableBins = '+str(obs_bins)+';\n')
             f.write('acc = '+str(acceptance)+' \n')
@@ -1166,6 +1222,8 @@ if opt.MERGE:
             f.write('eff_num = '+str(effnum_totals)+' \n')
             f.write('eff_den = '+str(effden_totals)+' \n')
             if not opt.INTER:
+                f.write('acc_num_var = '+str(acc_num_var_totals)+' \n')
+                f.write('acc_den_var = '+str(acc_den_var_totals)+' \n')
                 f.write('eff_num_var = '+str(eff_num_var_totals)+' \n')
                 f.write('eff_den_var = '+str(eff_den_var_totals)+' \n')
             f.write('oir_num = '+str(oirnum_totals)+' \n')
@@ -1227,6 +1285,8 @@ else:
         outinratio = {}
         err_outinratio = {}
         effrecotofid = {}
+        acc_num_var = {} ## theory uncert on acceptance numerator
+        acc_den_var = {} ## theory uncert on acceptance denominator
         eff_num_var = {} ## theory uncert on efficiency numerator
         eff_den_var = {} ## theory uncert on efficiency denominator
         err_effrecotofid = {}
@@ -1271,6 +1331,10 @@ else:
             binfrac_outfrac = {}
             outinratio = {}
             effrecotofid = {}
+            acc_num_var = {}
+            acc_den_var = {}
+            eff_num_var = {}
+            eff_den_var = {}
             err_effrecotofid = {}
             acceptance = {}
             err_acceptance = {}
@@ -1285,6 +1349,10 @@ else:
         print('Coeff fullNNLOPS')
         acceptance = {}
         err_acceptance = {}
+        acc_num_var = {}
+        acc_den_var = {}
+        eff_num_var = {}
+        eff_den_var = {}
         # For AC there is no NNLOPS samples
         if not opt.AC:
             if doubleDiff:
@@ -1295,6 +1363,10 @@ else:
         print('Coeff full AC ggH')
         acceptance = {}
         err_acceptance = {}
+        acc_num_var = {}
+        acc_den_var = {}
+        eff_num_var = {}
+        eff_den_var = {}
         if doubleDiff:
             doGetCoeff(obs_reco, obs_gen, obs_name, obs_bins, 'ACggH', weight_uncs, obs_reco_2nd, obs_gen_2nd, obs_name_2nd)
         else:

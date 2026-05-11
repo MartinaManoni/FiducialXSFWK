@@ -18,6 +18,12 @@ ZZFLOATING_BIN_MERGES = {
     'mHj': [0, 1, 2, [3, 4], [5, 6]],
     'pTHj': [0, 1, 2, 3, [4, 5]],
     'pTHjj': [0, [1, 2, 3]],
+
+    'absdetajj_mjj': [0, [1, 2], 3],
+    'pTj1_pTj2': [0, 1, [2, 3, 4]],
+    'TCjmax_pT4l': [0, 1, 2, 3, 4, 5, 6, [7, 8]],
+    'pT4l_pTHj': [0, 1, 2, 3, 4, [5, 6]],
+    'Nj_pT4l': [0, 1, 2, 3, 4, 5, 6, 7, [8, 9], [10, 11]],
 }
 
 def getSignalProdModes(prodMode):
@@ -206,6 +212,24 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         lumi['2023postBPix'] = '1.013'
         lumi['2024'] = '1.0161' 
 
+    # BR UNCs
+    br_unc = {}
+    br_unc['2022_2e2mu'] = '0.984684/1.01536'
+    br_unc['2022_4e'] = '0.984657/1.015389'
+    br_unc['2022_4mu'] = '0.984362/1.015684'
+    br_unc['2022EE_2e2mu'] = '0.984684/1.01536'
+    br_unc['2022EE_4e'] = '0.984657/1.015389'
+    br_unc['2022EE_4mu'] = '0.984362/1.015684'
+    br_unc['2023preBPix_2e2mu'] = '0.984684/1.01536'
+    br_unc['2023preBPix_4e'] = '0.984657/1.015389'
+    br_unc['2023preBPix_4mu'] = '0.984362/1.015684'
+    br_unc['2023postBPix_2e2mu'] = '0.984684/1.01536'
+    br_unc['2023postBPix_4e'] = '0.984657/1.015389'
+    br_unc['2023postBPix_4mu'] = '0.984362/1.015684'
+    br_unc['2024_2e2mu'] = '0.984684/1.01536'
+    br_unc['2024_4e'] = '0.984657/1.015389'
+    br_unc['2024_4mu'] = '0.984362/1.015684'
+    
 
     # Lepton efficiency
     # Values taken from:
@@ -606,7 +630,60 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
                 file.write(lumi[year]+' ')
             file.write('-\n') # ZX
 
-            
+    # BR uncertainties  
+    if physicalModel == 'v3':
+        # In v3, apply BR uncertainties only to the corresponding final state
+        file.write('BR_hzz4e lnN ')
+        for signalProdMode in signalProdModes:
+            for i in range(nBins+2):
+                if channel == '4e':
+                    file.write(br_unc[year+'_4e']+' ')
+                else:
+                    file.write('- ')
+        file.write('- - -\n')
+        
+        file.write('BR_hzz2e2mu lnN ')
+        for signalProdMode in signalProdModes:
+            for i in range(nBins+2):
+                if channel == '2e2mu':
+                    file.write(br_unc[year+'_2e2mu']+' ')
+                else:
+                    file.write('- ')
+        file.write('- - -\n')
+        
+        file.write('BR_hzz4mu lnN ')
+        for signalProdMode in signalProdModes:
+            for i in range(nBins+2):
+                if channel == '4mu':
+                    file.write(br_unc[year+'_4mu']+' ')
+                else:
+                    file.write('- ')
+        file.write('- - -\n')
+    else:
+        # In v2, each bin is a single final state, so apply BR only for the matching channel
+        # Total columns = signal + out_trueH + fakeH + bkg_qqzz + bkg_ggzz + bkg_zjets
+        file.write('BR_hzz4e lnN ')
+        for i in range(nSignalColumns+2): 
+            if channel == '4e':
+                file.write(br_unc[year+'_4e']+' ')
+            else:
+                file.write('- ')
+        file.write('- - -\n')
+        file.write('BR_hzz2e2mu lnN ')
+        for i in range(nSignalColumns+2): 
+            if channel == '2e2mu':
+                file.write(br_unc[year+'_2e2mu']+' ')
+            else:
+                file.write('- ')
+        file.write('- - -\n')
+        file.write('BR_hzz4mu lnN ')
+        for i in range(nSignalColumns+2): 
+            if channel == '4mu':
+                file.write(br_unc[year+'_4mu']+' ')
+            else:
+                file.write('- ')
+        file.write('- - -\n')
+
     # Lepton efficiency
 
     if channel == '4mu' or channel == '2e2mu':

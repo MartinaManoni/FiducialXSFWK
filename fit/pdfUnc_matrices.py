@@ -15,7 +15,7 @@ def load_module_from_file(filepath):
     spec.loader.exec_module(module)
     return module
 
-def load_eff_variation_module(input_file):
+def load_variation_module(input_file, numerator_name, denominator_name, nuisance_label):
     candidates = [input_file]
     if '_ORIG.py' in input_file:
         candidates.append(input_file.replace('_ORIG.py', '.py'))
@@ -30,18 +30,24 @@ def load_eff_variation_module(input_file):
             missing.append(f"{candidate}: file does not exist")
             continue
         module = load_module_from_file(candidate)
-        if hasattr(module, 'eff_num_var') and hasattr(module, 'eff_den_var'):
+        if hasattr(module, numerator_name) and hasattr(module, denominator_name):
             if candidate != input_file:
-                print(f"WARNING: {input_file} is missing eff_num_var/eff_den_var; using {candidate} instead")
+                print(f"WARNING: {input_file} is missing {numerator_name}/{denominator_name}; using {candidate} instead")
             return module, candidate
-        missing.append(f"{candidate}: missing eff_num_var/eff_den_var")
+        missing.append(f"{candidate}: missing {numerator_name}/{denominator_name}")
 
     details = "\n".join("  - "+item for item in missing)
     raise AttributeError(
-        "Cannot compute CMS_HIG25015_*_effMatrix uncertainties because no input file "
-        "contains eff_num_var and eff_den_var. Rerun RunCoefficients to regenerate the "
+        f"Cannot compute CMS_HIG25015_*_{nuisance_label} uncertainties because no input file "
+        f"contains {numerator_name} and {denominator_name}. Rerun RunCoefficients to regenerate the "
         "inputs with theory-variation payloads.\n"+details
     )
+
+def load_eff_variation_module(input_file):
+    return load_variation_module(input_file, 'eff_num_var', 'eff_den_var', 'effMatrix')
+
+def load_acc_variation_module(input_file):
+    return load_variation_module(input_file, 'acc_num_var', 'acc_den_var', 'accMatrix')
 
 def build_all_matrices(eff_num_var, eff_den_var, NNLOPS):
     import numpy as np
@@ -431,7 +437,7 @@ def format_uncertainty_columns(values, recobin):
 
     return pdf_, qcd_, as_
 
-def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs_all, split_prod_mode=False):
+def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs_all, split_prod_mode=False, matrix_label="effMatrix"):
  
     variable = obsName
 
@@ -477,9 +483,9 @@ def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs
                 pdf_, qcd_, as_ = format_uncertainty_columns(values, i)
 
             # Join into strings
-            pdf_str = "CMS_HIG25015_pdf_effMatrix lnN " + "".join(pdf_) + "- - - - -\n"
-            qcd_str = "CMS_HIG25015_QCDscale_effMatrix lnN " + "".join(qcd_) + "- - - - -\n"
-            as_str  = "CMS_HIG25015_alphaS_effMatrix lnN " + "".join(as_) + "- - - - -\n"
+            pdf_str = f"CMS_HIG25015_pdf_{matrix_label} lnN " + "".join(pdf_) + "- - - - -\n"
+            qcd_str = f"CMS_HIG25015_QCDscale_{matrix_label} lnN " + "".join(qcd_) + "- - - - -\n"
+            as_str  = f"CMS_HIG25015_alphaS_{matrix_label} lnN " + "".join(as_) + "- - - - -\n"
 
             new_lines = [pdf_str, qcd_str, as_str]
 
@@ -491,8 +497,14 @@ def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs
                     lines = f.readlines()
             else:
                 print(f"file {datacard_path} does not exist")
+                continue
                 
-            filtered = [line for line in lines if not line.strip().startswith(("CMS_HIG25015_pdf_effMatrix", "CMS_HIG25015_QCDscale_effMatrix", "CMS_HIG25015_alphaS_effMatrix"))]
+            matrix_prefixes = (
+                f"CMS_HIG25015_pdf_{matrix_label}",
+                f"CMS_HIG25015_QCDscale_{matrix_label}",
+                f"CMS_HIG25015_alphaS_{matrix_label}",
+            )
+            filtered = [line for line in lines if not line.strip().startswith(matrix_prefixes)]
             filtered.extend(new_lines)
 
             # Append to datacard
@@ -502,7 +514,19 @@ def append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs
             print(f"Appended uncertainties to {datacard_path}")
 
 
-def run_pdf_unc_matrices(input_file, obsName, year, physicalModel, split_prod_mode=False):
+def compute_variation_percent_diffs(input_file, numerator_name, denominator_name, matrix_label, NNLOPS):
+    module, input_file = load_variation_module(input_file, numerator_name, denominator_name, matrix_label)
+    num_var = getattr(module, numerator_name)
+    den_var = getattr(module, denominator_name)
+
+    matrices_all, genbins, recobins, keys = build_all_matrices(num_var, den_var, NNLOPS)
+    matrices = build_matrices(matrices_all, genbins, recobins)
+    percent_diffs = compute_percent_variations(matrices, matrices_all)
+    percent_diffs = transpose_all(percent_diffs)
+
+    return input_file, percent_diffs
+
+def run_pdf_unc_matrices(input_file, obsName, year, physicalModel, split_prod_mode=False, eff_unc=True, acc_unc=True):
     if "NNLOPS" in input_file:
         NNLOPS = True
     else:
@@ -511,18 +535,19 @@ def run_pdf_unc_matrices(input_file, obsName, year, physicalModel, split_prod_mo
     if 'zzfloating' in input_file:
         input_file = input_file.replace('_zzfloating', '')
 
-    module, input_file = load_eff_variation_module(input_file)
-    eff_num_var = module.eff_num_var
-    eff_den_var = module.eff_den_var
+    if eff_unc:
+        input_file, percent_diffs = compute_variation_percent_diffs(input_file, 'eff_num_var', 'eff_den_var', 'effMatrix', NNLOPS)
+        if split_prod_mode:
+            append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs, split_prod_mode=True, matrix_label="effMatrix")
+        else:
+            append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs['allH125'], matrix_label="effMatrix")
 
-    matrices_all, genbins, recobins, keys = build_all_matrices(eff_num_var, eff_den_var, NNLOPS)
-    matrices = build_matrices(matrices_all, genbins, recobins)
-    percent_diffs = compute_percent_variations(matrices, matrices_all)
-    percent_diffs = transpose_all(percent_diffs)
-    if split_prod_mode:
-        append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs, split_prod_mode=True)
-    else:
-        append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs['allH125'])
+    if acc_unc:
+        input_file, percent_diffs = compute_variation_percent_diffs(input_file, 'acc_num_var', 'acc_den_var', 'accMatrix', NNLOPS)
+        if split_prod_mode:
+            append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs, split_prod_mode=True, matrix_label="accMatrix")
+        else:
+            append_uncertainties(input_file, obsName, year, physicalModel, percent_diffs['allH125'], matrix_label="accMatrix")
 
     #plot_and_save_matrices(matrices_all, obsName, year, genbins, recobins, input_file, "all")
     #plot_and_save_matrices(matrices, obsName, year, genbins, recobins, input_file, "variations")

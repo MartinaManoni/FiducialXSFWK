@@ -280,12 +280,17 @@ def compute_percent_variations(matrices, matrices_all):
 
                     with np.errstate(divide='ignore', invalid='ignore'):
                         if var == "pdf":
-                            diff = (mat / nominal_matrix) * 100.0
+                            diff = np.zeros_like(mat)
+                            valid = np.isfinite(nominal_matrix) & (np.abs(nominal_matrix) > 1e-6)
+                            diff[valid] = (mat[valid] / nominal_matrix[valid]) * 100.0
                         else:
-                            diff = ((mat - nominal_matrix) / nominal_matrix) * 100.0
+                            diff = np.zeros_like(mat)
+                            valid = np.isfinite(nominal_matrix) & (np.abs(nominal_matrix) > 1e-6)
+                            diff[valid] = ((mat[valid] - nominal_matrix[valid]) / nominal_matrix[valid]) * 100.0
 
-                        diff[np.isnan(nominal_matrix)] = np.nan
-
+                    diff[np.isnan(nominal_matrix)] = np.nan
+                    diff[np.isinf(diff)] = np.nan
+                    diff[np.abs(diff) > 1000] = np.sign(diff[np.abs(diff) > 1000]) * 1000.0
                     percent_diffs_all[prod][fs][var][key] = np.abs(diff)
 
     return percent_diffs_all

@@ -7,6 +7,9 @@ ZZFLOATING_BIN_MERGES = {
     # Specify zzfloating-only bin merging for variables here.
     # Example: Nj: [0, 1, [2, 3, 4]] means original bins 0 and 1 remain separate,
     # while original bins 2, 3, 4 share the same ZZ normalization parameter.
+
+    'pT4l': [0, 1, 2, 3, 4, 5, [6, 7], [8, 9, 10]],
+
     'Nj': [0, 1, [2, 3, 4]],
     'pTj1': [0, 1, 2, [3, 4]],
     'pTj2': [0, [1, 2, 3]],
@@ -166,6 +169,8 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
 
         jesNames = ['Absolute', 'Absolute_year', 'BBEC1', 'BBEC1_year', 'EC2', 'EC2_year', 'FlavorQCD', 'HF', 'HF_year', 'RelativeBal', 'RelativeSample_year']
         jesNames_datacard = [j.replace('year',year_jes) for j in jesNames] # The name of the nuisance in the datacard should have the correspoding year
+        # Store original year for key construction in JES dictionaries
+        year_for_jes_keys = year
         sys.path.remove('../coefficients/JES')
     sys.path.remove('../inputs')
 
@@ -630,7 +635,8 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
                 file.write(lumi[year]+' ')
             file.write('-\n') # ZX
 
-    # BR uncertainties  
+    # BR uncertainties 
+    ''' 
     if physicalModel == 'v3':
         # In v3, apply BR uncertainties only to the corresponding final state
         file.write('BR_hzz4e lnN ')
@@ -683,6 +689,7 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
             else:
                 file.write('- ')
         file.write('- - -\n')
+    '''
 
     # Lepton efficiency
 
@@ -806,12 +813,12 @@ def createDatacard(obsName, channel, nBins, obsBin, observableBins, physicalMode
         for index,jesName in enumerate(jesNames_datacard):
             file.write('CMS_scale_j_'+jesName+' lnN ')
             for i in range(nSignalColumns+2): # Signals + out + fake
-                file.write(str(fixJes(jesnp['signal_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
-                                      jes_evts_noWeight['signal_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)])))
-            file.write(str(fixJes(jesnp['qqzz_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
-                                jes_evts_noWeight['qqzz_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)])))
-            file.write(str(fixJes(jesnp['ggzz_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
-                                jes_evts_noWeight['ggzz_'+jesNames_datacard[index]+'_'+channel+'_'+year+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)])))
+                file.write(str(fixJes(jesnp['signal_'+jesNames_datacard[index]+'_'+channel+'_'+year_for_jes_keys+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
+                                      jes_evts_noWeight['signal_'+jesNames_datacard[index]+'_'+channel+'_'+year_for_jes_keys+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)])))
+            file.write(str(fixJes(jesnp['qqzz_'+jesNames_datacard[index]+'_'+channel+'_'+year_for_jes_keys+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
+                                jes_evts_noWeight['qqzz_'+jesNames_datacard[index]+'_'+channel+'_'+year_for_jes_keys+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)])))
+            file.write(str(fixJes(jesnp['ggzz_'+jesNames_datacard[index]+'_'+channel+'_'+year_for_jes_keys+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
+                                jes_evts_noWeight['ggzz_'+jesNames_datacard[index]+'_'+channel+'_'+year_for_jes_keys+'_'+obsName_jes.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)])))
             #file.write(str(fixJes(jesnp['ZX_'+jesNames[index]+'_'+channel+'_'+year+'_'+obsName.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)],
             #                      jes_evts_noWeight['ZX_'+jesNames[index]+'_'+channel+'_'+year+'_'+obsName.replace('pT4l', 'ZZPt')+'_recobin'+str(obsBin)]))+'\n')
 
@@ -869,7 +876,8 @@ def createDatacard_ggH(obsName, channel, nBins, obsBin, observableBins, physical
 
         jesNames = ['Absolute', 'Absolute_year', 'BBEC1', 'BBEC1_year', 'EC2', 'EC2_year', 'FlavorQCD', 'HF', 'HF_year', 'RelativeBal', 'RelativeSample_year']
         jesNames_datacard = [j.replace('year',year_jes) for j in jesNames] # The name of the nuisance in the datacard should have the correspoding year
-
+        # Store original year for key construction in JES dictionaries
+        year_for_jes_keys = year
 
         sys.path.remove('../coefficients/JES')
         # print(jesnp)

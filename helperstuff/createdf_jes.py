@@ -238,39 +238,46 @@ def createDataframe(jesNames, year, dataFrame,isBkg,gen,xsec,signal,lumi,obs_rec
     b_sig.append(obs_reco)
     if obs_reco_2nd != 'None': b_sig.append(obs_reco_2nd)
 
+    # Store original year for potential modifications
+    year_original = year
+    
     for name in jesNames:
 
         if obs_reco in jesVars:
-
+            # Reset year for each iteration
+            year_to_use = year_original
+            name_to_use = name
+            
             if "year" in name:
-                if year == "2023preBPix":
-                    year = "2023"
-                if year == "2023postBPix":
-                    year = "2023BPix"
+                if year_to_use == "2023preBPix":
+                    year_to_use = "2023"
+                if year_to_use == "2023postBPix":
+                    year_to_use = "2023BPix"
                     
                 name1st = name.split("_")[0]
-                name = name1st + "_" + year
+                name_to_use = name1st + "_" + year_to_use
 
-
-            b_sig.append(obs_reco+"_"+name+"_ScaleUp")
-            b_sig.append(obs_reco+"_"+name+"_ScaleDn")
+            b_sig.append(obs_reco+"_"+name_to_use+"_ScaleUp")
+            b_sig.append(obs_reco+"_"+name_to_use+"_ScaleDn")
 
         if obs_reco_2nd != 'None':
 
             if obs_reco_2nd in jesVars:
-
+                # Reset year for each iteration
+                year_to_use = year_original
+                name_to_use = name
+                
                 if "year" in name:
-                    if year == "2023preBPix":
-                        year = "2023"
-                    if year == "2023postBPix":
-                        year = "2023BPix"
+                    if year_to_use == "2023preBPix":
+                        year_to_use = "2023"
+                    if year_to_use == "2023postBPix":
+                        year_to_use = "2023BPix"
                         
                     name1st = name.split("_")[0]
-                    name = name1st + "_" + year
+                    name_to_use = name1st + "_" + year_to_use
 
-
-                b_sig.append(obs_reco_2nd+"_"+name+"_ScaleUp")
-                b_sig.append(obs_reco_2nd+"_"+name+"_ScaleDn")
+                b_sig.append(obs_reco_2nd+"_"+name_to_use+"_ScaleUp")
+                b_sig.append(obs_reco_2nd+"_"+name_to_use+"_ScaleDn")
 
     df_np = dataFrame.arrays(library="np")
     df = pd.DataFrame({var: df_np[var] for var in b_sig})

@@ -5,7 +5,7 @@ from split import split
 
 DO_SPLIT = False
 
-#obsNames=["mass4l", "pT4l", "rapidity4l", "massZ1", "massZ2", "pTj1", "pTj2", "Nj", "mjj", "absdetajj", "dphijj", "pTHj", "pTHjj", "mHj", "TCjmax", "TBjmax", "massZ1_massZ2", "rapidity4l_pT4l", "pTj1_pTj2", "Nj_pT4l", "pT4l_pTHj", "absdetajj_mjj", "TCjmax_pT4l", "phi", "phi1", "costhetaZ1", "costhetaZ2", "costhetastar"]   
+obsNames=["mass4l", "pT4l", "rapidity4l", "massZ1", "massZ2", "pTj1", "pTj2", "Nj", "mjj", "absdetajj", "dphijj", "pTHj", "pTHjj", "mHj", "TCjmax", "TBjmax", "massZ1_massZ2", "rapidity4l_pT4l", "pTj1_pTj2", "Nj_pT4l", "pT4l_pTHj", "absdetajj_mjj", "TCjmax_pT4l", "phi", "phi1", "costhetaZ1", "costhetaZ2", "costhetastar"]   
 
 #obsNames=["mass4l"]
 #obsNames=["mass4l_zzfloating"]
@@ -13,10 +13,13 @@ DO_SPLIT = False
 #obsNames=["phi", "phi1", "costhetaZ1", "costhetaZ2", "costhetastar"]
 #obsNames=["pTj1", "pTj2", "mjj", "absdetajj", "dphijj", "pTHj", "pTHjj", "mHj", "TCjmax", "TBjmax", "Nj"]
 
+#obsNames=["pTj1_pTj2", "pT4l_pTHj", "absdetajj_mjj", "TCjmax_pT4l", "Nj_pT4l"]
+
 #obsNames=["mass4l", "rapidity4l", "massZ1", "massZ2", "pTj1", "pTj2", "Nj", "mjj", "absdetajj", "dphijj", "pTHj", "pTHjj", "mHj", "TCjmax", "TBjmax","phi", "phi1", "costhetaZ1", "costhetaZ2", "costhetastar"] #"pT4l"
 #obsNames=["massZ1_massZ2", "pTj1_pTj2", "pT4l_pTHj", "absdetajj_mjj", "TCjmax_pT4l"] # "Nj_pT4l"  "rapidity4l_pT4l"
 
-obsNames=["mass4l", "pT4l", "rapidity4l", "Nj", "pTj1", "mjj", "absdetajj", "TCjmax"]
+#obsNames=["pT4l", "rapidity4l", "Nj", "pTj1", "mjj", "absdetajj", "TCjmax"]
+#obsNames=["Nj", "pTj1", "mjj", "absdetajj", "TCjmax"]
 
 #YEARS = ["2022", "2022EE", "2023preBPix", "2023postBPix", "2024"]
 YEARS = ["Run3"]

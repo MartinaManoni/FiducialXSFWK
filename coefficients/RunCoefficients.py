@@ -999,6 +999,7 @@ if (opt.YEAR == 'Run3'): years = ['2022', '2022EE', '2023preBPix', '2023postBPix
 
 
 if opt.SPLIT:
+    print("OPT SPLIT")
     YEAR_SPLIT = opt.YEAR.split("_")[0]
     nSplit = split[YEAR_SPLIT]
     years = [opt.YEAR]
@@ -1006,6 +1007,7 @@ else:
     nSplit = 0
 
 if opt.MERGE:
+    print("OPT MERGE")
     if nSplit != 0:
         years = []
         for i in range(0,nSplit):
@@ -1013,8 +1015,8 @@ if opt.MERGE:
     else:
         years = years
     
-
-print(years)
+print("DEBUG opt.YEAR =", opt.YEAR)
+#print(years)
 
 obs_bins, doubleDiff = binning(opt.OBSNAME)
 if doubleDiff:

@@ -1,0 +1,804 @@
+Welcome in RunCoefficients!
+OPT SPLIT
+DEBUG opt.YEAR = 2024_6
+It is a single-differential measurement, binning [-100.0, 30.0, 45.0, 62.0, 10000.0]
+pTj2
+Following observables extracted from dictionary: RECO =  pTj2  GEN =  GENpTj2
+LUMI: 10.882200000000001
+ttH126 0.00046886125
+Processing ggH126 2024_6
+Signal created
+Signal failed created
+Processing VBFH126 2024_6
+Signal created
+Signal failed created
+Processing WminusH126 2024_6
+Signal created
+Signal failed created
+Processing WplusH126 2024_6
+Signal created
+Signal failed created
+Processing ZH126 2024_6
+Signal created
+Signal failed created
+Processing ttH126 2024_6
+Signal created
+Signal failed created
+2024_6 SKIMMED df CREATED
+2024_6 ggH126
+2024_6 VBFH126
+2024_6 WminusH126
+2024_6 WplusH126
+2024_6 ZH126
+2024_6 ttH126
+Dataframes created successfully
+Coeff std
+ggH126_4l_pTj2_genbin0_recobin0 acc 0.3612 eff 0.5226 outinratio 0.0531 
+
+VBFH126_4l_pTj2_genbin0_recobin0 acc 0.2109 eff 0.4695 outinratio 0.0359 
+
+WminusH126_4l_pTj2_genbin0_recobin0 acc 0.1983 eff 0.4533 outinratio 0.066 
+
+WplusH126_4l_pTj2_genbin0_recobin0 acc 0.1734 eff 0.4581 outinratio 0.0648 
+
+ZH126_4l_pTj2_genbin0_recobin0 acc 0.1839 eff 0.4542 outinratio 0.0736 
+
+ttH126_4l_pTj2_genbin0_recobin0 acc 0.0091 eff 0.2042 outinratio 0.1407 
+
+ggH126_4l_pTj2_genbin1_recobin0 acc 0.024 eff 0.1518 outinratio 0.0531 
+
+VBFH126_4l_pTj2_genbin1_recobin0 acc 0.0899 eff 0.1332 outinratio 0.0359 
+
+WminusH126_4l_pTj2_genbin1_recobin0 acc 0.0664 eff 0.1317 outinratio 0.066 
+
+WplusH126_4l_pTj2_genbin1_recobin0 acc 0.0523 eff 0.1388 outinratio 0.0648 
+
+ZH126_4l_pTj2_genbin1_recobin0 acc 0.0706 eff 0.0907 outinratio 0.0736 
+
+ttH126_4l_pTj2_genbin1_recobin0 acc 0.0183 eff 0.0613 outinratio 0.1407 
+
+ggH126_4l_pTj2_genbin2_recobin0 acc 0.0107 eff 0.043 outinratio 0.0531 
+
+VBFH126_4l_pTj2_genbin2_recobin0 acc 0.0717 eff 0.0454 outinratio 0.0359 
+
+WminusH126_4l_pTj2_genbin2_recobin0 acc 0.0409 eff 0.0185 outinratio 0.066 
+
+WplusH126_4l_pTj2_genbin2_recobin0 acc 0.0374 eff 0.0179 outinratio 0.0648 
+
+ZH126_4l_pTj2_genbin2_recobin0 acc 0.0413 eff 0.0458 outinratio 0.0736 
+
+ttH126_4l_pTj2_genbin2_recobin0 acc 0.0473 eff 0.0052 outinratio 0.1407 
+
+ggH126_4l_pTj2_genbin3_recobin0 acc 0.0118 eff 0.0122 outinratio 0.0531 
+
+VBFH126_4l_pTj2_genbin3_recobin0 acc 0.0797 eff 0.0219 outinratio 0.0359 
+
+WminusH126_4l_pTj2_genbin3_recobin0 acc 0.0508 eff 0.0057 outinratio 0.066 
+
+WplusH126_4l_pTj2_genbin3_recobin0 acc 0.0494 eff 0.0045 outinratio 0.0648 
+
+ZH126_4l_pTj2_genbin3_recobin0 acc 0.0497 eff 0.01 outinratio 0.0736 
+
+ttH126_4l_pTj2_genbin3_recobin0 acc 0.2443 eff 0.0003 outinratio 0.1407 
+
+ggH126_4l_pTj2_genbin0_recobin1 acc 0.3612 eff 0.0201 outinratio 0.0852 
+
+VBFH126_4l_pTj2_genbin0_recobin1 acc 0.2109 eff 0.0694 outinratio 0.0519 
+
+WminusH126_4l_pTj2_genbin0_recobin1 acc 0.1983 eff 0.0703 outinratio 0.063 
+
+WplusH126_4l_pTj2_genbin0_recobin1 acc 0.1734 eff 0.0554 outinratio 0.1002 
+
+ZH126_4l_pTj2_genbin0_recobin1 acc 0.1839 eff 0.0595 outinratio 0.0534 
+
+ttH126_4l_pTj2_genbin0_recobin1 acc 0.0091 eff 0.1081 outinratio 0.1907 
+
+ggH126_4l_pTj2_genbin1_recobin1 acc 0.024 eff 0.3055 outinratio 0.0852 
+
+VBFH126_4l_pTj2_genbin1_recobin1 acc 0.0899 eff 0.2899 outinratio 0.0519 
+
+WminusH126_4l_pTj2_genbin1_recobin1 acc 0.0664 eff 0.3282 outinratio 0.063 
+
+WplusH126_4l_pTj2_genbin1_recobin1 acc 0.0523 eff 0.2769 outinratio 0.1002 
+
+ZH126_4l_pTj2_genbin1_recobin1 acc 0.0706 eff 0.3578 outinratio 0.0534 
+
+ttH126_4l_pTj2_genbin1_recobin1 acc 0.0183 eff 0.1986 outinratio 0.1907 
+
+ggH126_4l_pTj2_genbin2_recobin1 acc 0.0107 eff 0.1327 outinratio 0.0852 
+
+VBFH126_4l_pTj2_genbin2_recobin1 acc 0.0717 eff 0.1054 outinratio 0.0519 
+
+WminusH126_4l_pTj2_genbin2_recobin1 acc 0.0409 eff 0.1139 outinratio 0.063 
+
+WplusH126_4l_pTj2_genbin2_recobin1 acc 0.0374 eff 0.0936 outinratio 0.1002 
+
+ZH126_4l_pTj2_genbin2_recobin1 acc 0.0413 eff 0.1166 outinratio 0.0534 
+
+ttH126_4l_pTj2_genbin2_recobin1 acc 0.0473 eff 0.0695 outinratio 0.1907 
+
+ggH126_4l_pTj2_genbin3_recobin1 acc 0.0118 eff 0.0158 outinratio 0.0852 
+
+VBFH126_4l_pTj2_genbin3_recobin1 acc 0.0797 eff 0.0179 outinratio 0.0519 
+
+WminusH126_4l_pTj2_genbin3_recobin1 acc 0.0508 eff 0.0113 outinratio 0.063 
+
+WplusH126_4l_pTj2_genbin3_recobin1 acc 0.0494 eff 0.0206 outinratio 0.1002 
+
+ZH126_4l_pTj2_genbin3_recobin1 acc 0.0497 eff 0.0 outinratio 0.0534 
+
+ttH126_4l_pTj2_genbin3_recobin1 acc 0.2443 eff 0.0022 outinratio 0.1907 
+
+ggH126_4l_pTj2_genbin0_recobin2 acc 0.3612 eff 0.0033 outinratio 0.0473 
+
+VBFH126_4l_pTj2_genbin0_recobin2 acc 0.2109 eff 0.0208 outinratio 0.0246 
+
+WminusH126_4l_pTj2_genbin0_recobin2 acc 0.1983 eff 0.0107 outinratio 0.0581 
+
+WplusH126_4l_pTj2_genbin0_recobin2 acc 0.1734 eff 0.0102 outinratio 0.1218 
+
+ZH126_4l_pTj2_genbin0_recobin2 acc 0.1839 eff 0.0126 outinratio 0.071 
+
+ttH126_4l_pTj2_genbin0_recobin2 acc 0.0091 eff 0.0764 outinratio 0.1405 
+
+ggH126_4l_pTj2_genbin1_recobin2 acc 0.024 eff 0.0726 outinratio 0.0473 
+
+VBFH126_4l_pTj2_genbin1_recobin2 acc 0.0899 eff 0.1063 outinratio 0.0246 
+
+WminusH126_4l_pTj2_genbin1_recobin2 acc 0.0664 eff 0.078 outinratio 0.0581 
+
+WplusH126_4l_pTj2_genbin1_recobin2 acc 0.0523 eff 0.0898 outinratio 0.1218 
+
+ZH126_4l_pTj2_genbin1_recobin2 acc 0.0706 eff 0.1313 outinratio 0.071 
+
+ttH126_4l_pTj2_genbin1_recobin2 acc 0.0183 eff 0.1538 outinratio 0.1405 
+
+ggH126_4l_pTj2_genbin2_recobin2 acc 0.0107 eff 0.3021 outinratio 0.0473 
+
+VBFH126_4l_pTj2_genbin2_recobin2 acc 0.0717 eff 0.2536 outinratio 0.0246 
+
+WminusH126_4l_pTj2_genbin2_recobin2 acc 0.0409 eff 0.3347 outinratio 0.0581 
+
+WplusH126_4l_pTj2_genbin2_recobin2 acc 0.0374 eff 0.3468 outinratio 0.1218 
+
+ZH126_4l_pTj2_genbin2_recobin2 acc 0.0413 eff 0.3584 outinratio 0.071 
+
+ttH126_4l_pTj2_genbin2_recobin2 acc 0.0473 eff 0.2908 outinratio 0.1405 
+
+ggH126_4l_pTj2_genbin3_recobin2 acc 0.0118 eff 0.0676 outinratio 0.0473 
+
+VBFH126_4l_pTj2_genbin3_recobin2 acc 0.0797 eff 0.0624 outinratio 0.0246 
+
+WminusH126_4l_pTj2_genbin3_recobin2 acc 0.0508 eff 0.0596 outinratio 0.0581 
+
+WplusH126_4l_pTj2_genbin3_recobin2 acc 0.0494 eff 0.0498 outinratio 0.1218 
+
+ZH126_4l_pTj2_genbin3_recobin2 acc 0.0497 eff 0.0648 outinratio 0.071 
+
+ttH126_4l_pTj2_genbin3_recobin2 acc 0.2443 eff 0.0324 outinratio 0.1405 
+
+ggH126_4l_pTj2_genbin0_recobin3 acc 0.3612 eff 0.0006 outinratio 0.0586 
+
+VBFH126_4l_pTj2_genbin0_recobin3 acc 0.2109 eff 0.005 outinratio 0.0414 
+
+WminusH126_4l_pTj2_genbin0_recobin3 acc 0.1983 eff 0.0043 outinratio 0.0702 
+
+WplusH126_4l_pTj2_genbin0_recobin3 acc 0.1734 eff 0.0094 outinratio 0.0746 
+
+ZH126_4l_pTj2_genbin0_recobin3 acc 0.1839 eff 0.0121 outinratio 0.0484 
+
+ttH126_4l_pTj2_genbin0_recobin3 acc 0.0091 eff 0.1325 outinratio 0.1748 
+
+ggH126_4l_pTj2_genbin1_recobin3 acc 0.024 eff 0.0016 outinratio 0.0586 
+
+VBFH126_4l_pTj2_genbin1_recobin3 acc 0.0899 eff 0.0073 outinratio 0.0414 
+
+WminusH126_4l_pTj2_genbin1_recobin3 acc 0.0664 eff 0.0036 outinratio 0.0702 
+
+WplusH126_4l_pTj2_genbin1_recobin3 acc 0.0523 eff 0.0163 outinratio 0.0746 
+
+ZH126_4l_pTj2_genbin1_recobin3 acc 0.0706 eff 0.0166 outinratio 0.0484 
+
+ttH126_4l_pTj2_genbin1_recobin3 acc 0.0183 eff 0.0962 outinratio 0.1748 
+
+ggH126_4l_pTj2_genbin2_recobin3 acc 0.0107 eff 0.0907 outinratio 0.0586 
+
+VBFH126_4l_pTj2_genbin2_recobin3 acc 0.0717 eff 0.1552 outinratio 0.0414 
+
+WminusH126_4l_pTj2_genbin2_recobin3 acc 0.0409 eff 0.1273 outinratio 0.0702 
+
+WplusH126_4l_pTj2_genbin2_recobin3 acc 0.0374 eff 0.1348 outinratio 0.0746 
+
+ZH126_4l_pTj2_genbin2_recobin3 acc 0.0413 eff 0.0805 outinratio 0.0484 
+
+ttH126_4l_pTj2_genbin2_recobin3 acc 0.0473 eff 0.1816 outinratio 0.1748 
+
+ggH126_4l_pTj2_genbin3_recobin3 acc 0.0118 eff 0.4856 outinratio 0.0586 
+
+VBFH126_4l_pTj2_genbin3_recobin3 acc 0.0797 eff 0.462 outinratio 0.0414 
+
+WminusH126_4l_pTj2_genbin3_recobin3 acc 0.0508 eff 0.5022 outinratio 0.0702 
+
+WplusH126_4l_pTj2_genbin3_recobin3 acc 0.0494 eff 0.5232 outinratio 0.0746 
+
+ZH126_4l_pTj2_genbin3_recobin3 acc 0.0497 eff 0.5011 outinratio 0.0484 
+
+ttH126_4l_pTj2_genbin3_recobin3 acc 0.2443 eff 0.5222 outinratio 0.1748 
+
+ggH126_4e_pTj2_genbin0_recobin0 acc 0.3484 eff 0.3095 outinratio 0.0465 
+
+VBFH126_4e_pTj2_genbin0_recobin0 acc 0.2053 eff 0.2616 outinratio 0.041 
+
+WminusH126_4e_pTj2_genbin0_recobin0 acc 0.1896 eff 0.2905 outinratio 0.0552 
+
+WplusH126_4e_pTj2_genbin0_recobin0 acc 0.1608 eff 0.2276 outinratio 0.0609 
+
+ZH126_4e_pTj2_genbin0_recobin0 acc 0.1731 eff 0.2948 outinratio 0.0576 
+
+ttH126_4e_pTj2_genbin0_recobin0 acc 0.009 eff 0.1706 outinratio 0.2079 
+
+ggH126_4e_pTj2_genbin1_recobin0 acc 0.0244 eff 0.0885 outinratio 0.0465 
+
+VBFH126_4e_pTj2_genbin1_recobin0 acc 0.0865 eff 0.0852 outinratio 0.041 
+
+WminusH126_4e_pTj2_genbin1_recobin0 acc 0.0659 eff 0.0671 outinratio 0.0552 
+
+WplusH126_4e_pTj2_genbin1_recobin0 acc 0.0473 eff 0.0878 outinratio 0.0609 
+
+ZH126_4e_pTj2_genbin1_recobin0 acc 0.0785 eff 0.0821 outinratio 0.0576 
+
+ttH126_4e_pTj2_genbin1_recobin0 acc 0.0171 eff 0.023 outinratio 0.2079 
+
+ggH126_4e_pTj2_genbin2_recobin0 acc 0.0114 eff 0.0412 outinratio 0.0465 
+
+VBFH126_4e_pTj2_genbin2_recobin0 acc 0.0702 eff 0.0162 outinratio 0.041 
+
+WminusH126_4e_pTj2_genbin2_recobin0 acc 0.0388 eff 0.0278 outinratio 0.0552 
+
+WplusH126_4e_pTj2_genbin2_recobin0 acc 0.0359 eff 0.0092 outinratio 0.0609 
+
+ZH126_4e_pTj2_genbin2_recobin0 acc 0.0407 eff 0.015 outinratio 0.0576 
+
+ttH126_4e_pTj2_genbin2_recobin0 acc 0.0483 eff 0.0042 outinratio 0.2079 
+
+ggH126_4e_pTj2_genbin3_recobin0 acc 0.0125 eff 0.0084 outinratio 0.0465 
+
+VBFH126_4e_pTj2_genbin3_recobin0 acc 0.0754 eff 0.023 outinratio 0.041 
+
+WminusH126_4e_pTj2_genbin3_recobin0 acc 0.051 eff 0.0042 outinratio 0.0552 
+
+WplusH126_4e_pTj2_genbin3_recobin0 acc 0.0515 eff 0.0 outinratio 0.0609 
+
+ZH126_4e_pTj2_genbin3_recobin0 acc 0.0454 eff 0.0 outinratio 0.0576 
+
+ttH126_4e_pTj2_genbin3_recobin0 acc 0.2415 eff 0.0006 outinratio 0.2079 
+
+ggH126_4e_pTj2_genbin0_recobin1 acc 0.3484 eff 0.0141 outinratio 0.1295 
+
+VBFH126_4e_pTj2_genbin0_recobin1 acc 0.2053 eff 0.0378 outinratio 0.0 
+
+WminusH126_4e_pTj2_genbin0_recobin1 acc 0.1896 eff 0.0423 outinratio 0.0573 
+
+WplusH126_4e_pTj2_genbin0_recobin1 acc 0.1608 eff 0.0414 outinratio 0.1745 
+
+ZH126_4e_pTj2_genbin0_recobin1 acc 0.1731 eff 0.044 outinratio 0.0366 
+
+ttH126_4e_pTj2_genbin0_recobin1 acc 0.009 eff 0.0347 outinratio 0.2239 
+
+ggH126_4e_pTj2_genbin1_recobin1 acc 0.0244 eff 0.1814 outinratio 0.1295 
+
+VBFH126_4e_pTj2_genbin1_recobin1 acc 0.0865 eff 0.1598 outinratio 0.0 
+
+WminusH126_4e_pTj2_genbin1_recobin1 acc 0.0659 eff 0.1602 outinratio 0.0573 
+
+WplusH126_4e_pTj2_genbin1_recobin1 acc 0.0473 eff 0.183 outinratio 0.1745 
+
+ZH126_4e_pTj2_genbin1_recobin1 acc 0.0785 eff 0.2748 outinratio 0.0366 
+
+ttH126_4e_pTj2_genbin1_recobin1 acc 0.0171 eff 0.1067 outinratio 0.2239 
+
+ggH126_4e_pTj2_genbin2_recobin1 acc 0.0114 eff 0.0611 outinratio 0.1295 
+
+VBFH126_4e_pTj2_genbin2_recobin1 acc 0.0702 eff 0.0766 outinratio 0.0 
+
+WminusH126_4e_pTj2_genbin2_recobin1 acc 0.0388 eff 0.0738 outinratio 0.0573 
+
+WplusH126_4e_pTj2_genbin2_recobin1 acc 0.0359 eff 0.0458 outinratio 0.1745 
+
+ZH126_4e_pTj2_genbin2_recobin1 acc 0.0407 eff 0.0685 outinratio 0.0366 
+
+ttH126_4e_pTj2_genbin2_recobin1 acc 0.0483 eff 0.0349 outinratio 0.2239 
+
+ggH126_4e_pTj2_genbin3_recobin1 acc 0.0125 eff 0.0 outinratio 0.1295 
+
+VBFH126_4e_pTj2_genbin3_recobin1 acc 0.0754 eff 0.0319 outinratio 0.0 
+
+WminusH126_4e_pTj2_genbin3_recobin1 acc 0.051 eff 0.0 outinratio 0.0573 
+
+WplusH126_4e_pTj2_genbin3_recobin1 acc 0.0515 eff 0.0052 outinratio 0.1745 
+
+ZH126_4e_pTj2_genbin3_recobin1 acc 0.0454 eff 0.0 outinratio 0.0366 
+
+ttH126_4e_pTj2_genbin3_recobin1 acc 0.2415 eff 0.0021 outinratio 0.2239 
+
+ggH126_4e_pTj2_genbin0_recobin2 acc 0.3484 eff 0.0009 outinratio 0.0229 
+
+VBFH126_4e_pTj2_genbin0_recobin2 acc 0.2053 eff 0.0067 outinratio 0.0587 
+
+WminusH126_4e_pTj2_genbin0_recobin2 acc 0.1896 eff 0.0101 outinratio 0.0133 
+
+WplusH126_4e_pTj2_genbin0_recobin2 acc 0.1608 eff 0.0015 outinratio 0.1438 
+
+ZH126_4e_pTj2_genbin0_recobin2 acc 0.1731 eff 0.0035 outinratio 0.0981 
+
+ttH126_4e_pTj2_genbin0_recobin2 acc 0.009 eff 0.0646 outinratio 0.0977 
+
+ggH126_4e_pTj2_genbin1_recobin2 acc 0.0244 eff 0.0385 outinratio 0.0229 
+
+VBFH126_4e_pTj2_genbin1_recobin2 acc 0.0865 eff 0.0708 outinratio 0.0587 
+
+WminusH126_4e_pTj2_genbin1_recobin2 acc 0.0659 eff 0.0445 outinratio 0.0133 
+
+WplusH126_4e_pTj2_genbin1_recobin2 acc 0.0473 eff 0.0583 outinratio 0.1438 
+
+ZH126_4e_pTj2_genbin1_recobin2 acc 0.0785 eff 0.0986 outinratio 0.0981 
+
+ttH126_4e_pTj2_genbin1_recobin2 acc 0.0171 eff 0.0857 outinratio 0.0977 
+
+ggH126_4e_pTj2_genbin2_recobin2 acc 0.0114 eff 0.1931 outinratio 0.0229 
+
+VBFH126_4e_pTj2_genbin2_recobin2 acc 0.0702 eff 0.1524 outinratio 0.0587 
+
+WminusH126_4e_pTj2_genbin2_recobin2 acc 0.0388 eff 0.2235 outinratio 0.0133 
+
+WplusH126_4e_pTj2_genbin2_recobin2 acc 0.0359 eff 0.1965 outinratio 0.1438 
+
+ZH126_4e_pTj2_genbin2_recobin2 acc 0.0407 eff 0.0722 outinratio 0.0981 
+
+ttH126_4e_pTj2_genbin2_recobin2 acc 0.0483 eff 0.174 outinratio 0.0977 
+
+ggH126_4e_pTj2_genbin3_recobin2 acc 0.0125 eff 0.0674 outinratio 0.0229 
+
+VBFH126_4e_pTj2_genbin3_recobin2 acc 0.0754 eff 0.0485 outinratio 0.0587 
+
+WminusH126_4e_pTj2_genbin3_recobin2 acc 0.051 eff 0.029 outinratio 0.0133 
+
+WplusH126_4e_pTj2_genbin3_recobin2 acc 0.0515 eff 0.0382 outinratio 0.1438 
+
+ZH126_4e_pTj2_genbin3_recobin2 acc 0.0454 eff 0.0139 outinratio 0.0981 
+
+ttH126_4e_pTj2_genbin3_recobin2 acc 0.2415 eff 0.021 outinratio 0.0977 
+
+ggH126_4e_pTj2_genbin0_recobin3 acc 0.3484 eff 0.0 outinratio 0.0101 
+
+VBFH126_4e_pTj2_genbin0_recobin3 acc 0.2053 eff 0.0 outinratio 0.0448 
+
+WminusH126_4e_pTj2_genbin0_recobin3 acc 0.1896 eff 0.0032 outinratio 0.0742 
+
+WplusH126_4e_pTj2_genbin0_recobin3 acc 0.1608 eff 0.0062 outinratio 0.0043 
+
+ZH126_4e_pTj2_genbin0_recobin3 acc 0.1731 eff 0.0071 outinratio 0.1114 
+
+ttH126_4e_pTj2_genbin0_recobin3 acc 0.009 eff 0.0829 outinratio 0.2097 
+
+ggH126_4e_pTj2_genbin1_recobin3 acc 0.0244 eff 0.0 outinratio 0.0101 
+
+VBFH126_4e_pTj2_genbin1_recobin3 acc 0.0865 eff 0.0036 outinratio 0.0448 
+
+WminusH126_4e_pTj2_genbin1_recobin3 acc 0.0659 eff 0.0018 outinratio 0.0742 
+
+WplusH126_4e_pTj2_genbin1_recobin3 acc 0.0473 eff 0.0196 outinratio 0.0043 
+
+ZH126_4e_pTj2_genbin1_recobin3 acc 0.0785 eff 0.0 outinratio 0.1114 
+
+ttH126_4e_pTj2_genbin1_recobin3 acc 0.0171 eff 0.068 outinratio 0.2097 
+
+ggH126_4e_pTj2_genbin2_recobin3 acc 0.0114 eff 0.0843 outinratio 0.0101 
+
+VBFH126_4e_pTj2_genbin2_recobin3 acc 0.0702 eff 0.0861 outinratio 0.0448 
+
+WminusH126_4e_pTj2_genbin2_recobin3 acc 0.0388 eff 0.061 outinratio 0.0742 
+
+WplusH126_4e_pTj2_genbin2_recobin3 acc 0.0359 eff 0.0701 outinratio 0.0043 
+
+ZH126_4e_pTj2_genbin2_recobin3 acc 0.0407 eff 0.1211 outinratio 0.1114 
+
+ttH126_4e_pTj2_genbin2_recobin3 acc 0.0483 eff 0.1248 outinratio 0.2097 
+
+ggH126_4e_pTj2_genbin3_recobin3 acc 0.0125 eff 0.3583 outinratio 0.0101 
+
+VBFH126_4e_pTj2_genbin3_recobin3 acc 0.0754 eff 0.259 outinratio 0.0448 
+
+WminusH126_4e_pTj2_genbin3_recobin3 acc 0.051 eff 0.3547 outinratio 0.0742 
+
+WplusH126_4e_pTj2_genbin3_recobin3 acc 0.0515 eff 0.2922 outinratio 0.0043 
+
+ZH126_4e_pTj2_genbin3_recobin3 acc 0.0454 eff 0.3889 outinratio 0.1114 
+
+ttH126_4e_pTj2_genbin3_recobin3 acc 0.2415 eff 0.3286 outinratio 0.2097 
+
+ggH126_4mu_pTj2_genbin0_recobin0 acc 0.3859 eff 0.7683 outinratio 0.0596 
+
+VBFH126_4mu_pTj2_genbin0_recobin0 acc 0.2297 eff 0.6976 outinratio 0.025 
+
+WminusH126_4mu_pTj2_genbin0_recobin0 acc 0.2054 eff 0.6942 outinratio 0.0293 
+
+WplusH126_4mu_pTj2_genbin0_recobin0 acc 0.1911 eff 0.6698 outinratio 0.0582 
+
+ZH126_4mu_pTj2_genbin0_recobin0 acc 0.2043 eff 0.6368 outinratio 0.0844 
+
+ttH126_4mu_pTj2_genbin0_recobin0 acc 0.0091 eff 0.2866 outinratio 0.0555 
+
+ggH126_4mu_pTj2_genbin1_recobin0 acc 0.0248 eff 0.2021 outinratio 0.0596 
+
+VBFH126_4mu_pTj2_genbin1_recobin0 acc 0.097 eff 0.1963 outinratio 0.025 
+
+WminusH126_4mu_pTj2_genbin1_recobin0 acc 0.0661 eff 0.1774 outinratio 0.0293 
+
+WplusH126_4mu_pTj2_genbin1_recobin0 acc 0.0526 eff 0.1978 outinratio 0.0582 
+
+ZH126_4mu_pTj2_genbin1_recobin0 acc 0.0675 eff 0.1421 outinratio 0.0844 
+
+ttH126_4mu_pTj2_genbin1_recobin0 acc 0.0203 eff 0.083 outinratio 0.0555 
+
+ggH126_4mu_pTj2_genbin2_recobin0 acc 0.0087 eff 0.0587 outinratio 0.0596 
+
+VBFH126_4mu_pTj2_genbin2_recobin0 acc 0.0817 eff 0.0544 outinratio 0.025 
+
+WminusH126_4mu_pTj2_genbin2_recobin0 acc 0.0451 eff 0.0 outinratio 0.0293 
+
+WplusH126_4mu_pTj2_genbin2_recobin0 acc 0.0421 eff 0.0227 outinratio 0.0582 
+
+ZH126_4mu_pTj2_genbin2_recobin0 acc 0.045 eff 0.0357 outinratio 0.0844 
+
+ttH126_4mu_pTj2_genbin2_recobin0 acc 0.0498 eff 0.0052 outinratio 0.0555 
+
+ggH126_4mu_pTj2_genbin3_recobin0 acc 0.0116 eff 0.0269 outinratio 0.0596 
+
+VBFH126_4mu_pTj2_genbin3_recobin0 acc 0.0732 eff 0.0206 outinratio 0.025 
+
+WminusH126_4mu_pTj2_genbin3_recobin0 acc 0.049 eff 0.0 outinratio 0.0293 
+
+WplusH126_4mu_pTj2_genbin3_recobin0 acc 0.0451 eff 0.0154 outinratio 0.0582 
+
+ZH126_4mu_pTj2_genbin3_recobin0 acc 0.0506 eff 0.0 outinratio 0.0844 
+
+ttH126_4mu_pTj2_genbin3_recobin0 acc 0.2654 eff 0.0004 outinratio 0.0555 
+
+ggH126_4mu_pTj2_genbin0_recobin1 acc 0.3859 eff 0.0332 outinratio 0.0692 
+
+VBFH126_4mu_pTj2_genbin0_recobin1 acc 0.2297 eff 0.0923 outinratio 0.0937 
+
+WminusH126_4mu_pTj2_genbin0_recobin1 acc 0.2054 eff 0.0898 outinratio 0.0628 
+
+WplusH126_4mu_pTj2_genbin0_recobin1 acc 0.1911 eff 0.0717 outinratio 0.086 
+
+ZH126_4mu_pTj2_genbin0_recobin1 acc 0.2043 eff 0.0858 outinratio 0.0742 
+
+ttH126_4mu_pTj2_genbin0_recobin1 acc 0.0091 eff 0.1899 outinratio 0.1713 
+
+ggH126_4mu_pTj2_genbin1_recobin1 acc 0.0248 eff 0.4499 outinratio 0.0692 
+
+VBFH126_4mu_pTj2_genbin1_recobin1 acc 0.097 eff 0.3985 outinratio 0.0937 
+
+WminusH126_4mu_pTj2_genbin1_recobin1 acc 0.0661 eff 0.526 outinratio 0.0628 
+
+WplusH126_4mu_pTj2_genbin1_recobin1 acc 0.0526 eff 0.3942 outinratio 0.086 
+
+ZH126_4mu_pTj2_genbin1_recobin1 acc 0.0675 eff 0.5276 outinratio 0.0742 
+
+ttH126_4mu_pTj2_genbin1_recobin1 acc 0.0203 eff 0.2492 outinratio 0.1713 
+
+ggH126_4mu_pTj2_genbin2_recobin1 acc 0.0087 eff 0.1884 outinratio 0.0692 
+
+VBFH126_4mu_pTj2_genbin2_recobin1 acc 0.0817 eff 0.138 outinratio 0.0937 
+
+WminusH126_4mu_pTj2_genbin2_recobin1 acc 0.0451 eff 0.1524 outinratio 0.0628 
+
+WplusH126_4mu_pTj2_genbin2_recobin1 acc 0.0421 eff 0.1577 outinratio 0.086 
+
+ZH126_4mu_pTj2_genbin2_recobin1 acc 0.045 eff 0.1349 outinratio 0.0742 
+
+ttH126_4mu_pTj2_genbin2_recobin1 acc 0.0498 eff 0.1056 outinratio 0.1713 
+
+ggH126_4mu_pTj2_genbin3_recobin1 acc 0.0116 eff 0.0405 outinratio 0.0692 
+
+VBFH126_4mu_pTj2_genbin3_recobin1 acc 0.0732 eff 0.0144 outinratio 0.0937 
+
+WminusH126_4mu_pTj2_genbin3_recobin1 acc 0.049 eff 0.0137 outinratio 0.0628 
+
+WplusH126_4mu_pTj2_genbin3_recobin1 acc 0.0451 eff 0.0198 outinratio 0.086 
+
+ZH126_4mu_pTj2_genbin3_recobin1 acc 0.0506 eff 0.0 outinratio 0.0742 
+
+ttH126_4mu_pTj2_genbin3_recobin1 acc 0.2654 eff 0.0023 outinratio 0.1713 
+
+ggH126_4mu_pTj2_genbin0_recobin2 acc 0.3859 eff 0.0055 outinratio 0.0567 
+
+VBFH126_4mu_pTj2_genbin0_recobin2 acc 0.2297 eff 0.0367 outinratio 0.0072 
+
+WminusH126_4mu_pTj2_genbin0_recobin2 acc 0.2054 eff 0.0113 outinratio 0.0844 
+
+WplusH126_4mu_pTj2_genbin0_recobin2 acc 0.1911 eff 0.0164 outinratio 0.1214 
+
+ZH126_4mu_pTj2_genbin0_recobin2 acc 0.2043 eff 0.034 outinratio 0.0638 
+
+ttH126_4mu_pTj2_genbin0_recobin2 acc 0.0091 eff 0.114 outinratio 0.1304 
+
+ggH126_4mu_pTj2_genbin1_recobin2 acc 0.0248 eff 0.0962 outinratio 0.0567 
+
+VBFH126_4mu_pTj2_genbin1_recobin2 acc 0.097 eff 0.1716 outinratio 0.0072 
+
+WminusH126_4mu_pTj2_genbin1_recobin2 acc 0.0661 eff 0.089 outinratio 0.0844 
+
+WplusH126_4mu_pTj2_genbin1_recobin2 acc 0.0526 eff 0.1274 outinratio 0.1214 
+
+ZH126_4mu_pTj2_genbin1_recobin2 acc 0.0675 eff 0.159 outinratio 0.0638 
+
+ttH126_4mu_pTj2_genbin1_recobin2 acc 0.0203 eff 0.2849 outinratio 0.1304 
+
+ggH126_4mu_pTj2_genbin2_recobin2 acc 0.0087 eff 0.4697 outinratio 0.0567 
+
+VBFH126_4mu_pTj2_genbin2_recobin2 acc 0.0817 eff 0.3379 outinratio 0.0072 
+
+WminusH126_4mu_pTj2_genbin2_recobin2 acc 0.0451 eff 0.4533 outinratio 0.0844 
+
+WplusH126_4mu_pTj2_genbin2_recobin2 acc 0.0421 eff 0.4876 outinratio 0.1214 
+
+ZH126_4mu_pTj2_genbin2_recobin2 acc 0.045 eff 0.6291 outinratio 0.0638 
+
+ttH126_4mu_pTj2_genbin2_recobin2 acc 0.0498 eff 0.4314 outinratio 0.1304 
+
+ggH126_4mu_pTj2_genbin3_recobin2 acc 0.0116 eff 0.1048 outinratio 0.0567 
+
+VBFH126_4mu_pTj2_genbin3_recobin2 acc 0.0732 eff 0.0688 outinratio 0.0072 
+
+WminusH126_4mu_pTj2_genbin3_recobin2 acc 0.049 eff 0.1306 outinratio 0.0844 
+
+WplusH126_4mu_pTj2_genbin3_recobin2 acc 0.0451 eff 0.061 outinratio 0.1214 
+
+ZH126_4mu_pTj2_genbin3_recobin2 acc 0.0506 eff 0.111 outinratio 0.0638 
+
+ttH126_4mu_pTj2_genbin3_recobin2 acc 0.2654 eff 0.052 outinratio 0.1304 
+
+ggH126_4mu_pTj2_genbin0_recobin3 acc 0.3859 eff 0.0007 outinratio 0.0594 
+
+VBFH126_4mu_pTj2_genbin0_recobin3 acc 0.2297 eff 0.0116 outinratio 0.0241 
+
+WminusH126_4mu_pTj2_genbin0_recobin3 acc 0.2054 eff 0.0081 outinratio 0.0756 
+
+WplusH126_4mu_pTj2_genbin0_recobin3 acc 0.1911 eff 0.0172 outinratio 0.0979 
+
+ZH126_4mu_pTj2_genbin0_recobin3 acc 0.2043 eff 0.0155 outinratio 0.0687 
+
+ttH126_4mu_pTj2_genbin0_recobin3 acc 0.0091 eff 0.1877 outinratio 0.1426 
+
+ggH126_4mu_pTj2_genbin1_recobin3 acc 0.0248 eff 0.0033 outinratio 0.0594 
+
+VBFH126_4mu_pTj2_genbin1_recobin3 acc 0.097 eff 0.0048 outinratio 0.0241 
+
+WminusH126_4mu_pTj2_genbin1_recobin3 acc 0.0661 eff 0.0111 outinratio 0.0756 
+
+WplusH126_4mu_pTj2_genbin1_recobin3 acc 0.0526 eff 0.0277 outinratio 0.0979 
+
+ZH126_4mu_pTj2_genbin1_recobin3 acc 0.0675 eff 0.0661 outinratio 0.0687 
+
+ttH126_4mu_pTj2_genbin1_recobin3 acc 0.0203 eff 0.1266 outinratio 0.1426 
+
+ggH126_4mu_pTj2_genbin2_recobin3 acc 0.0087 eff 0.1312 outinratio 0.0594 
+
+VBFH126_4mu_pTj2_genbin2_recobin3 acc 0.0817 eff 0.2676 outinratio 0.0241 
+
+WminusH126_4mu_pTj2_genbin2_recobin3 acc 0.0451 eff 0.2184 outinratio 0.0756 
+
+WplusH126_4mu_pTj2_genbin2_recobin3 acc 0.0421 eff 0.2432 outinratio 0.0979 
+
+ZH126_4mu_pTj2_genbin2_recobin3 acc 0.045 eff 0.0908 outinratio 0.0687 
+
+ttH126_4mu_pTj2_genbin2_recobin3 acc 0.0498 eff 0.2745 outinratio 0.1426 
+
+ggH126_4mu_pTj2_genbin3_recobin3 acc 0.0116 eff 0.6635 outinratio 0.0594 
+
+VBFH126_4mu_pTj2_genbin3_recobin3 acc 0.0732 eff 0.6852 outinratio 0.0241 
+
+WminusH126_4mu_pTj2_genbin3_recobin3 acc 0.049 eff 0.7191 outinratio 0.0756 
+
+WplusH126_4mu_pTj2_genbin3_recobin3 acc 0.0451 eff 0.7488 outinratio 0.0979 
+
+ZH126_4mu_pTj2_genbin3_recobin3 acc 0.0506 eff 0.6907 outinratio 0.0687 
+
+ttH126_4mu_pTj2_genbin3_recobin3 acc 0.2654 eff 0.7523 outinratio 0.1426 
+
+ggH126_2e2mu_pTj2_genbin0_recobin0 acc 0.3548 eff 0.4932 outinratio 0.0494 
+
+VBFH126_2e2mu_pTj2_genbin0_recobin0 acc 0.2038 eff 0.4406 outinratio 0.0445 
+
+WminusH126_2e2mu_pTj2_genbin0_recobin0 acc 0.1993 eff 0.4057 outinratio 0.1026 
+
+WplusH126_2e2mu_pTj2_genbin0_recobin0 acc 0.171 eff 0.4518 outinratio 0.0717 
+
+ZH126_2e2mu_pTj2_genbin0_recobin0 acc 0.1784 eff 0.4234 outinratio 0.0696 
+
+ttH126_2e2mu_pTj2_genbin0_recobin0 acc 0.0092 eff 0.1787 outinratio 0.1816 
+
+ggH126_2e2mu_pTj2_genbin1_recobin0 acc 0.0233 eff 0.1593 outinratio 0.0494 
+
+VBFH126_2e2mu_pTj2_genbin1_recobin0 acc 0.0879 eff 0.1205 outinratio 0.0445 
+
+WminusH126_2e2mu_pTj2_genbin1_recobin0 acc 0.0668 eff 0.1422 outinratio 0.1026 
+
+WplusH126_2e2mu_pTj2_genbin1_recobin0 acc 0.055 eff 0.1329 outinratio 0.0717 
+
+ZH126_2e2mu_pTj2_genbin1_recobin0 acc 0.0681 eff 0.068 outinratio 0.0696 
+
+ttH126_2e2mu_pTj2_genbin1_recobin0 acc 0.0179 eff 0.0681 outinratio 0.1816 
+
+ggH126_2e2mu_pTj2_genbin2_recobin0 acc 0.0114 eff 0.0376 outinratio 0.0494 
+
+VBFH126_2e2mu_pTj2_genbin2_recobin0 acc 0.0672 eff 0.0555 outinratio 0.0445 
+
+WminusH126_2e2mu_pTj2_genbin2_recobin0 acc 0.0399 eff 0.0246 outinratio 0.1026 
+
+WplusH126_2e2mu_pTj2_genbin2_recobin0 acc 0.0358 eff 0.0197 outinratio 0.0717 
+
+ZH126_2e2mu_pTj2_genbin2_recobin0 acc 0.0397 eff 0.0694 outinratio 0.0696 
+
+ttH126_2e2mu_pTj2_genbin2_recobin0 acc 0.0453 eff 0.0058 outinratio 0.1816 
+
+ggH126_2e2mu_pTj2_genbin3_recobin0 acc 0.0116 eff 0.0066 outinratio 0.0494 
+
+VBFH126_2e2mu_pTj2_genbin3_recobin0 acc 0.0855 eff 0.0221 outinratio 0.0445 
+
+WminusH126_2e2mu_pTj2_genbin3_recobin0 acc 0.0516 eff 0.0093 outinratio 0.1026 
+
+WplusH126_2e2mu_pTj2_genbin3_recobin0 acc 0.0505 eff 0.0017 outinratio 0.0717 
+
+ZH126_2e2mu_pTj2_genbin3_recobin0 acc 0.0516 eff 0.0201 outinratio 0.0696 
+
+ttH126_2e2mu_pTj2_genbin3_recobin0 acc 0.2344 eff 0.0001 outinratio 0.1816 
+
+ggH126_2e2mu_pTj2_genbin0_recobin1 acc 0.3548 eff 0.0157 outinratio 0.0839 
+
+VBFH126_2e2mu_pTj2_genbin0_recobin1 acc 0.2038 eff 0.0721 outinratio 0.0348 
+
+WminusH126_2e2mu_pTj2_genbin0_recobin1 acc 0.1993 eff 0.0741 outinratio 0.0647 
+
+WplusH126_2e2mu_pTj2_genbin0_recobin1 acc 0.171 eff 0.0529 outinratio 0.0859 
+
+ZH126_2e2mu_pTj2_genbin0_recobin1 acc 0.1784 eff 0.0511 outinratio 0.0427 
+
+ttH126_2e2mu_pTj2_genbin0_recobin1 acc 0.0092 eff 0.1039 outinratio 0.1971 
+
+ggH126_2e2mu_pTj2_genbin1_recobin1 acc 0.0233 eff 0.2939 outinratio 0.0839 
+
+VBFH126_2e2mu_pTj2_genbin1_recobin1 acc 0.0879 eff 0.2923 outinratio 0.0348 
+
+WminusH126_2e2mu_pTj2_genbin1_recobin1 acc 0.0668 eff 0.3141 outinratio 0.0647 
+
+WplusH126_2e2mu_pTj2_genbin1_recobin1 acc 0.055 eff 0.2616 outinratio 0.0859 
+
+ZH126_2e2mu_pTj2_genbin1_recobin1 acc 0.0681 eff 0.3174 outinratio 0.0427 
+
+ttH126_2e2mu_pTj2_genbin1_recobin1 acc 0.0179 eff 0.2157 outinratio 0.1971 
+
+ggH126_2e2mu_pTj2_genbin2_recobin1 acc 0.0114 eff 0.1491 outinratio 0.0839 
+
+VBFH126_2e2mu_pTj2_genbin2_recobin1 acc 0.0672 eff 0.0998 outinratio 0.0348 
+
+WminusH126_2e2mu_pTj2_genbin2_recobin1 acc 0.0399 eff 0.1121 outinratio 0.0647 
+
+WplusH126_2e2mu_pTj2_genbin2_recobin1 acc 0.0358 eff 0.0797 outinratio 0.0859 
+
+ZH126_2e2mu_pTj2_genbin2_recobin1 acc 0.0397 eff 0.1321 outinratio 0.0427 
+
+ttH126_2e2mu_pTj2_genbin2_recobin1 acc 0.0453 eff 0.0683 outinratio 0.1971 
+
+ggH126_2e2mu_pTj2_genbin3_recobin1 acc 0.0116 eff 0.0119 outinratio 0.0839 
+
+VBFH126_2e2mu_pTj2_genbin3_recobin1 acc 0.0855 eff 0.0132 outinratio 0.0348 
+
+WminusH126_2e2mu_pTj2_genbin3_recobin1 acc 0.0516 eff 0.0161 outinratio 0.0647 
+
+WplusH126_2e2mu_pTj2_genbin3_recobin1 acc 0.0505 eff 0.0298 outinratio 0.0859 
+
+ZH126_2e2mu_pTj2_genbin3_recobin1 acc 0.0516 eff 0.0 outinratio 0.0427 
+
+ttH126_2e2mu_pTj2_genbin3_recobin1 acc 0.2344 eff 0.0021 outinratio 0.1971 
+
+ggH126_2e2mu_pTj2_genbin0_recobin2 acc 0.3548 eff 0.0033 outinratio 0.0485 
+
+VBFH126_2e2mu_pTj2_genbin0_recobin2 acc 0.2038 eff 0.0185 outinratio 0.0291 
+
+WminusH126_2e2mu_pTj2_genbin0_recobin2 acc 0.1993 eff 0.0108 outinratio 0.0527 
+
+WplusH126_2e2mu_pTj2_genbin0_recobin2 acc 0.171 eff 0.0111 outinratio 0.1153 
+
+ZH126_2e2mu_pTj2_genbin0_recobin2 acc 0.1784 eff 0.0039 outinratio 0.072 
+
+ttH126_2e2mu_pTj2_genbin0_recobin2 acc 0.0092 eff 0.0629 outinratio 0.168 
+
+ggH126_2e2mu_pTj2_genbin1_recobin2 acc 0.0233 eff 0.0786 outinratio 0.0485 
+
+VBFH126_2e2mu_pTj2_genbin1_recobin2 acc 0.0879 eff 0.0858 outinratio 0.0291 
+
+WminusH126_2e2mu_pTj2_genbin1_recobin2 acc 0.0668 eff 0.0901 outinratio 0.0527 
+
+WplusH126_2e2mu_pTj2_genbin1_recobin2 acc 0.055 eff 0.0855 outinratio 0.1153 
+
+ZH126_2e2mu_pTj2_genbin1_recobin2 acc 0.0681 eff 0.1367 outinratio 0.072 
+
+ttH126_2e2mu_pTj2_genbin1_recobin2 acc 0.0179 eff 0.1096 outinratio 0.168 
+
+ggH126_2e2mu_pTj2_genbin2_recobin2 acc 0.0114 eff 0.2933 outinratio 0.0485 
+
+VBFH126_2e2mu_pTj2_genbin2_recobin2 acc 0.0672 eff 0.2536 outinratio 0.0291 
+
+WminusH126_2e2mu_pTj2_genbin2_recobin2 acc 0.0399 eff 0.3223 outinratio 0.0527 
+
+WplusH126_2e2mu_pTj2_genbin2_recobin2 acc 0.0358 eff 0.3418 outinratio 0.1153 
+
+ZH126_2e2mu_pTj2_genbin2_recobin2 acc 0.0397 eff 0.3494 outinratio 0.072 
+
+ttH126_2e2mu_pTj2_genbin2_recobin2 acc 0.0453 eff 0.2758 outinratio 0.168 
+
+ggH126_2e2mu_pTj2_genbin3_recobin2 acc 0.0116 eff 0.0478 outinratio 0.0485 
+
+VBFH126_2e2mu_pTj2_genbin3_recobin2 acc 0.0855 eff 0.0658 outinratio 0.0291 
+
+WminusH126_2e2mu_pTj2_genbin3_recobin2 acc 0.0516 eff 0.0404 outinratio 0.0527 
+
+WplusH126_2e2mu_pTj2_genbin3_recobin2 acc 0.0505 eff 0.051 outinratio 0.1153 
+
+ZH126_2e2mu_pTj2_genbin3_recobin2 acc 0.0516 eff 0.0642 outinratio 0.072 
+
+ttH126_2e2mu_pTj2_genbin3_recobin2 acc 0.2344 eff 0.0269 outinratio 0.168 
+
+ggH126_2e2mu_pTj2_genbin0_recobin3 acc 0.3548 eff 0.0008 outinratio 0.0799 
+
+VBFH126_2e2mu_pTj2_genbin0_recobin3 acc 0.2038 eff 0.0037 outinratio 0.055 
+
+WminusH126_2e2mu_pTj2_genbin0_recobin3 acc 0.1993 eff 0.0028 outinratio 0.0641 
+
+WplusH126_2e2mu_pTj2_genbin0_recobin3 acc 0.171 eff 0.0064 outinratio 0.0793 
+
+ZH126_2e2mu_pTj2_genbin0_recobin3 acc 0.1784 eff 0.0126 outinratio 0.0 
+
+ttH126_2e2mu_pTj2_genbin0_recobin3 acc 0.0092 eff 0.1298 outinratio 0.1915 
+
+ggH126_2e2mu_pTj2_genbin1_recobin3 acc 0.0233 eff 0.0016 outinratio 0.0799 
+
+VBFH126_2e2mu_pTj2_genbin1_recobin3 acc 0.0879 eff 0.0107 outinratio 0.055 
+
+WminusH126_2e2mu_pTj2_genbin1_recobin3 acc 0.0668 eff 0.0007 outinratio 0.0641 
+
+WplusH126_2e2mu_pTj2_genbin1_recobin3 acc 0.055 eff 0.0089 outinratio 0.0793 
+
+ZH126_2e2mu_pTj2_genbin1_recobin3 acc 0.0681 eff 0.0 outinratio 0.0 
+
+ttH126_2e2mu_pTj2_genbin1_recobin3 acc 0.0179 eff 0.0924 outinratio 0.1915 
+
+ggH126_2e2mu_pTj2_genbin2_recobin3 acc 0.0114 eff 0.0776 outinratio 0.0799 
+
+VBFH126_2e2mu_pTj2_genbin2_recobin3 acc 0.0672 eff 0.1195 outinratio 0.055 
+
+WminusH126_2e2mu_pTj2_genbin2_recobin3 acc 0.0399 eff 0.1077 outinratio 0.0641 
+
+WplusH126_2e2mu_pTj2_genbin2_recobin3 acc 0.0358 eff 0.1023 outinratio 0.0793 
+
+ZH126_2e2mu_pTj2_genbin2_recobin3 acc 0.0397 eff 0.0515 outinratio 0.0 
+
+ttH126_2e2mu_pTj2_genbin2_recobin3 acc 0.0453 eff 0.16 outinratio 0.1915 
+
+ggH126_2e2mu_pTj2_genbin3_recobin3 acc 0.0116 eff 0.4648 outinratio 0.0799 
+
+VBFH126_2e2mu_pTj2_genbin3_recobin3 acc 0.0855 eff 0.4526 outinratio 0.055 
+
+WminusH126_2e2mu_pTj2_genbin3_recobin3 acc 0.0516 eff 0.472 outinratio 0.0641 
+
+WplusH126_2e2mu_pTj2_genbin3_recobin3 acc 0.0505 eff 0.5464 outinratio 0.0793 
+
+ZH126_2e2mu_pTj2_genbin3_recobin3 acc 0.0516 eff 0.4526 outinratio 0.0 
+
+ttH126_2e2mu_pTj2_genbin3_recobin3 acc 0.2344 eff 0.4911 outinratio 0.1915 
+
+Coeff fullNNLOPS

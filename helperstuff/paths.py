@@ -8,10 +8,10 @@
 path = {
     #'eos_path_sig': '/eos/home-s/sellissp/HZZ/SAMPLES/',
     'eos_path_sig': '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/Moriond26_JES/',
-    'eos_path': '/eos/home-s/sellissp/HZZ/',
+    'eos_path': '/eos/user/m/mmanoni/HZZ_FINAL_18MAY/',
     'eos_path_FR': '/eos/cms/store/group/phys_higgs/cmshzz4l/cjlst/HIG-25-015/RunIII_byZ1Z2/Moriond26_JES/',
     #'eos_path_FR': '/eos/user/s/sellissp/HZZ/SAMPLES/',
-    'plots_path': '/eos/home-s/sellissp/www/HZZFidXSRUNIII/HIG25015/final_may18/',
+    'plots_path': '/eos/user/m/mmanoni/www/HZZ_FINAL_18MAY_PLOTS/',
     #'plots_path': '/eos/home-s/sellissp/www/HZZFidXSRUNIII/HIG25015/apr13/withK/',
 }
 

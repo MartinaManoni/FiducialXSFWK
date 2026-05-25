@@ -80,7 +80,7 @@ def generateName(_year, _fStateNumber, _recobin, _fState, _bin, _physicalModel, 
         return binName, procName
 
     else:
-        _obsName_v3 = {'pT4l': 'PTH', 'rapidity4l': 'YH', 'pTj1': 'PTJET', 'njets_pt30_eta4p7': 'NJ'}
+        _obsName_v3 = {'pT4l': 'PTH', 'rapidity4l': 'YH', 'pTj1': 'pTj1', 'njets_pt30_eta4p7': 'NJ'}
         if _obsName not in _obsName_v3:
             _obsName_v3[_obsName] = _obsName
 
